@@ -1,0 +1,97 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: es_ES\n"
+"Plural-Forms: nplurals=2\n"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/manage/index.html.eex:2
+msgid "Manage hosted documents"
+msgstr "Administrar documentos alojados"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/manage/index.html.eex:9
+msgid "Refer to a spreadsheet on the web"
+msgstr "Hacer referencia a una hoja de cálculo de la web"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/manage/index.html.eex:10
+msgid "Refer to another %{name} instance"
+msgstr "Hacer referencia a otra instancia de %{name}"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/manage/index.html.eex:8
+msgid "Upload a spreadsheet"
+msgstr "Subir una hoja de cálculo"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:2
+msgid "Welcome to %{name}!"
+msgstr "Bienvenidos a %{name}!"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:3
+msgid "A free system for collecting and rating frequently asked questions"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:19
+msgid "Help"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:37
+msgid "How can I help improve %{name}?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:31
+msgid "How can I set up my own %{name} server?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:25
+msgid "How do I find documents?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:28
+msgid "How do I manage available documents?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/layout/app.html.eex:26
+msgid "LANGUAGE_NAME"
+msgstr "Español"
+
+#, elixir-format, fuzzy
+#: lib/faqcheck_web/templates/page/index.html.eex:14
+msgid "Manage documents"
+msgstr "Administrar documentos alojados"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:8
+msgid "Resources"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:11
+msgid "Search documents"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:22
+msgid "What is this?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:34
+msgid "Where can I find technical information about %{name}?"
+msgstr ""

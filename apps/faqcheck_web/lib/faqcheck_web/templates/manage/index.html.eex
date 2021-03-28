@@ -1,0 +1,13 @@
+<section class="phx-hero">
+  <h1><%= gettext "Manage hosted documents" %></h2>
+</section>
+
+<section class="row">
+  <article class="column">
+    <ul>
+      <li><%= gettext "Upload a spreadsheet" %></li>
+      <li><%= gettext "Refer to a spreadsheet on the web" %></li>
+      <li><%= gettext "Refer to another %{name} instance", name: "Faqcheck" %></li>
+    </ul>
+  </article>
+</section>

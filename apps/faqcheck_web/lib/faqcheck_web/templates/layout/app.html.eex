@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="<%= Gettext.get_locale() %>">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <%= for lang <- Gettext.known_locales(FaqcheckWeb.Gettext) do %>
+      <link rel="alternate"
+            href="<%= lang_link_self @conn, lang %>"
+            hreflang="<%= lang %>">
+    <% end %>
+
+    <title>Faqcheck</title>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+  </head>
+  <body>
+    <header>
+      <section class="container">
+        <nav role="navigation">
+          <ul>
+            <%= for lang <- Gettext.known_locales(FaqcheckWeb.Gettext) do %>
+              <li>
+                <a href="<%= lang_link_self @conn, lang %>"
+                   hreflang="<%= lang %>"
+                   type="text/html">
+                  <%= Gettext.with_locale(FaqcheckWeb.Gettext, lang, fn -> gettext("LANGUAGE_NAME") end) %>
+                </a>
+              </li>
+            <% end %>
+          </ul>
+        </nav>
+        <span><a href="<%= lang_link [] %>">Faqcheck</a></span>
+      </section>
+    </header>
+    <main role="main" class="container">
+      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <%= @inner_content %>
+    </main>
+  </body>
+</html>
