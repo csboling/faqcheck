@@ -1,0 +1,5 @@
+<section class="row">
+  <article class="column">
+    <h2><%= gettext "Search" %></h2>
+  </article>
+</section>

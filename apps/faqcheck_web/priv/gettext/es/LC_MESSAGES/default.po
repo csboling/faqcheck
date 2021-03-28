@@ -8,33 +8,33 @@
 ## to merge POT files into PO files.
 msgid ""
 msgstr ""
-"Language: zh_CN\n"
-"Plural-Forms: nplurals=1\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2\n"
 
 #, elixir-format
 #: lib/faqcheck_web/templates/manage/index.html.eex:2
 msgid "Manage hosted documents"
-msgstr "官理主机的单据"
+msgstr "Administrar documentos alojados"
 
 #, elixir-format
 #: lib/faqcheck_web/templates/manage/index.html.eex:9
 msgid "Refer to a spreadsheet on the web"
-msgstr "参考网络上的电子表格"
+msgstr "Hacer referencia a una hoja de cálculo de la web"
 
 #, elixir-format
 #: lib/faqcheck_web/templates/manage/index.html.eex:10
 msgid "Refer to another %{name} instance"
-msgstr "参考另一个%{name}的实例"
+msgstr "Hacer referencia a otra instancia de %{name}"
 
 #, elixir-format
 #: lib/faqcheck_web/templates/manage/index.html.eex:8
 msgid "Upload a spreadsheet"
-msgstr "上传电子表格"
+msgstr "Subir una hoja de cálculo"
 
 #, elixir-format
 #: lib/faqcheck_web/templates/page/index.html.eex:2
 msgid "Welcome to %{name}!"
-msgstr "欢迎来到%{name}!"
+msgstr "Bienvenidos a %{name}!"
 
 #, elixir-format
 #: lib/faqcheck_web/templates/page/index.html.eex:3
@@ -42,39 +42,39 @@ msgid "A free system for collecting and rating frequently asked questions"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:19
+#: lib/faqcheck_web/templates/page/index.html.eex:16
 msgid "Help"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:37
+#: lib/faqcheck_web/templates/page/index.html.eex:34
 msgid "How can I help improve %{name}?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:31
+#: lib/faqcheck_web/templates/page/index.html.eex:28
 msgid "How can I set up my own %{name} server?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:25
+#: lib/faqcheck_web/templates/page/index.html.eex:22
 msgid "How do I find documents?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:28
+#: lib/faqcheck_web/templates/page/index.html.eex:25
 msgid "How do I manage available documents?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/layout/app.html.eex:26
+#: lib/faqcheck_web/templates/layout/app.html.eex:28
 msgid "LANGUAGE_NAME"
-msgstr "中文"
+msgstr "Español"
 
-#, elixir-format, fuzzy
-#: lib/faqcheck_web/templates/page/index.html.eex:14
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:11
 msgid "Manage documents"
-msgstr "官理主机的单据"
+msgstr "Administrar documentos alojados"
 
 #, elixir-format
 #: lib/faqcheck_web/templates/page/index.html.eex:8
@@ -82,16 +82,16 @@ msgid "Resources"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:11
-msgid "Search documents"
-msgstr ""
-
-#, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:22
+#: lib/faqcheck_web/templates/page/index.html.eex:19
 msgid "What is this?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:34
+#: lib/faqcheck_web/templates/page/index.html.eex:31
 msgid "Where can I find technical information about %{name}?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/search/index.html.eex:3
+msgid "Search"
 msgstr ""

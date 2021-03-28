@@ -7,31 +7,29 @@ defmodule FaqcheckWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug SetLocale, gettext: FaqcheckWeb.Gettext, default_locale: "en_US"
+    plug(SetLocale,
+      gettext: FaqcheckWeb.Gettext,
+      default_locale: "en"
+    )
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/:locale", FaqcheckWeb do
+  scope "/", FaqcheckWeb do
     pipe_through :browser
-
-    get "/", PageController, :index
-    get "/manage", ManageController, :index
+    get "/", PageController, :dummy
+    get "/manage", ManageController, :dummy
+    get "/search", SearchController, :dummy
   end
 
-  # scope "/", FaqcheckWeb do
-  #   pipe_through :browser
-
-  #   get "/", PageController, :index
-  #   get "/manage", ManageController, :index
-  # end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", FaqcheckWeb do
-  #   pipe_through :api
-  # end
+  scope "/:locale", FaqcheckWeb do
+    pipe_through :browser
+    get "/", PageController, :index
+    get "/manage", ManageController, :index
+    get "/search", SearchController, :index
+  end
 
   # Enables LiveDashboard only for development
   #

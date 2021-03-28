@@ -41,37 +41,37 @@ msgid "A free system for collecting and rating frequently asked questions"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:19
+#: lib/faqcheck_web/templates/page/index.html.eex:16
 msgid "Help"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:37
+#: lib/faqcheck_web/templates/page/index.html.eex:34
 msgid "How can I help improve %{name}?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:31
+#: lib/faqcheck_web/templates/page/index.html.eex:28
 msgid "How can I set up my own %{name} server?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:25
+#: lib/faqcheck_web/templates/page/index.html.eex:22
 msgid "How do I find documents?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:28
+#: lib/faqcheck_web/templates/page/index.html.eex:25
 msgid "How do I manage available documents?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/layout/app.html.eex:26
+#: lib/faqcheck_web/templates/layout/app.html.eex:28
 msgid "LANGUAGE_NAME"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:14
+#: lib/faqcheck_web/templates/page/index.html.eex:11
 msgid "Manage documents"
 msgstr ""
 
@@ -81,16 +81,16 @@ msgid "Resources"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:11
-msgid "Search documents"
-msgstr ""
-
-#, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:22
+#: lib/faqcheck_web/templates/page/index.html.eex:19
 msgid "What is this?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:34
+#: lib/faqcheck_web/templates/page/index.html.eex:31
 msgid "Where can I find technical information about %{name}?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/search/index.html.eex:3
+msgid "Search"
 msgstr ""

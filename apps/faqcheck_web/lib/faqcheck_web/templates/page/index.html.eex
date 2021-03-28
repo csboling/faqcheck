@@ -8,10 +8,10 @@
     <h2><%= gettext "Resources" %></h2>
     <ul>
       <li>
-        <a href="./search"><%= gettext "Search documents" %></a>
+        <%= link gettext("Search documents"), to: Routes.search_path(@conn, :index, @locale) %>
       </li>
       <li>
-        <a href="./manage"><%= gettext "Manage documents" %></a>
+        <%= link gettext("Manage documents"), to: Routes.manage_path(@conn, :index, @locale) %>
       </li>
     </ul>
   </article>

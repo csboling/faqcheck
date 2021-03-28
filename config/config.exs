@@ -18,8 +18,8 @@ config :faqcheck_web,
   generators: [context_app: :faqcheck]
 
 config :faqcheck_web, FaqcheckWeb.Gettext,
-  default_locale: "en_US",
-  locales: ~w(en_US es_ES zh_CN)
+  default_locale: "en",
+  locales: ~w(en es zh)
 
 # Configures the endpoint
 config :faqcheck_web, FaqcheckWeb.Endpoint,
