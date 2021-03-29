@@ -17,20 +17,6 @@ defmodule FaqcheckWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", FaqcheckWeb do
-    pipe_through :browser
-    get "/", PageController, :dummy
-    get "/manage", ManageController, :dummy
-    get "/search", SearchController, :dummy
-  end
-
-  scope "/:locale", FaqcheckWeb do
-    pipe_through :browser
-    get "/", PageController, :index
-    get "/manage", ManageController, :index
-    get "/search", SearchController, :index
-  end
-
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
@@ -46,4 +32,21 @@ defmodule FaqcheckWeb.Router do
       live_dashboard "/dashboard", metrics: FaqcheckWeb.Telemetry
     end
   end
+
+  scope "/", FaqcheckWeb do
+    pipe_through :browser
+    get "/", PageController, :dummy
+    get "/help", HelpController, :dummy
+    get "/manage", ManageController, :dummy
+    get "/search", SearchController, :dummy
+  end
+
+  scope "/:locale", FaqcheckWeb do
+    pipe_through :browser
+    get "/", PageController, :index
+    get "/help", HelpController, :index
+    get "/manage", ManageController, :index
+    get "/search", SearchController, :index
+  end
+
 end

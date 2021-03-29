@@ -1,0 +1,6 @@
+<section class="row">
+  <article class="column">
+    <h2><%= gettext "Help" %></h2>
+    <h3><a name="purpose"><%= gettext "What is this website?" %></a></h3>
+  </article>
+</section>

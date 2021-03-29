@@ -4,10 +4,17 @@
 
 <section class="row">
   <article class="column">
+    <p>
+      <%= gettext "This page allows you to add new documents to %{name}", name: "FaqCheck" %>
+    </p>
+    <p>
+      <%= gettext "For more information, see this help page:" <> " " %>
+      <%= link gettext("How do I manage available documents?"), to: Routes.help_path(@conn, :index, @locale) <> "/#managing" %>
+    </p>
     <ul>
       <li><%= gettext "Upload a spreadsheet" %></li>
       <li><%= gettext "Refer to a spreadsheet on the web" %></li>
-      <li><%= gettext "Refer to another %{name} instance", name: "Faqcheck" %></li>
+      <li><%= gettext "Refer to another %{name} instance", name: "FaqCheck" %></li>
     </ul>
   </article>
 </section>

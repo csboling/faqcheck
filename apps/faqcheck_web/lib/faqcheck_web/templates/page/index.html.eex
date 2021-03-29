@@ -1,6 +1,6 @@
 <section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Faqcheck" %></h1>
-  <p><%= gettext "A free system for collecting and rating frequently asked questions" %></p>
+  <h1><%= gettext "Welcome to %{name}!", name: "FaqCheck" %></h1>
+  <p><%= gettext "Free software for managing question-and-answer pages" %></p>
 </section>
 
 <section class="row">
@@ -19,22 +19,25 @@
     <h2><%= gettext "Help" %></h2>
     <ul>
       <li>
-        <a href="./help/purpose"><%= gettext "What is this?" %></a>
+        <%= link gettext("What is this website?"), to: Routes.help_path(@conn, :index, @locale) <> "/#purpose" %>
       </li>
       <li>
-        <a href="./help/searching"><%= gettext "How do I find documents?" %></a>
+        <%= link gettext("How do I find documents?"), to: Routes.help_path(@conn, :index, @locale) <> "/#searching" %>
       </li>
       <li>
-        <a href="./help/managing"><%= gettext "How do I manage available documents?" %></a>
+        <%= link gettext("How do I manage available documents?"), to: Routes.help_path(@conn, :index, @locale) <> "/#managing" %>
       </li>
       <li>
-        <a href="./help/hosting"><%= gettext "How can I set up my own %{name} server?", name: "Faqcheck"  %></a>
+        <%= link gettext("How can I use this data in a chatbot or other application?"), to: Routes.help_path(@conn, :index, @locale) <> "/#integrating" %>
       </li>
       <li>
-        <a href="./help/technical"><%= gettext "Where can I find technical information about %{name}?", name: "Faqcheck", name: "Faqcheck"  %></a>
+        <%= link gettext("How can I set up my own %{name} server?", name: "FaqCheck"), to: Routes.help_path(@conn, :index, @locale) <> "/#hosting" %>
       </li>
       <li>
-	<a href="./help/contributing"><%= gettext "How can I help improve %{name}?", name: "Faqcheck" %></a>
+        <%= link gettext("Where can I find technical information about %{name}?", name: "FaqCheck"), to: Routes.help_path(@conn, :index, @locale) <> "/#technical" %>
+      </li>
+      <li>
+        <%= link gettext("How can I help improve %{name}?", name: "FaqCheck"), to: Routes.help_path(@conn, :index, @locale) <> "/#contributing" %>
       </li>
     </ul>
   </article>
