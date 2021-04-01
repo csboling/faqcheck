@@ -49,6 +49,7 @@ defmodule FaqcheckWeb.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:set_locale, "~> 0.2.9"},
+      {:csv, "~> 2.4.1"},
     ]
   end
 

@@ -1,10 +1,14 @@
 # Faqcheck
 
+An application for managing question-and-answer data and associated referrals, such as phone numbers and addresses of organizations that can be contacted for more detail.
+
 ## Developer setup
 
 - Install Erlang OTP >= 23.3
 - Install Elixir
+- Install PostgreSQL >= 9.5, with the PostGIS geospatial extension
 - Set up postgres password in `config/dev.exs`
+- `mix deps get`
 - `mix ecto create`
 - `cd apps/faqcheck_web/assets`, then `npm install`
 - `mix phx.server`
@@ -14,7 +18,7 @@
 
 - Javascript should not be required for any functionality
 - all pages should work well with a screen reader
-- all controls should have ARIA annotations
+- all controls should have HTML5 accessibility annotations
 
 ## Translating content
 
