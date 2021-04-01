@@ -8,6 +8,8 @@ defmodule Referrals.Address do
     field :country, :string
     field :osm_way, :integer
 
+    belongs_to :facility, Referrals.Facility
+
     timestamps()
   end
 end
