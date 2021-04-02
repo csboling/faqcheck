@@ -42,6 +42,7 @@ defmodule Faqcheck.MixProject do
       {:jason, "~> 1.0"},
       {:geo_postgis, "~> 3.3.1"},
       {:paper_trail, "~> 0.12.3"},
+      {:pbkdf2_elixir, "~> 1.3.0"},
     ]
   end
 
