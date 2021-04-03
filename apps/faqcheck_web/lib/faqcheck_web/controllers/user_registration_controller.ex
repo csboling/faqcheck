@@ -12,7 +12,7 @@ defmodule FaqcheckWeb.UserRegistrationController do
 
   def create(conn, %{"user" => user_params, "locale" => locale}) do
     case Accounts.register_user(user_params) do
-      {:ok, %{"model": user}} ->
+      {:ok, %{model: user}} ->
         {:ok, _} =
           Accounts.deliver_user_confirmation_instructions(
             user,
@@ -20,7 +20,7 @@ defmodule FaqcheckWeb.UserRegistrationController do
           )
 
         conn
-        |> put_flash(:info, "User created successfully.")
+        |> put_flash(:info, gettext("User created successfully."))
         |> UserAuth.log_in_user(user)
 
       {:error, %Ecto.Changeset{} = changeset} ->

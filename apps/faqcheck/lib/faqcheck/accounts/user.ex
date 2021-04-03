@@ -1,13 +1,15 @@
 defmodule Faqcheck.Accounts.User do
   use Ecto.Schema
+  @timestamps_opts [type: :utc_datetime]
+
   import Ecto.Changeset
 
   @derive {Inspect, except: [:password]}
   schema "users" do
     field :email, :string
-    field :password, :string, virtual: true
-    field :hashed_password, :string
-    field :confirmed_at, :naive_datetime
+    field :password, :string, virtual: true, redact: true
+    field :hashed_password, :string, redact: true
+    field :confirmed_at, :utc_datetime
 
     belongs_to :first_version, PaperTrail.Version
     belongs_to :current_version, PaperTrail.Version, on_replace: :update

@@ -36,7 +36,7 @@ defmodule FaqcheckWeb.UserResetPasswordController do
     case Accounts.reset_user_password(conn.assigns.user, user_params) do
       {:ok, _} ->
         conn
-        |> put_flash(:info, "Password reset successfully.")
+        |> put_flash(:info, gettext("Password reset successfully."))
         |> redirect(to: Routes.user_session_path(conn, :new, locale))
 
       {:error, changeset} ->
@@ -51,7 +51,7 @@ defmodule FaqcheckWeb.UserResetPasswordController do
       conn |> assign(:user, user) |> assign(:token, token)
     else
       conn
-      |> put_flash(:error, "Reset password link is invalid or it has expired.")
+      |> put_flash(:error, dgettext("errors", "Reset password link is invalid or it has expired.") )
       |> redirect(to: "/")
       |> halt()
     end

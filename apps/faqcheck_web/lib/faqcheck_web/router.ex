@@ -45,8 +45,14 @@ defmodule FaqcheckWeb.Router do
     pipe_through :browser
     get "/", PageController, :index
     get "/help", HelpController, :index
-    get "/manage", ManageController, :index
     get "/search", SearchController, :index
+
+    scope "/" do
+      pipe_through :require_authenticated_user
+
+      get "/manage", ManageController, :index
+    end
+
 
     ## Authentication routes
     scope "/user" do

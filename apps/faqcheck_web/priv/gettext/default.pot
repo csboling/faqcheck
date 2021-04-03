@@ -191,6 +191,7 @@ msgid "What is this website?"
 msgstr ""
 
 #, elixir-format
+#: lib/faqcheck_web/templates/user_reset_password/new.html.eex:4
 #: lib/faqcheck_web/templates/user_session/new.html.eex:10
 msgid "Email"
 msgstr ""
@@ -203,4 +204,31 @@ msgstr ""
 #, elixir-format
 #: lib/faqcheck_web/templates/user_session/new.html.eex:13
 msgid "Password"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/layout/app.html.eex:35
+msgid "%{name} home page"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_confirmation_controller.ex:22
+msgid "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_reset_password_controller.ex:39
+#: lib/faqcheck_web/controllers/user_reset_password_controller.ex:39
+msgid "Password reset successfully."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_confirmation_controller.ex:34
+msgid "User confirmed successfully."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_registration_controller.ex:23
+#: lib/faqcheck_web/controllers/user_registration_controller.ex:23
+msgid "User created successfully."
 msgstr ""

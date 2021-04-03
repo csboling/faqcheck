@@ -1,6 +1,7 @@
 defmodule FaqcheckWeb.UserAuth do
   import Plug.Conn
   import Phoenix.Controller
+  import FaqcheckWeb.Gettext
 
   alias Faqcheck.Accounts
   alias FaqcheckWeb.Router.Helpers, as: Routes
@@ -132,7 +133,7 @@ defmodule FaqcheckWeb.UserAuth do
       conn
     else
       conn
-      |> put_flash(:error, "You must log in to access this page.")
+      |> put_flash(:error, dgettext("errors", "You must log in to access this page."))
       |> maybe_store_return_to()
       |> redirect(to: Routes.user_session_path(conn, :new, conn.assigns[:locale]))
       |> halt()

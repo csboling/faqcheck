@@ -5,24 +5,28 @@
 
 <section class="row">
   <article class="column">
-    <h2><%= gettext "Resources" %></h2>
+    <h2><%= gettext "Find information" %></h2>
     <ul>
       <li>
         <%= link gettext("Search documents"), to: Routes.search_path(@conn, :index, @locale) %>
       </li>
+    </ul>
+
+    <h2><%= gettext "Add information" %></h2>
+    <ul>
       <li>
         <%= link gettext("Manage documents"), to: Routes.manage_path(@conn, :index, @locale) %>
       </li>
     </ul>
   </article>
   <article class="column">
-    <h2><%= gettext "Help" %></h2>
+    <h2><%= gettext "Help using this site" %></h2>
     <ul>
       <li>
         <%= link gettext("What is this website?"), to: Routes.help_path(@conn, :index, @locale) <> "/#purpose" %>
       </li>
       <li>
-        <%= link gettext("How do I find documents?"), to: Routes.help_path(@conn, :index, @locale) <> "/#searching" %>
+        <%= link gettext("How can I search for information?"), to: Routes.help_path(@conn, :index, @locale) <> "/#searching" %>
       </li>
       <li>
         <%= link gettext("How do I manage available documents?"), to: Routes.help_path(@conn, :index, @locale) <> "/#managing" %>

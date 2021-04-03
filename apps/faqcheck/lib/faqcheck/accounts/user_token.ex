@@ -1,5 +1,7 @@
 defmodule Faqcheck.Accounts.UserToken do
   use Ecto.Schema
+  @timestamps_opts [type: :utc_datetime]
+
   import Ecto.Query
 
   @hash_algorithm :sha256
