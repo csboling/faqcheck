@@ -10,13 +10,13 @@ defmodule FaqcheckWeb.UserRegistrationController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{"user" => user_params, "locale" => locale}) do
     case Accounts.register_user(user_params) do
-      {:ok, user} ->
+      {:ok, %{"model": user}} ->
         {:ok, _} =
           Accounts.deliver_user_confirmation_instructions(
             user,
-            &Routes.user_confirmation_url(conn, :confirm, &1)
+            &Routes.user_confirmation_url(conn, :confirm, locale, &1)
           )
 
         conn

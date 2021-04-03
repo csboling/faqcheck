@@ -12,6 +12,9 @@ defmodule Referrals.Facility do
     many_to_many :contacts, Referrals.Contact,
       join_through: Referrals.Affiliation
 
+    belongs_to :first_version, PaperTrail.Version
+    belongs_to :current_version, PaperTrail.Version, on_replace: :update
+
     timestamps()
   end
 end

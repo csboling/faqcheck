@@ -9,6 +9,9 @@ defmodule Faqcheck.Accounts.User do
     field :hashed_password, :string
     field :confirmed_at, :naive_datetime
 
+    belongs_to :first_version, PaperTrail.Version
+    belongs_to :current_version, PaperTrail.Version, on_replace: :update
+
     timestamps()
   end
 

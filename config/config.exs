@@ -37,7 +37,8 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :paper_trail, repo: Faqcheck.Repo
+config :paper_trail, repo: Faqcheck.Repo, strict_mode: true,
+  originator: [name: :user, model: Faqcheck.Accounts.User]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
