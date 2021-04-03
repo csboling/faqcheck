@@ -1,9 +1,9 @@
-<h1>Register</h1>
+<h1><%= gettext "Register" %></h1>
 
-<%= form_for @changeset, Routes.user_registration_path(@conn, :create), fn f -> %>
+<%= form_for @changeset, Routes.user_registration_path(@conn, :create, @locale), fn f -> %>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+      <p><%= dgettext "errors", "Oops, something went wrong! Please check the errors below." %></p>
     </div>
   <% end %>
 
@@ -16,11 +16,11 @@
   <%= error_tag f, :password %>
 
   <div>
-    <%= submit "Register" %>
+    <%= submit gettext("Register") %>
   </div>
 <% end %>
 
 <p>
-  <%= link "Log in", to: Routes.user_session_path(@conn, :new) %> |
-  <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new) %>
+  <%= link "Log in", to: Routes.user_session_path(@conn, :new, @locale) %> |
+  <%= link "Forgot your password?", to: Routes.user_reset_password_path(@conn, :new, @locale) %>
 </p>

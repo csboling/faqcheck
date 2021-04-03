@@ -32,12 +32,12 @@ defmodule FaqcheckWeb.UserResetPasswordController do
 
   # Do not log in the user after reset password to avoid a
   # leaked token giving the user access to the account.
-  def update(conn, %{"user" => user_params}) do
+  def update(conn, %{"user" => user_params, "locale" => locale}) do
     case Accounts.reset_user_password(conn.assigns.user, user_params) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Password reset successfully.")
-        |> redirect(to: Routes.user_session_path(conn, :new))
+        |> redirect(to: Routes.user_session_path(conn, :new, locale))
 
       {:error, changeset} ->
         render(conn, "edit.html", changeset: changeset)

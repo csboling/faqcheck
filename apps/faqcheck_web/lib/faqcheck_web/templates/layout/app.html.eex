@@ -32,7 +32,7 @@
           </ul>
           <%= render "_user_menu.html", assigns %>
         </nav>
-        <span><a href="<%= lang_link [] %>">Faqcheck</a></span>
+        <span><%= link gettext("%{name} home page", name: "Faqcheck"), to: lang_link([]) %></span>
       </section>
     </header>
     <main role="main" class="container locale-<%= @locale %>">

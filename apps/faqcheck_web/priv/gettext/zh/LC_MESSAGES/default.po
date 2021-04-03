@@ -17,17 +17,17 @@ msgid "Manage hosted documents"
 msgstr "官理主机的单据"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/manage/index.html.eex:9
+#: lib/faqcheck_web/templates/manage/index.html.eex:16
 msgid "Refer to a spreadsheet on the web"
 msgstr "参考网络上的电子表格"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/manage/index.html.eex:10
+#: lib/faqcheck_web/templates/manage/index.html.eex:17
 msgid "Refer to another %{name} instance"
 msgstr "参考另一个%{name}的实例"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/manage/index.html.eex:8
+#: lib/faqcheck_web/templates/manage/index.html.eex:15
 msgid "Upload a spreadsheet"
 msgstr "上传电子表格"
 
@@ -37,32 +37,29 @@ msgid "Welcome to %{name}!"
 msgstr "欢迎来到%{name}!"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:3
-msgid "A free system for collecting and rating frequently asked questions"
-msgstr ""
-
-#, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:16
+#: lib/faqcheck_web/templates/help/index.html.eex:3
+#: lib/faqcheck_web/templates/page/index.html.eex:19
 msgid "Help"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:34
+#: lib/faqcheck_web/templates/page/index.html.eex:40
 msgid "How can I help improve %{name}?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:28
+#: lib/faqcheck_web/templates/page/index.html.eex:34
 msgid "How can I set up my own %{name} server?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:22
+#: lib/faqcheck_web/templates/page/index.html.eex:25
 msgid "How do I find documents?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:25
+#: lib/faqcheck_web/templates/manage/index.html.eex:12
+#: lib/faqcheck_web/templates/page/index.html.eex:28
 msgid "How do I manage available documents?"
 msgstr ""
 
@@ -72,7 +69,7 @@ msgid "LANGUAGE_NAME"
 msgstr "中文"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:11
+#: lib/faqcheck_web/templates/page/index.html.eex:14
 msgid "Manage documents"
 msgstr "官理主机的单据"
 
@@ -82,16 +79,129 @@ msgid "Resources"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:19
-msgid "What is this?"
-msgstr ""
-
-#, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:31
+#: lib/faqcheck_web/templates/page/index.html.eex:37
 msgid "Where can I find technical information about %{name}?"
 msgstr ""
 
 #, elixir-format
 #: lib/faqcheck_web/templates/search/index.html.eex:3
 msgid "Search"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:3
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:23
+msgid "Change email"
+msgstr "改变电子邮件"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:27
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:51
+msgid "Change password"
+msgstr "改变密码"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_reset_password/edit.html.eex:14
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:42
+msgid "Confirm new password"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/manage/index.html.eex:11
+msgid "For more information, see this help page: "
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_reset_password/new.html.eex:1
+#: lib/faqcheck_web/templates/user_session/new.html.eex:26
+msgid "Forgot your password?"
+msgstr "忘记了你的密码吗?"
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:3
+msgid "Free software for managing question-and-answer pages"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:31
+msgid "How can I use this data in a chatbot or other application?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_session/new.html.eex:16
+msgid "Keep me logged in for 60 days"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_confirmation/new.html.eex:14
+#: lib/faqcheck_web/templates/user_reset_password/edit.html.eex:25 lib/faqcheck_web/templates/user_reset_password/new.html.eex:14
+#: lib/faqcheck_web/templates/user_session/new.html.eex:1 lib/faqcheck_web/templates/user_session/new.html.eex:20
+msgid "Log in"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_reset_password/edit.html.eex:10
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:38
+msgid "New password"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_confirmation/new.html.eex:13
+#: lib/faqcheck_web/templates/user_registration/new.html.eex:1 lib/faqcheck_web/templates/user_registration/new.html.eex:19
+#: lib/faqcheck_web/templates/user_reset_password/edit.html.eex:24 lib/faqcheck_web/templates/user_reset_password/new.html.eex:13
+#: lib/faqcheck_web/templates/user_session/new.html.eex:25
+msgid "Register"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_confirmation/new.html.eex:1
+#: lib/faqcheck_web/templates/user_confirmation/new.html.eex:8
+msgid "Resend confirmation instructions"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_reset_password/edit.html.eex:1
+#: lib/faqcheck_web/templates/user_reset_password/edit.html.eex:19
+msgid "Reset password"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:11
+msgid "Search documents"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_reset_password/new.html.eex:8
+msgid "Send instructions to reset password"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:1
+msgid "Settings"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/manage/index.html.eex:8
+msgid "This page allows you to add new documents to %{name}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/help/index.html.eex:4
+#: lib/faqcheck_web/templates/page/index.html.eex:22
+msgid "What is this website?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_session/new.html.eex:10
+msgid "Email"
+msgstr "电子邮件"
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_session_controller.ex:23
+msgid "Logged out successfully."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_session/new.html.eex:13
+msgid "Password"
 msgstr ""
