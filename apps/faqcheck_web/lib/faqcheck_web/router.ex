@@ -36,9 +36,6 @@ defmodule FaqcheckWeb.Router do
   scope "/", FaqcheckWeb do
     pipe_through :browser
     get "/", PageController, :dummy
-    get "/help", HelpController, :dummy
-    get "/manage", ManageController, :dummy
-    get "/search", SearchController, :dummy
   end
 
   scope "/:locale", FaqcheckWeb do
