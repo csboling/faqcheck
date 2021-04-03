@@ -30,6 +30,7 @@
               </li>
             <% end %>
           </ul>
+          <%= render "_user_menu.html", assigns %>
         </nav>
         <span><a href="<%= lang_link [] %>">Faqcheck</a></span>
       </section>
