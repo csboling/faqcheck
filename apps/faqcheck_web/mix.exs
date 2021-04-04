@@ -51,6 +51,7 @@ defmodule FaqcheckWeb.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:set_locale, "~> 0.2.9"},
       {:csv, "~> 2.4.1"},
+      {:sobelow, "~> 0.11.1", only: :dev},
     ]
   end
 
