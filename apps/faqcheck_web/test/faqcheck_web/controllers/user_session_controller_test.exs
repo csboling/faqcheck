@@ -9,7 +9,7 @@ defmodule FaqcheckWeb.UserSessionControllerTest do
 
   describe "GET /users/log_in" do
     test "renders log in page", %{conn: conn} do
-      conn = get(conn, Routes.user_session_path(conn, :new))
+      conn = get(conn, Routes.user_session_path(conn, :new, "en"))
       response = html_response(conn, 200)
       assert response =~ "<h1>Log in</h1>"
       assert response =~ "Log in</a>"
@@ -17,7 +17,7 @@ defmodule FaqcheckWeb.UserSessionControllerTest do
     end
 
     test "redirects if already logged in", %{conn: conn, user: user} do
-      conn = conn |> log_in_user(user) |> get(Routes.user_session_path(conn, :new))
+      conn = conn |> log_in_user(user) |> get(Routes.user_session_path(conn, :new, "en"))
       assert redirected_to(conn) == "/"
     end
   end
@@ -25,7 +25,7 @@ defmodule FaqcheckWeb.UserSessionControllerTest do
   describe "POST /users/log_in" do
     test "logs the user in", %{conn: conn, user: user} do
       conn =
-        post(conn, Routes.user_session_path(conn, :create), %{
+        post(conn, Routes.user_session_path(conn, :create, "en"), %{
           "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
 
@@ -33,16 +33,16 @@ defmodule FaqcheckWeb.UserSessionControllerTest do
       assert redirected_to(conn) =~ "/"
 
       # Now do a logged in request and assert on the menu
-      conn = get(conn, "/")
+      conn = get(conn, "/en")
       response = html_response(conn, 200)
       assert response =~ user.email
-      assert response =~ "Settings</a>"
+      assert response =~ "Account settings</a>"
       assert response =~ "Log out</a>"
     end
 
     test "logs the user in with remember me", %{conn: conn, user: user} do
       conn =
-        post(conn, Routes.user_session_path(conn, :create), %{
+        post(conn, Routes.user_session_path(conn, :create, "en"), %{
           "user" => %{
             "email" => user.email,
             "password" => valid_user_password(),
@@ -58,7 +58,7 @@ defmodule FaqcheckWeb.UserSessionControllerTest do
       conn =
         conn
         |> init_test_session(user_return_to: "/foo/bar")
-        |> post(Routes.user_session_path(conn, :create), %{
+        |> post(Routes.user_session_path(conn, :create, "en"), %{
           "user" => %{
             "email" => user.email,
             "password" => valid_user_password()
@@ -70,7 +70,7 @@ defmodule FaqcheckWeb.UserSessionControllerTest do
 
     test "emits error message with invalid credentials", %{conn: conn, user: user} do
       conn =
-        post(conn, Routes.user_session_path(conn, :create), %{
+        post(conn, Routes.user_session_path(conn, :create, "en"), %{
           "user" => %{"email" => user.email, "password" => "invalid_password"}
         })
 
@@ -82,14 +82,14 @@ defmodule FaqcheckWeb.UserSessionControllerTest do
 
   describe "DELETE /users/log_out" do
     test "logs the user out", %{conn: conn, user: user} do
-      conn = conn |> log_in_user(user) |> delete(Routes.user_session_path(conn, :delete))
+      conn = conn |> log_in_user(user) |> delete(Routes.user_session_path(conn, :delete, "en"))
       assert redirected_to(conn) == "/"
       refute get_session(conn, :user_token)
       assert get_flash(conn, :info) =~ "Logged out successfully"
     end
 
     test "succeeds even if the user is not logged in", %{conn: conn} do
-      conn = delete(conn, Routes.user_session_path(conn, :delete))
+      conn = delete(conn, Routes.user_session_path(conn, :delete, "en"))
       assert redirected_to(conn) == "/"
       refute get_session(conn, :user_token)
       assert get_flash(conn, :info) =~ "Logged out successfully"

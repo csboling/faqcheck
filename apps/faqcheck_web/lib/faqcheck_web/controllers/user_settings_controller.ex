@@ -19,7 +19,7 @@ defmodule FaqcheckWeb.UserSettingsController do
         Accounts.deliver_update_email_instructions(
           applied_user,
           user.email,
-          &Routes.user_settings_url(conn, :confirm_email, &1)
+          &Routes.user_settings_url(conn, :confirm_email, locale, &1)
         )
 
         conn

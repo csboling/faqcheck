@@ -13,6 +13,7 @@ config :faqcheck, Faqcheck.Repo,
   password: "postgres",
   database: "faqcheck_test#{System.get_env("MIX_TEST_PARTITION")}",
   hostname: "localhost",
+  port: 5432,
   pool: Ecto.Adapters.SQL.Sandbox
 
 # We don't run a server during test. If one is required,

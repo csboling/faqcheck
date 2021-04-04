@@ -11,7 +11,7 @@ defmodule FaqcheckWeb.UserConfirmationControllerTest do
 
   describe "GET /users/confirm" do
     test "renders the confirmation page", %{conn: conn} do
-      conn = get(conn, Routes.user_confirmation_path(conn, :new))
+      conn = get(conn, Routes.user_confirmation_path(conn, :new, "en"))
       response = html_response(conn, 200)
       assert response =~ "<h1>Resend confirmation instructions</h1>"
     end
@@ -21,7 +21,7 @@ defmodule FaqcheckWeb.UserConfirmationControllerTest do
     @tag :capture_log
     test "sends a new confirmation token", %{conn: conn, user: user} do
       conn =
-        post(conn, Routes.user_confirmation_path(conn, :create), %{
+        post(conn, Routes.user_confirmation_path(conn, :create, "en"), %{
           "user" => %{"email" => user.email}
         })
 
@@ -34,7 +34,7 @@ defmodule FaqcheckWeb.UserConfirmationControllerTest do
       Repo.update!(Accounts.User.confirm_changeset(user))
 
       conn =
-        post(conn, Routes.user_confirmation_path(conn, :create), %{
+        post(conn, Routes.user_confirmation_path(conn, :create, "en"), %{
           "user" => %{"email" => user.email}
         })
 
@@ -45,7 +45,7 @@ defmodule FaqcheckWeb.UserConfirmationControllerTest do
 
     test "does not send confirmation token if email is invalid", %{conn: conn} do
       conn =
-        post(conn, Routes.user_confirmation_path(conn, :create), %{
+        post(conn, Routes.user_confirmation_path(conn, :create, "en"), %{
           "user" => %{"email" => "unknown@example.com"}
         })
 
@@ -62,7 +62,7 @@ defmodule FaqcheckWeb.UserConfirmationControllerTest do
           Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 
-      conn = get(conn, Routes.user_confirmation_path(conn, :confirm, token))
+      conn = get(conn, Routes.user_confirmation_path(conn, :confirm, "en", token))
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :info) =~ "User confirmed successfully"
       assert Accounts.get_user!(user.id).confirmed_at
@@ -70,7 +70,7 @@ defmodule FaqcheckWeb.UserConfirmationControllerTest do
       assert Repo.all(Accounts.UserToken) == []
 
       # When not logged in
-      conn = get(conn, Routes.user_confirmation_path(conn, :confirm, token))
+      conn = get(conn, Routes.user_confirmation_path(conn, :confirm, "en", token))
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :error) =~ "User confirmation link is invalid or it has expired"
 
@@ -78,14 +78,14 @@ defmodule FaqcheckWeb.UserConfirmationControllerTest do
       conn =
         build_conn()
         |> log_in_user(user)
-        |> get(Routes.user_confirmation_path(conn, :confirm, token))
+        |> get(Routes.user_confirmation_path(conn, :confirm, "en", token))
 
       assert redirected_to(conn) == "/"
       refute get_flash(conn, :error)
     end
 
     test "does not confirm email with invalid token", %{conn: conn, user: user} do
-      conn = get(conn, Routes.user_confirmation_path(conn, :confirm, "oops"))
+      conn = get(conn, Routes.user_confirmation_path(conn, :confirm, "en", "oops"))
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :error) =~ "User confirmation link is invalid or it has expired"
       refute Accounts.get_user!(user.id).confirmed_at

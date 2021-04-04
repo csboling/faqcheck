@@ -20,7 +20,7 @@ defmodule Faqcheck.AccountsFixtures do
       |> valid_user_attributes()
       |> Faqcheck.Accounts.register_user()
 
-    user
+    user.model
   end
 
   def extract_user_token(fun) do

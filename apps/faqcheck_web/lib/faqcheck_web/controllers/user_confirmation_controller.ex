@@ -7,11 +7,11 @@ defmodule FaqcheckWeb.UserConfirmationController do
     render(conn, "new.html")
   end
 
-  def create(conn, %{"user" => %{"email" => email}}) do
+  def create(conn, %{"user" => %{"email" => email}, "locale" => locale}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_confirmation_instructions(
         user,
-        &Routes.user_confirmation_url(conn, :confirm, &1)
+        &Routes.user_confirmation_url(conn, :confirm, locale, &1)
       )
     end
 

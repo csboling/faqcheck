@@ -9,11 +9,11 @@ defmodule FaqcheckWeb.UserResetPasswordController do
     render(conn, "new.html")
   end
 
-  def create(conn, %{"user" => %{"email" => email}}) do
+  def create(conn, %{"user" => %{"email" => email}, "locale" => locale}) do
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_reset_password_instructions(
         user,
-        &Routes.user_reset_password_url(conn, :edit, &1)
+        &Routes.user_reset_password_url(conn, :edit, locale, &1)
       )
     end
 

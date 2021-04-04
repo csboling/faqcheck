@@ -5,7 +5,7 @@ defmodule FaqcheckWeb.UserRegistrationControllerTest do
 
   describe "GET /users/register" do
     test "renders registration page", %{conn: conn} do
-      conn = get(conn, Routes.user_registration_path(conn, :new))
+      conn = get(conn, Routes.user_registration_path(conn, :new, "en"))
       response = html_response(conn, 200)
       assert response =~ "<h1>Register</h1>"
       assert response =~ "Log in</a>"
@@ -13,7 +13,7 @@ defmodule FaqcheckWeb.UserRegistrationControllerTest do
     end
 
     test "redirects if already logged in", %{conn: conn} do
-      conn = conn |> log_in_user(user_fixture()) |> get(Routes.user_registration_path(conn, :new))
+      conn = conn |> log_in_user(user_fixture()) |> get(Routes.user_registration_path(conn, :new, "en"))
       assert redirected_to(conn) == "/"
     end
   end
@@ -24,7 +24,7 @@ defmodule FaqcheckWeb.UserRegistrationControllerTest do
       email = unique_user_email()
 
       conn =
-        post(conn, Routes.user_registration_path(conn, :create), %{
+        post(conn, Routes.user_registration_path(conn, :create, "en"), %{
           "user" => valid_user_attributes(email: email)
         })
 
@@ -32,16 +32,16 @@ defmodule FaqcheckWeb.UserRegistrationControllerTest do
       assert redirected_to(conn) =~ "/"
 
       # Now do a logged in request and assert on the menu
-      conn = get(conn, "/")
+      conn = get(conn, "/en")
       response = html_response(conn, 200)
       assert response =~ email
-      assert response =~ "Settings</a>"
+      assert response =~ "Account settings</a>"
       assert response =~ "Log out</a>"
     end
 
     test "render errors for invalid data", %{conn: conn} do
       conn =
-        post(conn, Routes.user_registration_path(conn, :create), %{
+        post(conn, Routes.user_registration_path(conn, :create, "en"), %{
           "user" => %{"email" => "with spaces", "password" => "too short"}
         })
 

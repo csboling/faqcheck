@@ -132,10 +132,11 @@ defmodule FaqcheckWeb.UserAuth do
     if conn.assigns[:current_user] do
       conn
     else
+      locale = conn.assigns[:locale] || Application.get_env(:faqcheck_web, FaqcheckWeb.Gettext)[:default_locale]
       conn
       |> put_flash(:error, dgettext("errors", "You must log in to access this page."))
       |> maybe_store_return_to()
-      |> redirect(to: Routes.user_session_path(conn, :new, conn.assigns[:locale]))
+      |> redirect(to: Routes.user_session_path(conn, :new, locale))
       |> halt()
     end
   end
