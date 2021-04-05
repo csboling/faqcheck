@@ -22,6 +22,6 @@ defmodule Faqcheck.Referrals.Address do
     addr
     |> cast(attrs, [:street_address])
     |> validate_required([:street_address])
-    |> Faqcheck.Repo.attach_versions()
+    |> Faqcheck.Repo.versions()
   end
 end

@@ -28,7 +28,7 @@ defmodule Faqcheck.Referrals.Facility do
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:address)
     |> validate_required([:name, :description])
-    |> Faqcheck.Repo.attach_versions()
+    |> Faqcheck.Repo.versions()
   end
 
   # defp parse_address(params) do

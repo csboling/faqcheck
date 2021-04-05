@@ -33,7 +33,10 @@ defmodule Faqcheck.Referrals do
       %Organization{}
 
   """
-  def get_organization!(id), do: Repo.get!(Organization, id)
+  def get_organization!(id),
+    do: Repo.one from org in Organization,
+      where: org.id == ^id,
+      preload: [facilities: :address]
 
   @doc """
   Creates a organization.
@@ -66,7 +69,9 @@ defmodule Faqcheck.Referrals do
 
   """
   def update_organization(%Organization{} = organization, attrs) do
-    raise "TODO"
+    organization
+    |> Organization.changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """

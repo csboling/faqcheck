@@ -7,42 +7,46 @@ defmodule Faqcheck.Repo do
   import Ecto.Changeset
   import PaperTrail.Serializer
 
-  def attach_versions(
-        changeset,
-        options \\ [
-          origin: nil,
-          meta: nil,
-          originator: nil,
-          prefix: nil,
-          ecto_options: []
-        ]
-      ) do
-    ecto_options = options[:ecto_options] || []
+  def versions(changeset, options \\ []) do
+    changeset |> prepare_changes(fn cs ->
+      case cs.action do
+        :insert -> attach_versions(cs, options)
+        :update -> update_versions(cs, options)
+        _ -> changeset
+      end
+    end)
+  end
 
-    prepare_changes(
-      changeset,
-      fn cs ->
-        version_id = get_sequence_id("versions") + 1
+  defp attach_versions(changeset, options) do
+    version_id = get_sequence_id("versions") + 1
+    changeset_data =
+      Map.get(changeset, :data, changeset)
+      |> Map.merge(%{
+        id: get_sequence_id(changeset) + 1,
+        first_version_id: version_id,
+        current_version_id: version_id
+      })
+    initial_version = make_version_struct %{event: "insert"},
+      changeset_data, options
 
-        changeset_data =
-          Map.get(cs, :data, cs)
-          |> Map.merge(%{
-            id: get_sequence_id(cs) + 1,
-            first_version_id: version_id,
-            current_version_id: version_id
-          })
+    changeset.repo.insert(initial_version, options)
+    changeset |> change(%{
+      first_version_id: version_id,
+      current_version_id: version_id
+    })
+  end
 
-        initial_version = make_version_struct(%{event: "insert"}, changeset_data, options)
-        cs.repo.insert(initial_version, ecto_options)
+  defp update_versions(changeset, options) do
+    version_data =
+      changeset.data
+      |> Map.merge(%{
+        current_version_id: get_sequence_id("versions")
+      })
+    target_changeset = changeset |> Map.merge(%{data: version_data})
+    target_version = make_version_struct %{event: "update"},
+      target_changeset, options
 
-        ret = change(
-          cs,
-          %{
-            first_version_id: version_id,
-            current_version_id: version_id
-          })
-
-        ret
-      end)
+    changeset.repo.insert(target_version)
+    changeset |> change(%{current_version_id: version_data.current_version_id})
   end
 end
