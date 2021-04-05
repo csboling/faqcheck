@@ -1,4 +1,4 @@
-defmodule Referrals.OperatingHours do
+defmodule Faqcheck.Referrals.OperatingHours do
   use Ecto.Schema
   @timestamps_opts [type: :utc_datetime]
 
@@ -8,11 +8,11 @@ defmodule Referrals.OperatingHours do
     field :valid_from, :utc_datetime
     field :valid_to, :utc_datetime
 
-    belongs_to :facility, Referrals.Facility
+    timestamps()
+
+    belongs_to :facility, Faqcheck.Referrals.Facility
 
     belongs_to :first_version, PaperTrail.Version
     belongs_to :current_version, PaperTrail.Version, on_replace: :update
-
-    timestamps()
   end
 end

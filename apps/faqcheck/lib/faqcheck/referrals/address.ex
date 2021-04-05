@@ -1,6 +1,8 @@
-defmodule Referrals.Address do
+defmodule Faqcheck.Referrals.Address do
   use Ecto.Schema
   @timestamps_opts [type: :utc_datetime]
+
+  import Ecto.Changeset
 
   schema "addresses" do
     field :street_address, :string
@@ -8,11 +10,18 @@ defmodule Referrals.Address do
     field :country, :string
     field :osm_way, :integer
 
-    belongs_to :facility, Referrals.Facility
+    timestamps()
+
+    belongs_to :facility, Faqcheck.Referrals.Facility
 
     belongs_to :first_version, PaperTrail.Version
     belongs_to :current_version, PaperTrail.Version, on_replace: :update
+  end
 
-    timestamps()
+  def changeset(addr, attrs) do
+    addr
+    |> cast(attrs, [:street_address])
+    |> validate_required([:street_address])
+    |> Faqcheck.Repo.attach_versions()
   end
 end

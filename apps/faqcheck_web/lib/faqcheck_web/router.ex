@@ -52,6 +52,8 @@ defmodule FaqcheckWeb.Router do
       pipe_through :require_authenticated_user
 
       get "/manage", ManageController, :index
+
+      resources "/organizations", OrganizationController
     end
 
 
