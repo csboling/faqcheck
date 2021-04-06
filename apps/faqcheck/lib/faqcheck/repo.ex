@@ -20,7 +20,7 @@ defmodule Faqcheck.Repo do
   defp attach_versions(changeset, options) do
     version_id = get_sequence_id("versions") + 1
     changeset_data =
-      Map.get(changeset, :data, changeset)
+      changeset.data
       |> Map.merge(%{
         id: get_sequence_id(changeset) + 1,
         first_version_id: version_id,

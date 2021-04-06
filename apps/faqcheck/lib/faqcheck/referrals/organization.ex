@@ -14,6 +14,9 @@ defmodule Faqcheck.Referrals.Organization do
 
     belongs_to :first_version, PaperTrail.Version
     belongs_to :current_version, PaperTrail.Version, on_replace: :update
+    has_many :versions, PaperTrail.Version,
+      foreign_key: :item_id, where: [item_type: "Organization"],
+      preload_order: [desc: :inserted_at]
   end
 
   def changeset(org, attrs) do

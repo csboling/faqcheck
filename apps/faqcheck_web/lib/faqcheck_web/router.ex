@@ -53,7 +53,9 @@ defmodule FaqcheckWeb.Router do
 
       get "/manage", ManageController, :index
 
-      resources "/organizations", OrganizationController
+      resources "/organizations", OrganizationController do
+	get "/history", OrganizationController, :history, as: :history
+      end
     end
 
 

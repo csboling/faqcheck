@@ -1,11 +1,11 @@
-<h1>Listing Organizations</h1>
+<h1><%= gettext "All organizations" %></h1>
 
 <table>
   <thead>
     <tr>
       <th><%= gettext "Name" %></th>
       <th><%= gettext "Description" %></th>
-
+      <th><%= gettext "Last updated" %></th>
       <th></th>
     </tr>
   </thead>
@@ -14,9 +14,10 @@
     <tr>
       <td><%= organization.name %></td>
       <td><%= organization.description %></td>
+      <td><%= format_timestamp(organization.updated_at, "MST7MDT") %></td>
 
       <td>
-        <span><%= link gettext("Show"), to: Routes.organization_path(@conn, :show, @locale, organization) %></span>
+        <span><%= link gettext("Details"), to: Routes.organization_path(@conn, :show, @locale, organization) %></span>
         <span><%= link gettext("Edit"), to: Routes.organization_path(@conn, :edit, @locale, organization) %></span>
         <span><%= link gettext("Delete"), to: Routes.organization_path(@conn, :delete, @locale, organization), method: :delete, data: [confirm: gettext("Are you sure?")] %></span>
       </td>

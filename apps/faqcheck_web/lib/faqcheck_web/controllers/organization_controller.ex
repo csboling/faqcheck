@@ -9,6 +9,16 @@ defmodule FaqcheckWeb.OrganizationController do
     render(conn, "index.html", organizations: organizations)
   end
 
+  def show(conn, %{"id" => id}) do
+    organization = Referrals.get_organization!(id)
+    render(conn, "show.html", organization: organization)
+  end
+
+  def history(conn, %{"organization_id" => id}) do
+    organization = Referrals.organization_history(id)
+    render(conn, "history.html", organization: organization)
+  end
+
   def new(conn, _params) do
     changeset = Referrals.change_organization(
       %Organization{
@@ -29,11 +39,6 @@ defmodule FaqcheckWeb.OrganizationController do
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
-  end
-
-  def show(conn, %{"id" => id}) do
-    organization = Referrals.get_organization!(id)
-    render(conn, "show.html", organization: organization)
   end
 
   def edit(conn, %{"id" => id}) do

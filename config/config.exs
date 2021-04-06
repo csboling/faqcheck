@@ -29,6 +29,9 @@ config :faqcheck_web, FaqcheckWeb.Endpoint,
   pubsub_server: Faqcheck.PubSub,
   live_view: [signing_salt: "xetqEXNh"]
 
+
+config :elixir, :time_zone_database, Tz.TimeZoneDatabase
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
