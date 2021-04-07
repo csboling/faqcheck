@@ -13,4 +13,9 @@ defmodule FaqcheckWeb.LayoutView do
   def lang_link_self(conn, lang) do
     lang_link lang, tl(conn.path_info)
   end
+
+  def render_version() do
+    version = Application.get_env(:faqcheck_web, :version)
+    "#{version.date} #{version.gitsha}"
+  end
 end

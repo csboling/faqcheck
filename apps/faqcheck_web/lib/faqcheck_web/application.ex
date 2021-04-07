@@ -4,8 +4,13 @@ defmodule FaqcheckWeb.Application do
   @moduledoc false
 
   use Application
+  require Logger
 
   def start(_type, _args) do
+    version = load_version()
+    Logger.info("loaded app version: #{inspect(version)}")
+    Application.put_env(:faqcheck_web, :version, version)
+
     children = [
       # Start the Telemetry supervisor
       FaqcheckWeb.Telemetry,
@@ -26,5 +31,13 @@ defmodule FaqcheckWeb.Application do
   def config_change(changed, _new, removed) do
     FaqcheckWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  def load_version() do
+    [hash, date] = case File.read(Path.join([File.cwd!, "VERSION.txt"])) do
+      {:ok, data} -> data |> String.split("\n")
+      _ -> [nil, nil]
+    end
+    %{gitsha: hash, date: date}
   end
 end
