@@ -18,8 +18,7 @@ defmodule Faqcheck.Referrals do
   """
   def list_organizations do
     Repo.all from o in Organization,
-      join: f in assoc(o, :facilities),
-      preload: [facilities: f]
+      preload: [facilities: [:address, contacts: :hours]]
   end
 
   @doc """
