@@ -55,7 +55,7 @@
     <hr />
 
     <footer>
-      <%= render_version() %>
+      <p><%= gettext("Software version information:") <> " " <> render_version() %></p>
     </footer>
   </body>
 </html>

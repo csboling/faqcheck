@@ -33,7 +33,7 @@ defmodule Faqcheck.Referrals do
 
   """
   def get_organization!(id) do
-    Repo.one from org in Organization,
+    Repo.one! from org in Organization,
       where: org.id == ^id,
       preload: [facilities: :address]
   end
@@ -93,7 +93,8 @@ defmodule Faqcheck.Referrals do
 
   """
   def delete_organization(%Organization{} = organization) do
-    raise "TODO"
+    organization
+    |> Repo.delete()
   end
 
   @doc """
