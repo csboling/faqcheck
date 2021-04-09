@@ -6,6 +6,7 @@ defmodule Faqcheck.Referrals.Address do
 
   schema "addresses" do
     field :street_address, :string
+    field :locality, :string
     field :postcode, :string
     field :country, :string
     field :osm_way, :integer

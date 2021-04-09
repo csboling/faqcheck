@@ -26,14 +26,19 @@
       <td>
         <p><%= fac.description %></p>
 	<p>
-	  <%= fac.address.street_address %>
-	  <ul>
-            <%= for c <- fac.contacts do %>
-            <li><%= c.email %></li>
-            <li>%<= c.phone %></li>
-            <% end %>
-          </ul>
+          <%= fac.address.street_address %>
+          <br />
+          <%= fac.address.locality %>
+          <%= fac.address.postcode %>
         </p>
+	<%= if !Enum.empty?(fac.contacts) do %>
+	<ul>
+          <%= for c <- fac.contacts do %>
+          <li><%= c.email %></li>
+          <li>%<= c.phone %></li>
+          <% end %>
+        </ul>
+	<% end %>
 	<%= if !Enum.empty?(fac.hours) do %>
 	<table>
 	  <thead>
@@ -50,5 +55,13 @@
     <% end %>
   </tbody>
 </table>
+
+<p>
+  <%= gettext("Showing page %{current_page} out of %{total_pages}", current_page: @page.page_number, total_pages: @page.total_pages) %>
+  <br />
+  <%= gettext("%{page_size} items per page", page_size: @page.page_size) %>
+  <br />
+  <%= gettext("%{total_items} results in total", total_items: @page.total_entries) %>
+</p>
 
 <!-- <span><%= link gettext("New facility"), to: Routes.facility_path(@conn, :new, @locale) %></span> -->

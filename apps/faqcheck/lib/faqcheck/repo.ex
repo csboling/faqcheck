@@ -3,6 +3,7 @@ defmodule Faqcheck.Repo do
     otp_app: :faqcheck,
     adapter: Ecto.Adapters.Postgres,
     types: Faqcheck.PostgresTypes
+  use Scrivener, page_size: 10
 
   import Ecto.Changeset
   import PaperTrail.Serializer

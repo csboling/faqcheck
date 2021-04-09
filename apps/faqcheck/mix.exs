@@ -43,6 +43,7 @@ defmodule Faqcheck.MixProject do
       {:pbkdf2_elixir, "~> 1.3.0"},
       {:phoenix_pubsub, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
+      {:scrivener_ecto, "~> 2.7"},
     ]
   end
 

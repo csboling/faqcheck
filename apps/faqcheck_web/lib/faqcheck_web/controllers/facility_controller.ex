@@ -4,8 +4,8 @@ defmodule FaqcheckWeb.FacilityController do
   alias Faqcheck.Referrals
 
   def index(conn, _params) do
-    facilities = Referrals.list_facilities()
-    render(conn, "index.html", facilities: facilities)
+    page = Referrals.list_facilities(page: 1, page_size: 10)
+    render(conn, "index.html", facilities: page.entries, page: page)
   end
 
   def show(conn, %{"id" => id}) do
