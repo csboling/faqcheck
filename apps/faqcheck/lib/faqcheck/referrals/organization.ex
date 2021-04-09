@@ -2,6 +2,8 @@ defmodule Faqcheck.Referrals.Organization do
   use Ecto.Schema
   @timestamps_opts [type: :utc_datetime]
 
+  import Faqcheck.Schema
+
   import Ecto.Changeset
 
   schema "organizations" do
@@ -12,11 +14,7 @@ defmodule Faqcheck.Referrals.Organization do
 
     has_many :facilities, Faqcheck.Referrals.Facility
 
-    belongs_to :first_version, PaperTrail.Version
-    belongs_to :current_version, PaperTrail.Version, on_replace: :update
-    has_many :versions, PaperTrail.Version,
-      foreign_key: :item_id, where: [item_type: "Organization"],
-      preload_order: [desc: :inserted_at]
+    schema_versions()
   end
 
   def changeset(org, attrs) do

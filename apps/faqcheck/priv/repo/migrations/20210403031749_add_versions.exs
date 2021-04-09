@@ -20,7 +20,16 @@ defmodule Repo.Migrations.AddVersions do
     create index(:versions, [:event, :item_type])
     create index(:versions, [:item_type, :inserted_at])
 
-    for t <- [:organizations, :facilities, :contacts, :affiliations, :addresses, :users] do
+    versioned_tables = [
+      :addresses,
+      :affiliations,
+      :contacts,
+      :facilities,
+      :operating_hours,
+      :organizations,
+      :users,
+    ]
+    for t <- versioned_tables do
       alter table(t) do
         add :first_version_id, references(:versions), null: false
         add :current_version_id, references(:versions), null: false
@@ -28,6 +37,5 @@ defmodule Repo.Migrations.AddVersions do
       create unique_index(t, [:first_version_id])
       create unique_index(t, [:current_version_id])
     end
-
   end
 end

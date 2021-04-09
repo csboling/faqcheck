@@ -8,8 +8,5 @@ defmodule Faqcheck.Referrals.Contact do
     field :email, :string
 
     timestamps()
-
-    belongs_to :first_version, PaperTrail.Version
-    belongs_to :current_version, PaperTrail.Version, on_replace: :update
   end
 end

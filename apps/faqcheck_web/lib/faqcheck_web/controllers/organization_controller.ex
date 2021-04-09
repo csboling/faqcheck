@@ -14,9 +14,14 @@ defmodule FaqcheckWeb.OrganizationController do
     render(conn, "show.html", organization: organization)
   end
 
-  def history(conn, %{"organization_id" => id}) do
+  def history(conn, %{"organization_id" => id, "locale" => locale}) do
     organization = Referrals.organization_history(id)
-    render(conn, "history.html", organization: organization)
+    conn
+    |> put_view(FaqcheckWeb.HistoryView)
+    |> render(
+      "history.html",
+      resource: organization,
+      link: FaqcheckWeb.Router.Helpers.organization_path(conn, :show, locale, organization))
   end
 
   def new(conn, _params) do

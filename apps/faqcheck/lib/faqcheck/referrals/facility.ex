@@ -2,7 +2,7 @@ defmodule Faqcheck.Referrals.Facility do
   use Ecto.Schema
   @timestamps_opts [type: :utc_datetime]
 
-  require Logger
+  import Faqcheck.Schema
 
   import Ecto.Changeset
 
@@ -18,12 +18,10 @@ defmodule Faqcheck.Referrals.Facility do
     many_to_many :contacts, Faqcheck.Referrals.Contact,
       join_through: Faqcheck.Referrals.Affiliation
 
-    belongs_to :first_version, PaperTrail.Version
-    belongs_to :current_version, PaperTrail.Version, on_replace: :update
+    schema_versions()
   end
 
   def changeset(fac, attrs) do
-    Logger.info("facility changeset")
     fac
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:address)

@@ -1,6 +1,6 @@
 <h1><%= gettext "All organizations" %></h1>
 
-<h5><%= gettext "Organize by facilities instead" %></h5>
+<h5><%= link gettext("List facilities instead"), to: Routes.facility_path(@conn, :index, @locale)%></h5>
 
 <table>
   <thead>
@@ -8,18 +8,24 @@
       <th><%= gettext "Name" %></th>
       <th><%= gettext "Description" %></th>
       <th><%= gettext "Last updated" %></th>
-      <th><%= gettext "Actions" %></th>
     </tr>
   </thead>
   <tbody>
     <%= for org <- @organizations do %>
     <tr>
-      <td><%= org.name %></td>
+      <td>
+	<%= link org.name, to: Routes.organization_path(@conn, :show, @locale, org) %>
+	<br />
+	<%= gettext("Actions:") %>
+	<br />
+        <%= link gettext("Edit"), to: Routes.organization_path(@conn, :edit, @locale, org) %>,
+	<%= link gettext("Delete"), to: Routes.organization_path(@conn, :delete, @locale, org), method: :delete, data: [confirm: gettext("Are you sure?")] %>
+      </td>
       <td>
         <p><%= org.description %></p>
         <%= for fac <- org.facilities do %>
         <p>
-          <%= fac.name <> ":" %>
+          <%= link fac.name, to: Routes.facility_path(@conn, :show, @locale, fac) %>
 	  <br />
 	  <%= fac.address.street_address %>
 	  <ul>
@@ -32,11 +38,6 @@
         <% end %>
       </td>
       <td><%= link format_timestamp(org.updated_at, "MST7MDT"), to: Routes.organization_history_path(@conn, :history, @locale, org) %></td>
-      <td>
-        <p><%= link gettext("Details"), to: Routes.organization_path(@conn, :show, @locale, org) %></p>
-        <p><%= link gettext("Edit"), to: Routes.organization_path(@conn, :edit, @locale, org) %></p>
-        <p><%= link gettext("Delete"), to: Routes.organization_path(@conn, :delete, @locale, org), method: :delete, data: [confirm: gettext("Are you sure?")] %></p>
-      </td>
     </tr>
     <% end %>
   </tbody>

@@ -6,6 +6,7 @@ defmodule Faqcheck.Referrals do
   import Ecto.Query, warn: false
   alias Faqcheck.Repo
   alias Faqcheck.Referrals.Organization
+  alias Faqcheck.Referrals.Facility
 
   @doc """
   Returns the list of organizations.
@@ -108,5 +109,22 @@ defmodule Faqcheck.Referrals do
   """
   def change_organization(%Organization{} = organization, attrs \\ %{}) do
     Organization.changeset(organization, attrs)
+  end
+
+  def list_facilities do
+    Repo.all from f in Facility,
+      preload: [:address, :contacts, :hours, :organization]
+  end
+
+  def get_facility!(id) do
+    Repo.one! from fac in Facility,
+      where: fac.id == ^id,
+      preload: [:address, :organization]
+  end
+
+  def facility_history(id) do
+    Repo.one from fac in Facility,
+      where: fac.id == ^id,
+      preload: [versions: :user]
   end
 end

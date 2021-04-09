@@ -13,9 +13,6 @@ defmodule Faqcheck.Referrals.Address do
     timestamps()
 
     belongs_to :facility, Faqcheck.Referrals.Facility
-
-    belongs_to :first_version, PaperTrail.Version
-    belongs_to :current_version, PaperTrail.Version, on_replace: :update
   end
 
   def changeset(addr, attrs) do
