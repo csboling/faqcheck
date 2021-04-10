@@ -53,6 +53,13 @@ defmodule FaqcheckWeb do
     end
   end
 
+  def live_cmp do
+    quote do
+      use Phoenix.LiveComponent
+      unquote(view_helpers())
+    end
+  end
+
   def router do
     quote do
       use Phoenix.Router
@@ -82,6 +89,7 @@ defmodule FaqcheckWeb do
       import FaqcheckWeb.Gettext
       import FaqcheckWeb.LinkHelpers
       import FaqcheckWeb.Timezones
+      import FaqcheckWeb.FormHelpers
       alias FaqcheckWeb.Router.Helpers, as: Routes
     end
   end

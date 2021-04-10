@@ -6,7 +6,7 @@ defmodule Faqcheck.ReferralsTest do
   describe "organizations" do
     alias Faqcheck.Referrals.Organization
 
-    @valid_attrs %{description: "some description", name: "some name"}
+    @valid_attrs %{description: "some description", name: "some name", facilities: []}
     @update_attrs %{description: "some updated description", name: "some updated name"}
     @invalid_attrs %{description: nil, name: nil}
 
