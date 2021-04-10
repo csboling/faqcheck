@@ -2,13 +2,26 @@
 
 ## Developer setup
 
-- Install Erlang OTP >= 23.3
-- Install Elixir
+- Install Elixir + Erlang OTP >= 23.3, for example:
+  ```bash
+  sudo pacman -Syu elixir
+  ```
+- Install and set up postgres, for example:
+  ```bash
+  sudo pacman -Syu postgresql
+  sudo -iu postgres
+  initdb --locale=en_US.UTF-8 -E UTF8 -D /var/lib/postgres/data
+  exit
+  systemctl start postgresql.service
+  systemctl enable postgresql.service
+  sudo -iu postgres
+  createdb faqcheck_dev
+  ```
+
 - Set up postgres password in `config/dev.exs`
 - `mix ecto create`
 - `cd apps/faqcheck_web/assets`, then `npm install`
 - `mix phx.server`
-
 
 ## Accessibility
 
