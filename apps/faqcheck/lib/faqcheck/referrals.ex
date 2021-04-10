@@ -111,10 +111,11 @@ defmodule Faqcheck.Referrals do
     Organization.changeset(organization, attrs)
   end
 
-  def list_facilities(params) do
+  def list_facilities(opts \\ []) do
     query = from f in Facility,
+      order_by: [asc: f.id],
       preload: [:address, :contacts, :hours, :organization]
-    Repo.paginate(query, params)
+    Repo.paginate(query)
   end
 
   def get_facility!(id) do

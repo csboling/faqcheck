@@ -13,7 +13,7 @@
 	    <% end %>
 	  </ul>
     </nav>
-	<nav>
+    <nav>
       <ul>
         <%= for lang <- Gettext.known_locales(FaqcheckWeb.Gettext) do %>
           <li>

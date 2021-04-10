@@ -70,14 +70,18 @@ defmodule FaqcheckWeb.FacilitiesLive do
   def mount(%{"locale" => locale}, _session, socket) do
     {:ok,
      socket
-     |> assign(page: 1, page_size: 10, val: 0, locale: locale)
+     |> assign(page_size: 10, locale: locale)
      |> fetch(),
      temporary_assigns: [facilities: []]}
   end
 
-  defp fetch(%{assigns: %{page: page, page_size: page_size}} = socket) do
-    facilities = Referrals.list_facilities(page: page, page_size: page_size)
-    assign(socket, facilities: facilities)
+  defp fetch(%{
+    assigns: %{page_size: page_size}
+  } = socket) do
+    facilities = Referrals.list_facilities limit: page_size
+    assign socket,
+      facilities: facilities.entries,
+      after: facilities.metadata.after
   end
 
   def handle_event("load-more", _, %{assigns: assigns} = socket) do
