@@ -17,6 +17,9 @@
       <li>
         <%= link gettext("Manage documents"), to: Routes.manage_path(@conn, :index, @locale) %>
       </li>
+      <li>
+	<%= link gettext("Browse facilities"), to: Routes.live_path(@conn, FaqcheckWeb.FacilitiesLive, @locale) %>
+      </li>
     </ul>
   </article>
   <article class="column">

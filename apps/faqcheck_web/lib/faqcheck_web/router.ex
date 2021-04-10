@@ -6,15 +6,15 @@ defmodule FaqcheckWeb.Router do
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
-    plug :fetch_flash
+    plug :fetch_live_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers,
       %{"content-security-policy" => "default-src 'self';"}
     plug :fetch_current_user
+    plug :put_root_layout, {FaqcheckWeb.LayoutView, :root}
     plug(SetLocale,
       gettext: FaqcheckWeb.Gettext,
-      default_locale: "en"
-    )
+      default_locale: "en")
   end
 
   pipeline :api do
@@ -60,6 +60,8 @@ defmodule FaqcheckWeb.Router do
       resources "/facilities", FacilityController, as: :facility do
       	get "/history", FacilityController, :history, as: :history
       end
+
+      live "/live/facilities", FacilitiesLive
     end
 
 

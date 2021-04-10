@@ -1,0 +1,5 @@
+<main role="main" class="container locale-<%= @locale %>">
+  <p><%= live_flash(@flash, :notice) %></p>
+  <p><%= live_flash(@flash, :error) %></p>
+  <%= @inner_content %>
+</main>

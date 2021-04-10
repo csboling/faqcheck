@@ -47,6 +47,7 @@ defmodule FaqcheckWeb.MixProject do
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_dashboard, "~> 0.4"},
+      {:phoenix_live_view, "~> 0.15.4"},
       {:phx_gen_auth, "~> 0.7.0"},
       {:plug_cowboy, "~> 2.0"},
       {:set_locale, "~> 0.2.9"},
