@@ -20,7 +20,8 @@ defmodule FaqcheckWeb.FacilitiesLive do
       </tbody>
     </table>
     <form>
-      <button phx-disable-with="loading..." phx-click="load_more">Load more</button>
+      <button phx-disable-with="loading..." phx-click="load_more"><%= gettext "Load more" %></button>
+      <%= live_patch gettext("Upload facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityUploadLive, @locale) %>
     </form>
     """
   end

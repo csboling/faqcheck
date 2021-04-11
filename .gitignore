@@ -20,4 +20,5 @@ erl_crash.dump
 *.ez
 
 *~
+*#
 VERSION.txt

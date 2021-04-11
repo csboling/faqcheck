@@ -62,6 +62,8 @@ defmodule FaqcheckWeb.Router do
       end
 
       live "/live/facilities", FacilitiesLive
+      live "/live/facilities/upload", FacilityUploadLive
+      live "/live/facilities/import", FacilityImportLive
     end
 
 

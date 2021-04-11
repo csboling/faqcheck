@@ -19,6 +19,10 @@ An application for managing question-and-answer data and associated referrals, s
   sudo -iu postgres
   createdb faqcheck_dev
   ```
+- On linux, install `inotify-tools`:
+  ```bash
+  sudo pacman -Syu inotify-tools
+  ```
 - Set up postgres password in `config/dev.exs`
 - `mix deps get`
 - `mix ecto create`
