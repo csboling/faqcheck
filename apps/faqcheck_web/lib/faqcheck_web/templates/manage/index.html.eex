@@ -12,6 +12,7 @@
       <%= link gettext("How do I manage available documents?"), to: Routes.help_path(@conn, :index, @locale) <> "/#managing" %>
     </p>
     <ul>
+      <li><%= link gettext("Add a new organization"), to: Routes.organization_path(@conn, :new, @locale) %></li>
       <li><%= gettext "Upload a spreadsheet" %></li>
       <li><%= gettext "Refer to a spreadsheet on the web" %></li>
       <li><%= gettext "Refer to another %{name} instance", name: "FaqCheck" %></li>

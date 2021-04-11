@@ -1,0 +1,18 @@
+<h1><%= gettext "Organization details" %></h1>
+<h5><%= gettext("Last edited %{date}", date: safe_to_string(link(format_timestamp(@organization.updated_at, "MST7MDT"), to: Routes.organization_history_path(@conn, :history, @locale, @organization)))) |> raw() %></h5>
+
+<ul>
+  <li>
+    <strong><%= gettext "Name" <> ":" %></strong>
+    <%= @organization.name %>
+  </li>
+  <li>
+    <strong><%= gettext "Description" <> ":" %></strong>
+    <%= @organization.description %>
+  </li>
+</ul>
+
+<nav>
+  <span><%= link gettext("Edit this organization"), to: Routes.organization_path(@conn, :edit, @locale, @organization) %></span>
+  <span><%= link gettext("View all organizations"), to: Routes.organization_path(@conn, :index, @locale) %></span>
+</nav>

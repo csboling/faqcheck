@@ -1,14 +1,16 @@
 # Faqcheck
 
+An application for managing question-and-answer data and associated referrals, such as phone numbers and addresses of organizations that can be contacted for more detail.
+
 ## Developer setup
 
 - Install Elixir + Erlang OTP >= 23.3, for example:
   ```bash
   sudo pacman -Syu elixir
   ```
-- Install and set up postgres, for example:
+- Install and set up postgres, with the PostGIS spatial extensions. For example:
   ```bash
-  sudo pacman -Syu postgresql
+  sudo pacman -Syu postgresql postgis
   sudo -iu postgres
   initdb --locale=en_US.UTF-8 -E UTF8 -D /var/lib/postgres/data
   exit
@@ -17,8 +19,8 @@
   sudo -iu postgres
   createdb faqcheck_dev
   ```
-
 - Set up postgres password in `config/dev.exs`
+- `mix deps get`
 - `mix ecto create`
 - `cd apps/faqcheck_web/assets`, then `npm install`
 - `mix phx.server`
@@ -27,7 +29,7 @@
 
 - Javascript should not be required for any functionality
 - all pages should work well with a screen reader
-- all controls should have ARIA annotations
+- all controls should have HTML5 accessibility annotations
 
 ## Translating content
 

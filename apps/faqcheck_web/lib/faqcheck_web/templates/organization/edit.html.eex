@@ -1,0 +1,6 @@
+<h1><%= gettext "Edit organization" %></h1>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.organization_path(@conn, :update, @locale, @organization)) %>
+
+<span><%= link gettext("View details for this organization"), to: Routes.organization_path(@conn, :index, @locale) %></span>
+<span><%= link gettext("View all organizations"), to: Routes.organization_path(@conn, :index, @locale) %></span>

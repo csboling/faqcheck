@@ -1,0 +1,15 @@
+<h1><%= gettext "Resend confirmation instructions" %></h1>
+
+<%= form_for :user, Routes.user_confirmation_path(@conn, :create, @locale), fn f -> %>
+  <%= label f, :email %>
+  <%= email_input f, :email, required: true %>
+
+  <div>
+    <%= submit gettext("Resend confirmation instructions") %>
+  </div>
+<% end %>
+
+<p>
+  <%= link gettext("Register"), to: Routes.user_registration_path(@conn, :new, @locale) %> |
+  <%= link gettext("Log in"), to: Routes.user_session_path(@conn, :new, @locale) %>
+</p>

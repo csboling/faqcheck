@@ -1,0 +1,16 @@
+<h2>
+  <%= gettext("Edit history for organization %{name}", name: safe_to_string(link(@organization.name, to: Routes.organization_path(@conn, :show, @locale, @organization)))) |> raw() %>
+</h2>
+
+<ul>
+  <%= for v <- @organization.versions do %>
+    <li>
+      <b><%= v.event %></b> at <%= format_timestamp(v.inserted_at, "MST7MDT") %> by <b><%= v.user && v.user.name || "unknown user" %></b>
+      <ul>
+        <%= for {k, v} <- v.item_changes, v != nil && !String.ends_with?(k, "id") do %>
+	  <li>modified '<%= k %>' to: <%= v %></li>
+        <% end %>
+      </ul>
+    </li>
+  <% end %>
+</ul>

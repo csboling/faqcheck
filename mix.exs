@@ -11,6 +11,37 @@ defmodule Faqcheck.Umbrella.MixProject do
     ]
   end
 
+  # thanks to https://fiqus.coop/en/2019/07/15/add-git-commit-info-to-your-elixir-phoenix-app/
+  defp update_version(_) do
+    contents = write_version()
+    Mix.shell().info("updated app version: #{inspect(contents)}")
+  end
+
+  defp get_commit_sha() do
+    System.cmd("git", ["describe", "--always", "--dirty"])
+    |> elem(0)
+    |> String.trim()
+  end
+
+  defp get_commit_date() do
+    [sec, tz] =
+      System.cmd("git", ~w|log -1 --date=raw --format=%cd|)
+      |> elem(0)
+      |> String.split(~r/\s+/, trim: true)
+      |> Enum.map(&String.to_integer/1)
+
+    DateTime.from_unix!(sec + tz * 36)
+  end
+
+  defp write_version() do
+    contents = [
+      get_commit_sha(),
+      get_commit_date(),
+    ]
+    File.write("VERSION.txt", Enum.join(contents, "\n"), [:write])
+    contents
+  end
+
   # Dependencies can be Hex packages:
   #
   #   {:mydep, "~> 0.3.0"}
@@ -39,7 +70,8 @@ defmodule Faqcheck.Umbrella.MixProject do
   defp aliases do
     [
       # run `mix setup` in all child apps
-      setup: ["cmd mix setup"]
+      setup: ["cmd mix setup"],
+      compile: ["compile", &update_version/1],
     ]
   end
 end
