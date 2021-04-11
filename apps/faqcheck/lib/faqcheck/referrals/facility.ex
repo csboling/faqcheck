@@ -2,9 +2,10 @@ defmodule Faqcheck.Referrals.Facility do
   use Ecto.Schema
   @timestamps_opts [type: :utc_datetime]
 
-  import Faqcheck.Schema
-
   import Ecto.Changeset
+
+  import Faqcheck.Schema
+  alias Faqcheck.Referrals.OperatingHours
 
   schema "facilities" do
     field :name, :string
@@ -25,8 +26,25 @@ defmodule Faqcheck.Referrals.Facility do
     fac
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:address)
+    |> cast_assoc(:hours)
     |> validate_required([:name, :description])
     |> Faqcheck.Repo.versions()
+  end
+
+  def add_hours(cs) do
+    hours = get_change(cs, :hours) || []
+    put_assoc(
+      cs,
+      :hours,
+      hours ++ [OperatingHours.next(hours)])
+  end
+
+  def remove_hours(cs, index) do
+    hours = get_change(cs, :hours) || []
+    put_assoc(
+      cs,
+      :hours,
+      List.delete_at(hours, index))
   end
 
   # defp parse_address(params) do

@@ -121,7 +121,7 @@ defmodule Faqcheck.Referrals do
   def get_facility!(id) do
     Repo.one! from fac in Facility,
       where: fac.id == ^id,
-      preload: [:address, :organization]
+      preload: [:address, :organization, :hours]
   end
 
   def facility_history(id) do

@@ -1,7 +1,10 @@
 defmodule FacilityRowComponent do
   use FaqcheckWeb, :live_cmp
 
+  require Logger
+
   alias Faqcheck.Referrals.Facility
+  alias Faqcheck.Referrals.OperatingHours
 
   def render(assigns) do
     ~L"""
@@ -13,17 +16,21 @@ defmodule FacilityRowComponent do
         <br />
         <%= if @editing do %>
         <button phx-click="save" phx-target="<%= @myself %>"><%= gettext("Save") %></button>
+        <button phx-click="cancel" phx-target="<%= @myself %>"><%= gettext("Cancel") %></button>
         <% else %>
         <button phx-click="edit" phx-target="<%= @myself %>"><%= gettext("Edit") %></button>
         <% end %>
       </td>
       <%= if @editing do %>
       <td>
-        <%= f = form_for @changeset, "#", [phx_change: :validate] %>
+        <%= f = form_for @changeset, "#", [phx_change: :validate, phx_target: @myself] %>
           <p><%= textarea f, :description %></p>
           <p>
-            <%= text_input f, :street_address %>
-            <%= text_input f, :locality %>
+            <%= inputs_for f, :address, fn addr -> %>
+              <%= text_input addr, :street_address %>
+              <%= text_input addr, :locality %>
+              <%= text_input addr, :postcode %>
+            <% end %>
           </p>
           <table>
             <thead>
@@ -31,21 +38,38 @@ defmodule FacilityRowComponent do
                 <th><%= gettext("Weekday") %></th>
                 <th><%= gettext("Opens") %></th>
                 <th><%= gettext("Closes") %></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
+              <%= inputs_for f, :hours, fn h -> %>
               <tr>
                 <td>
-                 <%= weekday_select f, :weekday %>
+                 <%= weekday_select h, :weekday %>
                 </td>
                 <td>
-                  <%= hour_select f, :opens %>
+                  <%= hour_select h, :opens %>
                 </td>
                 <td>
-                  <%= hour_select f, :closes %>
+                  <%= hour_select h, :closes %>
+                </td>
+                <td>
+                  <button type="button" phx-click="delete_hours" phx-target="<%= @myself %>" phx-value-index="<%= h.index %>">
+                    <%= gettext("Delete") %>
+                  </button>
                 </td>
               </tr>
+              <% end %>
             </tbody>
+            <tfoot>
+              <tr>
+                <td>
+                  <button type="button" phx-click="add_hours" phx-target="<%= @myself %>">
+                    <%= gettext("Add more hours") %>
+                  </button>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </form>
       </td>
@@ -96,10 +120,26 @@ defmodule FacilityRowComponent do
        changeset: Facility.changeset(socket.assigns.facility, %{}))}
   end
 
+  def handle_event("add_hours", params, socket) do
+    changeset = socket.assigns.changeset
+    |> Facility.add_hours()
+    {:noreply, socket |> assign(changeset: changeset)}
+  end
+
+  def handle_event("delete_hours", %{"index" => index}, socket) do
+    changeset = socket.assigns.changeset
+    |> Facility.remove_hours(String.to_integer(index))
+    {:noreply, socket |> assign(changeset: changeset)}
+  end
+
   def handle_event("validate", %{"facility" => params}, socket) do
     changeset = socket.assigns.facility
     |> Facility.changeset(params)
     {:noreply, socket |> assign(changeset: changeset)}
+  end
+
+  def handle_event("cancel", _params, socket) do
+    {:noreply, socket |> assign(editing: false)}
   end
 
   def handle_event("save", _params, socket) do
