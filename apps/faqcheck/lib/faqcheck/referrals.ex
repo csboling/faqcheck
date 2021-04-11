@@ -115,7 +115,7 @@ defmodule Faqcheck.Referrals do
     query = from f in Facility,
       order_by: [asc: f.id],
       preload: [:address, :contacts, :hours, :organization]
-    Repo.paginate(query)
+    Repo.paginate(query, opts)
   end
 
   def get_facility!(id) do

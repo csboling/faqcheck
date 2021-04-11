@@ -2,7 +2,6 @@ defmodule FaqcheckWeb.OrganizationControllerTest do
   use FaqcheckWeb.ConnCase
 
   alias Faqcheck.Referrals
-  import Faqcheck.AccountsFixtures
 
   @create_attrs %{description: "some description", name: "some name"}
   @update_attrs %{description: "some updated description", name: "some updated name"}

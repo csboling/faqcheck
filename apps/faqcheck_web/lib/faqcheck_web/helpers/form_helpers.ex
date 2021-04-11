@@ -8,7 +8,7 @@ defmodule FaqcheckWeb.FormHelpers do
     select form, field,
       options: Enum.map(
 	hour_range(from, to, minute_step),
-	&Calendar.strftime(&1, "%I:%M %p"))
+	&{Calendar.strftime(&1, "%I:%M %p"), Time.to_iso8601(&1)})
   end
 
   def weekday_select(form, field) do

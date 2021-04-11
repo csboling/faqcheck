@@ -15,7 +15,8 @@ defmodule Faqcheck.Referrals.Facility do
 
     belongs_to :organization, Faqcheck.Referrals.Organization
     has_one :address, Faqcheck.Referrals.Address
-    has_many :hours, Faqcheck.Referrals.OperatingHours
+    has_many :hours, Faqcheck.Referrals.OperatingHours,
+      preload_order: [asc: :weekday, asc: :opens]
     many_to_many :contacts, Faqcheck.Referrals.Contact,
       join_through: Faqcheck.Referrals.Affiliation
 
@@ -32,7 +33,7 @@ defmodule Faqcheck.Referrals.Facility do
   end
 
   def add_hours(cs) do
-    hours = get_change(cs, :hours) || []
+    hours = Map.get(cs.data, :hours, []) ++ (get_change(cs, :hours) || [])
     put_assoc(
       cs,
       :hours,
@@ -40,7 +41,7 @@ defmodule Faqcheck.Referrals.Facility do
   end
 
   def remove_hours(cs, index) do
-    hours = get_change(cs, :hours) || []
+    hours = (cs.data[:hours] || []) ++ (get_change(cs, :hours) || [])
     put_assoc(
       cs,
       :hours,

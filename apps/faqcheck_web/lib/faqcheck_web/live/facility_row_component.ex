@@ -4,7 +4,6 @@ defmodule FacilityRowComponent do
   require Logger
 
   alias Faqcheck.Referrals.Facility
-  alias Faqcheck.Referrals.OperatingHours
 
   def render(assigns) do
     ~L"""
@@ -120,7 +119,7 @@ defmodule FacilityRowComponent do
        changeset: Facility.changeset(socket.assigns.facility, %{}))}
   end
 
-  def handle_event("add_hours", params, socket) do
+  def handle_event("add_hours", _params, socket) do
     changeset = socket.assigns.changeset
     |> Facility.add_hours()
     {:noreply, socket |> assign(changeset: changeset)}

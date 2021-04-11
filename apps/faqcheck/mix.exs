@@ -37,6 +37,7 @@ defmodule Faqcheck.MixProject do
   defp deps do
     [
       {:ecto_sql, "~> 3.4"},
+      {:enum_type, "~> 1.1.3"},
       {:geo_postgis, "~> 3.3.1"},
       {:jason, "~> 1.0"},
       {:paper_trail, "~> 0.12.3"},
