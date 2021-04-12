@@ -36,6 +36,7 @@ defmodule Faqcheck.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:ecto_interval, "~> 0.2.3"},
       {:ecto_sql, "~> 3.4"},
       {:enum_type, "~> 1.1.3"},
       {:geo_postgis, "~> 3.3.1"},
@@ -45,6 +46,7 @@ defmodule Faqcheck.MixProject do
       {:phoenix_pubsub, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:quarto, "~> 1.1.5"},
+      {:xlsxir, "~> 1.6.4"},
     ]
   end
 

@@ -1,10 +1,8 @@
 defmodule FaqcheckWeb.FacilityUploadLive do
   use FaqcheckWeb, :live_view
 
-  alias Faqcheck.Referrals
-  alias Faqcheck.Sources.UploadedFile
-
-  require Logger
+  alias Faqcheck.Sources
+  alias Faqcheck.Sources.DataSource
 
   def render(assigns) do
     ~L"""
@@ -23,7 +21,7 @@ defmodule FaqcheckWeb.FacilityUploadLive do
             <%= link f.filename, to: f.server_path %>
           </td>
           <td>
-            <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportLive, @locale) %>
+            <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportLive, @locale, upload: f) %>
             <button phx-click="delete_upload" phx-value-id="<%= f.id %>">
               <%= gettext("Delete") %>
             </button>
@@ -59,13 +57,12 @@ defmodule FaqcheckWeb.FacilityUploadLive do
   def handle_event("save", _params, socket) do
     uploaded_files =
       consume_uploaded_entries(socket, :spreadsheet, fn %{path: path}, entry ->
-        storage_path = Path.join([
-          Application.app_dir(:faqcheck_web),
-          "priv/static/uploads",
-          Path.basename(path)])
-        server_path = Routes.static_path(socket, "/uploads/#{Path.basename(storage_path)}")
-        File.cp!(path, storage_path)
-        UploadedFile.new(entry, storage_path, server_path)
+        {:ok, file} = Sources.create_file(
+          path,
+          entry,
+          DataSource.ReferralType.Facility,
+          &"/uploads/#{&1}")
+        file
       end)
     {:noreply, socket |> update(:uploaded_files, &(&1 ++ uploaded_files))}
   end

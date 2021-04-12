@@ -20,6 +20,8 @@ defmodule Faqcheck.Referrals.Facility do
     many_to_many :contacts, Faqcheck.Referrals.Contact,
       join_through: Faqcheck.Referrals.Affiliation
 
+    has_many :sources, Faqcheck.Sources.DataSource
+
     schema_versions()
   end
 
