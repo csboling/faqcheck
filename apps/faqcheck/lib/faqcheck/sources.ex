@@ -36,16 +36,23 @@ defmodule Faqcheck.Sources do
     Repo.get!(Upload, id)
   end
 
-  @xlsx_mimetype "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-  @csv_mimetype "text/csv"
+  # @xlsx_mimetype "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  # @csv_mimetype "text/csv"
 
-  def get_sheet!(upload) do
-    case upload.media_type do
-      @xlsx_mimetype ->
-        sheets = Xlsxir.multi_extract(upload.storage_path)
-        {:ok, sheet_id} = hd(sheets)
-        Xlsxir.get_list(sheet_id)
-      _ -> raise "unknown media type: #{upload.media_type}"
-    end
-  end
+  # def changes_for_source(upload) do
+  #   case upload.media_type do
+  #     @xlsx_mimetype ->
+  #     _ -> raise "unknown media type: #{upload.media_type}"
+  #   end
+  # end
+
+  # def get_sheet!(upload) do
+  #   case upload.media_type do
+  #     @xlsx_mimetype ->
+  #       sheets = Xlsxir.multi_extract(upload.storage_path)
+  #       {:ok, sheet_id} = hd(sheets)
+  #       Xlsxir.get_list(sheet_id)
+  #     _ -> raise "unknown media type: #{upload.media_type}"
+  #   end
+  # end
 end

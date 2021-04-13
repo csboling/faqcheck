@@ -9,10 +9,21 @@ defmodule FacilityRowComponent do
     ~L"""
     <tr id="facility-<%= @id %>">
       <td>
+        <%= if @editing do %>
+          <%= form_for @changeset, "#", [phx_change: :validate, phx_target: @myself], fn f -> %>
+            <%= inputs_for f, :organization, fn org -> %>
+              <%= text_input org, :name %>
+            <% end %>
+            <%= text_input f, :name %>
+          <% end %>
+        <% else %>
         <%= link @facility.organization.name, to: Routes.organization_path(@socket, :show, @locale, @facility.organization) %>
         &mdash;
         <%= link @facility.name, to: Routes.facility_path(@socket, :show, @locale, @facility) %>
+        <% end %>
+
         <br />
+
         <%= if @editing do %>
         <button phx-click="save" phx-target="<%= @myself %>"><%= gettext("Save") %></button>
         <button phx-click="cancel" phx-target="<%= @myself %>"><%= gettext("Cancel") %></button>
@@ -102,7 +113,11 @@ defmodule FacilityRowComponent do
         <% end %>
       </td>
       <% end %>
-      <td><%= link format_timestamp(@facility.updated_at, "MST7MDT"), to: Routes.facility_history_path(@socket, :history, @locale, @facility) %></td>
+      <td>
+        <%= if false do %>
+        <%= link format_timestamp(@facility.updated_at, "MST7MDT"), to: Routes.facility_history_path(@socket, :history, @locale, @facility) %>
+        <% end %>
+      </td>
     </tr>
     """
   end

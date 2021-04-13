@@ -12,9 +12,6 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSXTest do
 	assert cs.valid?
 	Ecto.Changeset.apply_changes(cs)
       end)
-      #first = Enum.at(changesets, 0)
-      #first.data.contacts
-      # assert get_in(changesets, [0, :data, :contacts, 0, :phone]) == "800-773-3645"
     end
   end
 end

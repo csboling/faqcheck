@@ -26,7 +26,7 @@ defmodule Faqcheck.Sources.DataSource do
     timestamps()
 
     belongs_to :upload, Faqcheck.Sources.Upload
-    belongs_to :api, Faqcheck.Sources.WebApi
+    belongs_to :web_api, Faqcheck.Sources.WebApi
     belongs_to :facility, Faqcheck.Referrals.Facility
     belongs_to :organization, Facility.Referrals.Organization
 

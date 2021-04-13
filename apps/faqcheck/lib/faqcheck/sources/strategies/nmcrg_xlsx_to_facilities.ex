@@ -1,6 +1,9 @@
 defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX do
+  @behaviour Faqcheck.Sources.Strategy
+
   alias Faqcheck.Referrals.Facility
 
+  @impl Faqcheck.Sources.Strategy
   def to_changesets(filename) do
     Enum.flat_map(
       Xlsxir.multi_extract(filename),
@@ -24,7 +27,7 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX do
       name: row[0],
       description: row[3],
       address: %{
-	street_address: row[7],
+	street_address: (row[7] || "") |> String.trim("\"") |> String.trim(),
       },
       contacts: [
 	%{
