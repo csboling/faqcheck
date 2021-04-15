@@ -121,7 +121,15 @@ defmodule Faqcheck.Referrals do
   def get_facility!(id) do
     Repo.one! from fac in Facility,
       where: fac.id == ^id,
-      preload: [:address, :organization, :hours]
+      preload: [:address, :contacts, :hours, :organization]
+  end
+
+  def upsert_facility(changeset) do
+    if is_nil(changeset.data.id) do
+      Repo.insert!(changeset)
+    else
+      Repo.update!(changeset)
+    end
   end
 
   def facility_history(id) do

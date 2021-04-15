@@ -26,6 +26,7 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX do
     |> Facility.changeset(%{
       name: row[0],
       description: row[3],
+      hours: [],
       address: %{
 	street_address: (row[7] || "") |> String.trim("\"") |> String.trim(),
       },

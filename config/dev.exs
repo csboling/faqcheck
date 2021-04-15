@@ -31,6 +31,9 @@ config :faqcheck_web, FaqcheckWeb.Endpoint,
     ]
   ]
 
+config :faqcheck, Faqcheck.Sources,
+  upload_dir: "C:/users/charl/shit/hax/fx/data/uploads"
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

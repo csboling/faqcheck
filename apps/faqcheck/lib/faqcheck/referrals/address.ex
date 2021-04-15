@@ -4,6 +4,8 @@ defmodule Faqcheck.Referrals.Address do
 
   import Ecto.Changeset
 
+  import Faqcheck.Schema
+
   schema "addresses" do
     field :street_address, :string
     field :locality, :string
@@ -14,6 +16,8 @@ defmodule Faqcheck.Referrals.Address do
     timestamps()
 
     belongs_to :facility, Faqcheck.Referrals.Facility
+
+    schema_versions()
   end
 
   def changeset(addr, attrs) do

@@ -18,6 +18,46 @@
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body>
-    <%= @inner_content %>
+    <header>
+      <section class="container">
+        <nav role="navigation">
+    	  <ul>
+    	    <li><%= link gettext("%{name} home page", name: "Faqcheck"), to: lang_link([]) %></li>
+    	    <%= if @current_user do %>
+    	      <li><%= gettext("Signed in as: ") <> @current_user.email %></li>
+    	      <li><%= link gettext("Account settings"), to: Routes.user_settings_path(@conn, :edit, @locale) %></li>
+    	      <li><%= link gettext("Log out"), to: Routes.user_session_path(@conn, :delete, @locale), method: :delete %></li>
+    	    <% else %>
+    	      <li><%= link "Register", to: Routes.user_registration_path(@conn, :new, @locale) %></li>
+    	      <li><%= link "Log in", to: Routes.user_session_path(@conn, :new, @locale) %></li>
+    	    <% end %>
+    	  </ul>
+        </nav>
+        <nav>
+          <ul>
+            <%= for lang <- Gettext.known_locales(FaqcheckWeb.Gettext) do %>
+              <li>
+                <a href="<%= lang_link_self @conn, lang %>"
+                   hreflang="<%= lang %>"
+                   type="text/html">
+                  <%= Gettext.with_locale(FaqcheckWeb.Gettext, lang, fn -> gettext("LANGUAGE_NAME") end) %>
+                </a>
+              </li>
+            <% end %>
+          </ul>
+        </nav>
+      </section>
+    </header>
+
+    <main role="main" class="container locale-<%= @locale %>">
+      <%= @inner_content %>
+    </main>
+
+    <hr />
+
+    <footer>
+      <center><%= gettext("Software version information:") <> " " <> render_version() %></center>
+    </footer>
+
   </body>
 </html>

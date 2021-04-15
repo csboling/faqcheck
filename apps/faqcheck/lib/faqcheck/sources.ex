@@ -4,11 +4,11 @@ defmodule Faqcheck.Sources do
   alias Faqcheck.Sources.DataSource
 
   def create_file(source_path, entry, referral_type, mk_url) do
-    storage_path = Path.join([
-      Application.app_dir(:faqcheck_web),
-      "priv/static/uploads",
-      Path.basename(source_path)])
+    config = Application.fetch_env!(:faqcheck, Faqcheck.Sources)
+    upload_dir = Keyword.get(config, :upload_dir)
+    storage_path = Path.join(upload_dir, Path.basename(source_path))
     server_path = mk_url.(Path.basename(storage_path))
+
     changeset = %Upload{}
     |> Upload.changeset(%{
       filename: entry.client_name,

@@ -6,6 +6,7 @@ defmodule FaqcheckWeb.FacilityUploadLive do
 
   def render(assigns) do
     ~L"""
+    <h2>Upload one or more spreadsheets to import</h2>
     <%= if !Enum.empty?(@uploaded_files) do %>
     <table>
       <thead>
@@ -38,7 +39,7 @@ defmodule FaqcheckWeb.FacilityUploadLive do
 
     <form phx-submit="save" phx-change="validate">
       <%= live_file_input @uploads.spreadsheet %>
-      <button type="submit"><%= gettext("Upload spreadsheets") %></button>
+      <button type="submit" phx-disable-with="uploading. . ."><%= gettext("Upload") %></button>
     </form>
     """
   end
@@ -47,7 +48,7 @@ defmodule FaqcheckWeb.FacilityUploadLive do
     {:ok,
      socket
      |> assign(locale: locale, uploaded_files: [])
-     |> allow_upload(:spreadsheet, accept: ~w(.csv .xlsx), max_entries: 1)}
+     |> allow_upload(:spreadsheet, accept: ~w(.csv .xlsx))}
   end
 
   def handle_event("validate", _params, socket) do

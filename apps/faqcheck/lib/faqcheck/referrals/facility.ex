@@ -35,7 +35,8 @@ defmodule Faqcheck.Referrals.Facility do
   end
 
   def add_hours(cs) do
-    hours = Map.get(cs.data, :hours, []) ++ (get_change(cs, :hours) || [])
+    existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
+    hours = existing ++ (get_change(cs, :hours) || [])
     put_assoc(
       cs,
       :hours,
@@ -43,7 +44,8 @@ defmodule Faqcheck.Referrals.Facility do
   end
 
   def remove_hours(cs, index) do
-    hours = (cs.data[:hours] || []) ++ (get_change(cs, :hours) || [])
+    existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
+    hours = existing ++ (get_change(cs, :hours) || [])
     put_assoc(
       cs,
       :hours,

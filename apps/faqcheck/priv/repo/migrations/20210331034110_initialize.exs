@@ -1,17 +1,17 @@
 defmodule Faqcheck.Repo.Migrations.Initialize do
   use Ecto.Migration
 
-  def change do
+  def up do
     create table(:organizations) do
       add :name,        :string, null: false
-      add :description, :string, null: false
+      add :description, :text, null: false
 
       timestamps()
     end
 
     create table(:facilities) do
       add :name,        :string, null: false
-      add :description, :string, null: false
+      add :description, :text, null: false
 
       add :organization_id, references(:organizations)
 
@@ -62,5 +62,14 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       timestamps()
     end
     execute("CREATE INDEX address_location ON addresses USING GIST(coordinates)")
+  end
+
+  def down do
+    drop table(:addresses)
+    drop table(:affiliations)
+    drop table(:contacts)
+    drop table(:operating_hours)
+    drop table(:facilities)
+    drop table(:organizations)
   end
 end
