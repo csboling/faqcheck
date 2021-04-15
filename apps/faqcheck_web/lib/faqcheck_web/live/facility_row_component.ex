@@ -107,6 +107,13 @@ defmodule FacilityRowComponent do
       	        <th><%= gettext("Opens") %></th>
       	        <th><%= gettext("Closes") %></th>
       	      </tr>
+              <%= for h <- @facility.hours do %>
+              <tr>
+                <td><%= weekday_name h.weekday %></td>
+                <td><%= hours_str h.opens %></td>
+                <td><%= hours_str h.closes %></td>
+              </tr>
+              <% end %>
       	    </thead>
       	  </table>
       	  <% end %>

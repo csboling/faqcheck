@@ -34,13 +34,18 @@ defmodule Faqcheck.Referrals.Facility do
     |> Faqcheck.Repo.versions()
   end
 
-  def add_hours(cs) do
-    existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
-    hours = existing ++ (get_change(cs, :hours) || [])
-    put_assoc(
-      cs,
-      :hours,
-      hours ++ [OperatingHours.next(hours)])
+  def add_hours(fac) do
+    next_hours = fac
+    |> get_field(:hours)
+    |> OperatingHours.next()
+    |> Map.from_struct()
+    fac
+    |> changeset(%{hours: [next_hours]})
+    # existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
+    # with_changes = existing ++ (get_change(cs, :hours) || [])
+    # new_hours = with_changes ++ [OperatingHours.next(with_changes)]
+    # cs
+    # |> changeset(%{hours: Enum.map(new_hours, &Map.from_struct/1)})
   end
 
   def remove_hours(cs, index) do

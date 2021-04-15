@@ -21,8 +21,12 @@ defmodule Faqcheck.Repo.Migrations.DataSources do
 
       timestamps()
 
-      add :first_version_id, references(:versions), null: false
-      add :current_version_id, references(:versions), null: false
+      add :first_version_id,
+        references(:versions),
+        null: false
+      add :current_version_id,
+        references(:versions),
+        null: false
     end
     create unique_index(:web_apis, [:first_version_id])
     create unique_index(:web_apis, [:current_version_id])
@@ -46,7 +50,8 @@ defmodule Faqcheck.Repo.Migrations.DataSources do
     create unique_index(:datasources, [:current_version_id])
 
     alter table(:facilities) do
-      add :source_id, references(:datasources)
+      add :source_id,
+        references(:datasources)
     end
   end
 end

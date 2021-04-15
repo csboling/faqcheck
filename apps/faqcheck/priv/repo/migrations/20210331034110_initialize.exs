@@ -13,7 +13,9 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       add :name,        :string, null: false
       add :description, :text, null: false
 
-      add :organization_id, references(:organizations)
+      add :organization_id,
+        references(:organizations),
+        on_delete: :nilify_all
 
       timestamps()
     end
@@ -25,7 +27,10 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       add :valid_from,  :utc_datetime
       add :valid_to,    :utc_datetime
 
-      add :facility_id, references(:facilities)
+      add :facility_id,
+        references(:facilities),
+        null: false,
+        on_delete: :delete_all
 
       timestamps()
     end
@@ -41,8 +46,14 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
     create table(:affiliations) do
       add :title, :string
 
-      add :facility_id, references(:facilities)
-      add :contact_id,  references(:contacts)
+      add :facility_id,
+        references(:facilities),
+        null: false,
+        on_delete: :delete_all
+      add :contact_id,
+        references(:contacts),
+        null: false,
+        on_delete: :delete_all
 
       timestamps()
     end
@@ -57,7 +68,10 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       add :country,         :string
       add :osm_way,         :integer
 
-      add :facility_id, references(:facilities)
+      add :facility_id,
+        references(:facilities),
+        null: false,
+        on_delete: :delete_all
 
       timestamps()
     end

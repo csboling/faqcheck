@@ -7,7 +7,9 @@ defmodule Repo.Migrations.AddVersions do
       add :item_type,    :string, null: false
       add :item_id,      :integer
       add :item_changes, :map, null: false
-      add :originator_id, references(:users) # you can change :users to your own foreign key constraint
+      add :originator_id,
+        references(:users),
+        on_delete: :nilify_all
       add :origin,       :string, size: 50
       add :meta,         :map
 
@@ -31,8 +33,12 @@ defmodule Repo.Migrations.AddVersions do
     ]
     for t <- versioned_tables do
       alter table(t) do
-        add :first_version_id, references(:versions), null: false
-        add :current_version_id, references(:versions), null: false
+        add :first_version_id,
+          references(:versions),
+          null: false
+        add :current_version_id,
+          references(:versions),
+          null: false
       end
       create unique_index(t, [:first_version_id])
       create unique_index(t, [:current_version_id])
