@@ -1,29 +1,22 @@
 <section class="phx-hero">
   <h1><%= gettext "Welcome to %{name}!", name: "FaqCheck" %></h1>
-  <p><%= gettext "Free software for managing question-and-answer pages" %></p>
+  <p><%= gettext "Free software for building question-and-answer systems" %></p>
 </section>
 
 <section class="row">
   <article class="column">
-    <h2><%= gettext "Find information" %></h2>
+    <h2><%= gettext "Browse information stored in the database" %></h2>
     <ul>
-      <li>
-        <%= link gettext("Search documents"), to: Routes.search_path(@conn, :index, @locale) %>
-      </li>
-    </ul>
-
-    <h2><%= gettext "Add information" %></h2>
-    <ul>
-      <li>
-        <%= link gettext("Manage documents"), to: Routes.manage_path(@conn, :index, @locale) %>
-      </li>
       <li>
 	<%= link gettext("Browse facilities"), to: Routes.live_path(@conn, FaqcheckWeb.FacilitiesLive, @locale) %>
+      </li>
+      <li>
+        <%= gettext "Browse common questions" %>
       </li>
     </ul>
   </article>
   <article class="column">
-    <h2><%= gettext "Help using this site" %></h2>
+    <h2><%= gettext "Browse %{name}'s documentation", name: "FaqCheck" %></h2>
     <ul>
       <li>
         <%= link gettext("What is this website?"), to: Routes.help_path(@conn, :index, @locale) <> "/#purpose" %>

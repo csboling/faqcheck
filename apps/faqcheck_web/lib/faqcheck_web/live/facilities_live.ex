@@ -12,7 +12,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
         name="query"
         phx-change="suggest"
         value="<%= @q_desc %>"
-        placeholder="<%= gettext "Search facilities" %>"
+        placeholder="<%= gettext "Search by name or description" %>"
         <%= if @loading, do: "readonly" %>
       />
       <div class="flex-row">
