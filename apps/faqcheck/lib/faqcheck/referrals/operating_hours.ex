@@ -16,6 +16,9 @@ defmodule Faqcheck.Referrals.OperatingHours do
     value Saturday, 5
     value Sunday, 6
 
+    value Today, 7
+    value Any, 8
+
     default Monday
   end
 

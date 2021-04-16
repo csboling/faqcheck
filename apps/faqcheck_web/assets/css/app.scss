@@ -34,3 +34,12 @@
   display: block;
   margin: -1rem 0 2rem;
 }
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+
+  label, input {
+    display: block;
+  }
+}
