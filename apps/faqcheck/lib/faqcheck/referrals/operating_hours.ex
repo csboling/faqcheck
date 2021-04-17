@@ -49,8 +49,19 @@ defmodule Faqcheck.Referrals.OperatingHours do
   subsequent weekday.
 
   ## Examples
-      iex> Faqcheck.Referrals.OperatingHours.next([%Faqcheck.Referrals.OperatingHours{weekday: Faqcheck.Referrals.OperatingHours.Weekday.Tuesday, opens: ~T[08:30:00]}])
-      %Faqcheck.Referrals.OperatingHours{weekday: Faqcheck.Referrals.OperatingHours.Weekday.Wednesday, opens: ~T[08:30:00]}
+      iex> Faqcheck.Referrals.OperatingHours.next([])
+      %Faqcheck.Referrals.OperatingHours{}
+
+      iex> Faqcheck.Referrals.OperatingHours.next([
+      ...>   %Faqcheck.Referrals.OperatingHours{
+      ...>     weekday: Faqcheck.Referrals.OperatingHours.Weekday.Tuesday,
+      ...>     opens: ~T[08:30:00]
+      ...>   }
+      ...> ])
+      %Faqcheck.Referrals.OperatingHours{
+        weekday: Faqcheck.Referrals.OperatingHours.Weekday.Wednesday,
+        opens: ~T[08:30:00]
+      }
   """
   def next(hours) do
     case List.last(hours) do
@@ -59,6 +70,104 @@ defmodule Faqcheck.Referrals.OperatingHours do
         prev, :weekday,
 	Weekday.Monday,
 	&(Weekday.from(rem(&1.value + 1, 7))))
+    end
+  end
+
+  @doc """
+  Given string descriptions for operating hours, generate
+  a set of OperatingHours.
+
+  ## Examples
+
+      iex> from_description("Tues", nil, "10:30:00", "05:00:00")
+      [
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Tuesday,
+          opens: ~T[10:30:00],
+          closes: ~T[17:00:00],
+        },
+      ]
+  """
+  def from_description(first_day_str, last_day_str, opens_str, closes_str) do
+    opens = parse_hours(opens_str)
+    given_closes = parse_hours(closes_str)
+    closes = case Time.compare(opens, given_closes) do
+      :gt -> given_closes
+      |> Time.add(12 * 60 * 60, :second)
+      |> Time.truncate(:second)
+      _ -> given_closes
+    end
+   
+    first_day = parse_day(first_day_str)
+    if is_nil(last_day_str) do
+      [
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: first_day,
+          opens: opens,
+          closes: closes,
+        }
+      ]
+    else
+      last_day = parse_day(last_day_str)
+      Enum.map(
+        first_day.value..last_day.value,
+        &%Faqcheck.Referrals.OperatingHours{
+          weekday: Weekday.from(&1),
+          opens: opens,
+          closes: closes,
+        })
+    end
+  end
+
+  @doc """
+  Parse hours from a string description.
+  
+  ## Examples
+
+      iex> parse_hours("10:30:00")
+      ~T[10:30:00]
+
+      iex> parse_hours("10:30")
+      ~T[10:30:00]
+
+      iex> parse_hours("5")
+      ~T[05:00:00]
+  """
+  def parse_hours(str) do
+    segments = String.split(str, ":")
+    if length(segments) < 3 do
+      parse_hours(str <> ":00")
+    else
+      hours_seg = hd(segments)
+      hours = String.length(hours_seg) == 2 && hours_seg || "0" <> hours_seg
+      Time.from_iso8601!(Enum.join([hours | tl(segments)], ":"))
+    end
+  end
+
+  @doc """
+  Parse a weekday from a string description.
+
+  ## Examples
+
+      iex> parse_day("Mon")
+      Faqcheck.Referrals.OperatingHours.Weekday.Monday
+      
+      iex> parse_day("Tues")
+      Faqcheck.Referrals.OperatingHours.Weekday.Tuesday
+
+      iex> parse_day("Th")
+      Faqcheck.Referrals.OperatingHours.Weekday.Thursday
+  """
+  def parse_day(str) do
+    case str do
+      s when s in ["M", "Mo", "Mon", "Monday"] -> Weekday.Monday
+      s when s in ["T", "Tu", "Tue", "Tues", "Tuesday"] -> Weekday.Tuesday
+      s when s in ["W", "Wed", "Weds", "Wednesday"] -> Weekday.Wednesday
+      s when s in ["R", "Th", "Thu", "Thurs", "Thursday"] -> Weekday.Thursday
+      s when s in ["F", "Fr", "Fri", "Friday"] -> Weekday.Friday
+      s when s in ["S", "Sat", "Saturday"] -> Weekday.Saturday
+      s when s in ["Su", "Sun", "Sunday"] -> Weekday.Sunday
+      _ -> raise "unknown weekday format: #{str}"
     end
   end
 end
