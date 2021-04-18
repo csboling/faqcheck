@@ -34,15 +34,78 @@ defmodule Faqcheck.Referrals.Facility do
     |> Faqcheck.Repo.versions()
   end
 
+  @doc """
+  Appends to the hours in the facility or facility changeset
+  with the next value for operating hours.
+
+  ## Examples
+
+      iex> %Faqcheck.Referrals.Facility{name: "example", description: "example", hours: []} |>
+      ...> add_hours() |>
+      ...> Ecto.Changeset.apply_changes() |>
+      ...> Map.fetch!(:hours)
+      [
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Monday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:00:00],
+        }
+      ]
+
+      iex> %Faqcheck.Referrals.Facility{
+      ...>   name: "example",
+      ...>   description: "example",
+      ...>   hours: [
+      ...>     %Faqcheck.Referrals.OperatingHours{},
+      ...>   ],
+      ...> } |>
+      ...> changeset(%{
+      ...>   hours: [
+      ...>     Map.from_struct(%Faqcheck.Referrals.OperatingHours{}),
+      ...>     %{
+      ...>       weekday: Faqcheck.Referrals.OperatingHours.Weekday.Wednesday,
+      ...>       opens: ~T[10:00:00],
+      ...>       closes: ~T[15:30:00],
+      ...>     },
+      ...>   ]
+      ...> }) |>
+      ...> add_hours() |>
+      ...> add_hours() |>
+      ...> Ecto.Changeset.apply_changes() |>
+      ...> Map.fetch!(:hours)
+      [
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Monday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:00:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Wednesday,
+          opens: ~T[10:00:00],
+          closes: ~T[15:30:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Thursday,
+          opens: ~T[10:00:00],
+          closes: ~T[15:30:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Friday,
+          opens: ~T[10:00:00],
+          closes: ~T[15:30:00],
+        },
+      ]
+  """
   def add_hours(fac) do
-    next_hours = fac
-    |> get_field(:hours)
+    cs = changeset(fac, %{})
+    hours = get_field(cs, :hours)
+    next_hours = hours
     |> OperatingHours.next()
     |> Map.from_struct()
-    fac
-    |> changeset(%{hours: [next_hours]})
-    # existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
-    # with_changes = existing ++ (get_change(cs, :hours) || [])
+    cs
+    |> changeset(%{
+      hours: Enum.map(hours, &Map.from_struct/1) ++ [next_hours]
+    })
     # new_hours = with_changes ++ [OperatingHours.next(with_changes)]
     # cs
     # |> changeset(%{hours: Enum.map(new_hours, &Map.from_struct/1)})

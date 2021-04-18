@@ -15,7 +15,7 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX do
     |> Facility.changeset(%{
       name: row[0],
       description: row[3],
-      hours: StringHelpers.extract_hours(row[3]),
+      hours: Enum.map(StringHelpers.extract_hours(row[3]), &Map.from_struct/1),
       address: %{
 	street_address: (row[7] || "") |> String.trim("\"") |> String.trim(),
       },
