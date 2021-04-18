@@ -99,7 +99,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
     end
    
     first_day = parse_day(first_day_str)
-    if is_nil(last_day_str) do
+    if is_nil(last_day_str) or last_day_str == "" do
       [
         %Faqcheck.Referrals.OperatingHours{
           weekday: first_day,
