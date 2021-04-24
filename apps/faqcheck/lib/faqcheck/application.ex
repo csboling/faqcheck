@@ -10,9 +10,10 @@ defmodule Faqcheck.Application do
       # Start the Ecto repository
       Faqcheck.Repo,
       # Start the PubSub system
-      {Phoenix.PubSub, name: Faqcheck.PubSub}
+      {Phoenix.PubSub, name: Faqcheck.PubSub},
       # Start a worker by calling: Faqcheck.Worker.start_link(arg)
       # {Faqcheck.Worker, arg}
+      {OpenIDConnect.Worker, Application.get_env(:faqcheck, :openid_connect_providers)},
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Faqcheck.Supervisor)

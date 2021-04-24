@@ -32,7 +32,7 @@ config :faqcheck_web, FaqcheckWeb.Endpoint,
   ]
 
 config :faqcheck, Faqcheck.Sources,
-  upload_dir: "/var/uploads"
+  upload_dir: "c:/users/charl/Desktop/uploads"
 
 # ## SSL Support
 #
@@ -65,7 +65,7 @@ config :faqcheck_web, FaqcheckWeb.Endpoint,
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
       ~r"lib/faqcheck_web/(live|views)/.*(ex)$",
-      ~r"lib/faqcheck_web/templates/.*(eex)$"
+      ~r"lib/faqcheck_web/templates/.*(eex|md)$"
     ]
   ]
 
@@ -78,3 +78,5 @@ config :phoenix, :plug_init_mode, :runtime
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
+
+import_config "dev.secret.exs"

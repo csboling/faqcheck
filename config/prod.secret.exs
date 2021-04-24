@@ -39,3 +39,19 @@ config :faqcheck_web, FaqcheckWeb.Endpoint,
 #
 # Then you can assemble a release by calling `mix release`.
 # See `mix help release` for more information.
+
+config :faqcheck, :openid_connect_providers
+  microsoft: [
+    discovery_document_uri: "https://login.microsoftonline.com/common/.well-known/openid-configuration",
+    client_id: System.get_env("FAQCHECK_MICROSOFT_CLIENTID"),
+    client_secret: System.get_env("FAQCHECK_MICROSOFT_CLIENTSECRET"),
+    response_type: "code",
+    scope: "openid email profile"
+  ],
+  google: [
+    discovery_document_uri: "https://accounts.google.com/.well-known/openid-configuration",
+    client_id: System.get_env("FAQCHECK_GOOGLE_CLIENTID"),
+    client_secret: System.get_env("FAQCHECK_GOOGLE_CLIENTSECRET"),
+    response_type: "code",
+    scope: "openid email profile"
+  ]

@@ -40,12 +40,23 @@ defmodule FaqcheckWeb.Router do
   scope "/", FaqcheckWeb do
     pipe_through :browser
     get "/", PageController, :dummy
+
+    get "/microsoft-callback", OidcController, :microsoft_callback
+    get "/google-callback", OidcController, :microsoft_callback
   end
 
   scope "/:locale", FaqcheckWeb do
     pipe_through :browser
     get "/", PageController, :index
-    get "/help", HelpController, :index
+
+    get "/microsoft-callback", OidcController, :microsoft_callback
+    get "/google-callback", OidcController, :microsoft_callback
+
+    scope "/help" do
+      get "/", HelpController, :index
+      get "/microsoft", HelpController, :microsoft
+    end
+
     get "/search", SearchController, :index
 
     scope "/" do
@@ -61,9 +72,14 @@ defmodule FaqcheckWeb.Router do
       	get "/history", FacilityController, :history, as: :history
       end
 
-      live "/live/facilities", FacilitiesLive
-      live "/live/facilities/upload", FacilityUploadLive
-      live "/live/facilities/import", FacilityImportLive
+      scope "/live" do
+	scope "/facilities" do
+	  live "/", FacilitiesLive
+	  live "/upload", FacilityUploadLive
+	  live "/select-import", FacilityImportSelectLive
+	  live "/import", FacilityImportLive
+	end
+      end
     end
 
 

@@ -40,6 +40,9 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :phoenix, :template_engines,
+  md: PhoenixMarkdown.Engine
+
 config :paper_trail, repo: Faqcheck.Repo, strict_mode: true,
   originator: [name: :user, model: Faqcheck.Accounts.User]
 
