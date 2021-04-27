@@ -1,6 +1,8 @@
 defmodule FaqcheckWeb.FacilityImportSelectLive do
   use FaqcheckWeb, :live_view
 
+  alias Faqcheck.Sources.Microsoft
+
   def render(assigns) do
     ~L"""
     <form>
@@ -11,15 +13,15 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
         </option>
         <% end %>
       </select>
-      <%= live_patch gettext("Log in with Microsoft"), class: "button", to: @ms_login_uri %>
+      <%= link gettext("Log in with Microsoft"), class: "button", to: @ms_login_uri %>
     </form>
 
     <%= if Enum.empty?(@sharepoint_data) do %>
     <p>Microsoft login is required to access SharePoint data.</p>
     <% else %>
     <ul>
-      <%= for folder <- @sharepoint_data do %>
-      <li>folder: <%= folder %></li>
+      <%= for drive <- @sharepoint_data do %>
+      <li>drive: <%= drive.name %></li>
       <% end %>
     </ul>
     <% end %>
@@ -46,30 +48,6 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
          }
        ],
        ms_login_uri: ms_login_uri,
-       sharepoint_data: load_sharepoint(session["microsoft"]))}
-  end
-
-  defp load_sharepoint(token) do
-    with {:ok, json} <- msgraph_call(token, "/drives") do
-      Enum.map(json["value"], fn drive -> drive["name"] end)
-    else
-      _ -> []
-    end
-  end
-
-  @ms_graph "https://graph.microsoft.com/v1.0"
-
-  defp msgraph_call(token, path) do
-    with {:ok, %HTTPoison.Response{status_code: status_code} = resp} when status_code in 200..299 <-
-           HTTPoison.get(
-             @ms_graph <> path,
-             ["Authorization": "Bearer #{token}"],
-             []),
-         {:ok, json} <- Jason.decode(resp.body) do
-      {:ok, json}
-    else
-      {:ok, resp} -> {:error, resp}
-      error -> error
-    end
+       sharepoint_data: Microsoft.API.list_drive(session["microsoft"]))}
   end
 end

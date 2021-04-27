@@ -12,7 +12,7 @@ defmodule FaqcheckWeb.OidcController do
   defp callback(provider, conn, params, auth_params) do
     token_params = Map.merge(%{code: params["code"]}, auth_params)
     with {:ok, tokens} <- OpenIDConnect.fetch_tokens(provider, token_params),
-         {:ok, claims} <- OpenIDConnect.verify(provider, tokens["id_token"]) do
+         {:ok, _claims} <- OpenIDConnect.verify(provider, tokens["id_token"]) do
       conn = put_session(conn, provider, tokens["access_token"])
       redirect(conn, to: params["state"])
     else

@@ -35,6 +35,11 @@ defmodule FaqcheckWeb.Router do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: FaqcheckWeb.Telemetry
     end
+
+    scope "/:locale" do
+      pipe_through :browser
+      live_dashboard "/dashboard", metrics: FaqcheckWeb.Telemetry
+    end
   end
 
   scope "/", FaqcheckWeb do
