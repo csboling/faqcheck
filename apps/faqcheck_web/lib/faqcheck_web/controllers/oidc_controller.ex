@@ -23,8 +23,11 @@ defmodule FaqcheckWeb.OidcController do
         redirect(conn, to: uri)
       {:ok, %Oidc.TokenResult{claims: {:error, missing}}} ->
         send_resp(conn, 401, "missing required scopes for #{provider}: #{missing}")
+      {:error, msg} ->
+        send_resp(conn, 401, "login failed: #{msg}")
       err ->
-        send_resp(conn, 401, "login failed: #{err}")
+        IO.inspect(err)
+        send_resp(conn, 401, "login failed")
     end
   end
 end
