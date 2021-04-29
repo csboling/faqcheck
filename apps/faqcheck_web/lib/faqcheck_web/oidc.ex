@@ -9,12 +9,12 @@ defmodule FaqcheckWeb.Oidc do
 
   def build_state(session, redirect) do
     Jason.encode!(%{
-      "csrf_token" => session["csrf_token"],
+      "csrf_token" => session["_csrf_token"],
       "redirect" => redirect,
     })
   end
 
-  def load_state(conn, state) do
+  def load_state(conn, _provider, state) do
     with {:ok, json} <- Jason.decode(state),
          {:ok, redirect} <- check_state(conn, json) do
       {:ok, redirect}
@@ -24,7 +24,8 @@ defmodule FaqcheckWeb.Oidc do
   end
 
   defp check_state(conn, json) do
-    if json["csrf_token"] == get_session(conn, :csrf_token) do
+    csrf = get_session(conn, "_csrf_token")
+    if json["csrf_token"] == csrf do
       {:ok, json["redirect"] || "/"}
     else
       {:error, "bad token in state"}

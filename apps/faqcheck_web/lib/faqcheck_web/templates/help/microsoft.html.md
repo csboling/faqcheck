@@ -26,7 +26,7 @@ The first step is to set up FaqCheck as an application that is authorized to int
 
 - You can either give FaqCheck "Delegated permissions", which means that the FaqCheck application will need a user to log in in order for FaqCheck to access data stored in Microsoft -- generally this means data can be retrieved from Microsoft automatically, but a user will have to initiate the request manually. Or you can grant FaqCheck "Application permissions", which allows FaqCheck to access data from Microsoft whenever it needs to, allowing you to use a OneDrive spreadsheet as a "single source of truth". However, enabling "Application permissions" requires approval from an administrator of your Microsoft products, such as your organization's IT department. "Delegated permissions" can be useful for trying out the functionality FaqCheck offers before asking your admin to grant "Application permissions".
 
-- To list and read files in Sharepoint, FaqCheck needs the "Sites.Read.All" permission. Check the box for this permission and then click "Add permissions" at the bottom.
+- To list and read files in Sharepoint, FaqCheck needs the "Sites.Read.All" and "Files.Read" permissions. Check the box for these permission and then click "Add permissions" at the bottom.
 
 - FaqCheck needs to be configured with a client ID value that it will use to identify itself to Microsoft. This client ID value shows on the main "App registration" page for "FaqCheck", listed under "Essentials > Application (client) ID". Copy this value and on the server where your FaqCheck server runs, set it into an environment variable (see below). The variable should be called `FAQCHECK_MICROSOFT_CLIENTID`.
 

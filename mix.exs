@@ -8,9 +8,6 @@ defmodule Faqcheck.Umbrella.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
-      elixirc_options: [
-        :warnings_as_errors,
-      ]
     ]
   end
 

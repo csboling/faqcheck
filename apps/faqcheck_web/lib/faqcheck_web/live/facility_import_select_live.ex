@@ -2,6 +2,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
   use FaqcheckWeb, :live_view
 
   alias Faqcheck.Sources.Microsoft
+  alias FaqcheckWeb.Oidc
 
   def render(assigns) do
     ~L"""
@@ -16,25 +17,25 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
       <%= link gettext("Log in with Microsoft"), class: "button", to: @ms_login_uri %>
     </form>
 
-    <%= if Enum.empty?(@sharepoint_data) do %>
-    <p>Microsoft login is required to access SharePoint data.</p>
-    <% else %>
+    <%= case @sharepoint_data do %>
+    <%    {:ok, drives} -> %>
     <ul>
-      <%= for drive <- @sharepoint_data do %>
-      <li>drive: <%= drive.name %></li>
-      <% end %>
+      <%=    for drive <- drives do %>
+      <%=      live_component @socket, SharepointDriveComponent, id: drive.id, locale: @locale, drive: drive, token: @ms_token %>
+      <%     end %>
     </ul>
-    <% end %>
+    <%    {:error, {_code, msg}} -> %>
+    <p>Could not access SharePoint data: <%= msg %></p>
+    <%  end %>
     """
   end
 
   def mount(%{"locale" => locale}, session, socket) do
-    ms_login_uri = OpenIDConnect.authorization_uri(
+    ms_login_uri = Oidc.login_link(
+      session,
       :microsoft,
-      %{
-        state: FaqcheckWeb.Router.Helpers.live_path(
-          socket, FaqcheckWeb.FacilityImportSelectLive, locale)
-      })
+      FaqcheckWeb.Router.Helpers.live_path(
+          socket, FaqcheckWeb.FacilityImportSelectLive, locale))
     {:ok,
      socket
      |> assign(
@@ -47,6 +48,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
            provider_name: "Microsoft",
          }
        ],
+       ms_token: session["microsoft"],
        ms_login_uri: ms_login_uri,
        sharepoint_data: Microsoft.API.list_drive(session["microsoft"]))}
   end

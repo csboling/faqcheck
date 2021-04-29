@@ -6,7 +6,7 @@ defmodule FaqcheckWeb.UserAuthTest do
     conn =
       conn
       |> Map.replace!(:secret_key_base, FaqcheckWeb.Endpoint.config(:secret_key_base))
-      |> init_test_session(%{csrf_token: "zxcv1234abcd"})
+      |> init_test_session(%{"_csrf_token": "zxcv1234abcd"})
 
     %{conn: conn}
   end
