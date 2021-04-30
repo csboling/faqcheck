@@ -19,11 +19,10 @@ defmodule FaqcheckWeb.Oidc do
   end
 
   def get_token(provider, impl, input) do
-    token_params = Map.merge(%{code: input.code, scope: "Files.Read.All"}, impl.auth_params)
+    token_params = Map.merge(%{code: input.code}, impl.auth_params)
     with {:ok, tokens} <- OpenIDConnect.fetch_tokens(provider, token_params),
          # {:ok, claims} <- OpenIDConnect.verify(provider, tokens["id_token"]),
          {:ok, uri} <- load_state(input.csrf, input.state) do
-      IO.inspect tokens
       {:ok,
        %TokenResult{
          token: tokens["access_token"],

@@ -8,17 +8,25 @@ defmodule SharepointDriveComponent do
     <li id="sharepoint-drive-<%= @id %>" phx-click="toggle" phx-target="<%= @myself %>">
       <%= @drive.name %>
       <%= if @open do %>
-      <%=   case @data do %>
-      <%      {:ok, entries} -> %>
       <ul>
-        <%=     for entry <- entries do %>
-        <li><%= entry.name %></li>
-        <%      end %>
-      </ul>
-      <%      {:error, {_code, msg}} -> %>
-      <p>Could not access SharePoint data: <%= msg %></p>
+      <%=   if @loading do %>
+        <li>Loading . . .</li>
+      <%=   else %>
+      <%=     case @data do %>
+      <%        {:ok, entries} -> %>
+      <%=         if Enum.empty?(entries) do %>
+        <li>No .xlsx files in this folder.</li>
+      <%=         else %>
+        <%=         for entry <- entries do %>
+        <li><%=       entry.name %></li>
+        <%          end %>
+      <%          end %>
+      <%        {:error, {_code, msg}} -> %>
+        <li>Could not access SharePoint data: <%= msg %></li>
+      <%      end %>
       <%    end %>
       <%  end %>
+      </ul>
     </li>
     """
   end
@@ -31,13 +39,22 @@ defmodule SharepointDriveComponent do
 
   def handle_event("toggle", _params, socket) do
     if socket.assigns.open do
-      {:noreply, socket}
+      {:noreply, socket |> assign(open: false)}
     else
+      msg = {:update,
+             socket.assigns.id,
+             data: &list_drive/2,
+             loading: fn _socket, _id -> false end}
+      send(self(), msg)
       {:noreply,
        socket
        |> assign(
          open: true,
-         data: Microsoft.API.list_drive(socket.assigns.token, socket.assigns.id))}
+         loading: true)}
     end
+  end
+
+  defp list_drive(socket, id) do
+    Microsoft.API.list_drive(socket.assigns.ms_token, id)
   end
 end

@@ -7,7 +7,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
   def render(assigns) do
     ~L"""
     <form>
-      <select value="<%= @sel_method %>">
+      <select value="<%= @sel_method %>" phx-change="sel_source">
         <%= for method <- @import_methods do %>
         <option value="<%= method.id %>">
           <%= method.service_name %>
@@ -51,5 +51,21 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
        ms_token: session["microsoft"],
        ms_login_uri: ms_login_uri,
        sharepoint_data: Microsoft.API.list_drive(session["microsoft"]))}
+  end
+
+  def handle_event("sel_source", %{"sel_method" => method}, socket) do
+    send(self(), {:load, method})
+  end
+
+  def handle_info({:load, method}, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_info({:update, id, callbacks}, socket) do
+    updates = Enum.map(
+      callbacks,
+      fn {key, cb} -> {key, cb.(socket, id)} end)
+    send_update SharepointDriveComponent, [{:id, id} | updates]
+    {:noreply, socket}
   end
 end

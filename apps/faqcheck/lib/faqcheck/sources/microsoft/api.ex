@@ -1,4 +1,6 @@
 defmodule Faqcheck.Sources.Microsoft.API do
+  require Logger
+
   alias Faqcheck.Sources.Microsoft.Graph
   alias Faqcheck.Sources.Microsoft.Http
 
@@ -33,7 +35,7 @@ defmodule Faqcheck.Sources.Microsoft.API do
   end
   
   defp call(token, url, shape) do
-    IO.inspect token
+    Logger.info "call Microsoft Graph: #{url}"
     case Http.get(url, [token]) do
       {:ok, %HTTPoison.Response{body: body}} -> decode(body, shape)
       {:error, error} -> {:error, {"HTTP", error}}
