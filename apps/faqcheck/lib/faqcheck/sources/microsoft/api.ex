@@ -5,11 +5,14 @@ defmodule Faqcheck.Sources.Microsoft.API do
   alias Faqcheck.Sources.Microsoft.Http
 
   def list_drive(token) do
-    call(token, "/drives", [%Graph.Drive{}])
+    call(token, "/drives", [%Graph.Entry{}])
   end
 
   def list_drive(token, id) do
-    call(token, "/drives/#{id}/root/search(q='xlsx')", [%Graph.Drive{}])
+    case call(token, "/drives/#{id}/root/children", [%Graph.Entry{}]) do
+      {:ok, entries} -> {:ok, entries}
+      err -> err
+    end
   end
 
   @doc """
@@ -34,10 +37,12 @@ defmodule Faqcheck.Sources.Microsoft.API do
     end
   end
   
-  defp call(token, url, shape) do
+  def call(token, url, shape) do
     Logger.info "call Microsoft Graph: #{url}"
     case Http.get(url, [token]) do
-      {:ok, %HTTPoison.Response{body: body}} -> decode(body, shape)
+      {:ok, %HTTPoison.Response{body: body}} ->
+        Logger.info "Microsoft Graph response: #{body}"
+        decode(body, shape)
       {:error, error} -> {:error, {"HTTP", error}}
     end
   end

@@ -11,17 +11,26 @@ defmodule SharepointDriveComponent do
       <ul>
       <%=   if @loading do %>
         <li>Loading . . .</li>
-      <%=   else %>
+      <%    else %>
       <%=     case @data do %>
       <%        {:ok, entries} -> %>
       <%=         if Enum.empty?(entries) do %>
-        <li>No .xlsx files in this folder.</li>
-      <%=         else %>
-        <%=         for entry <- entries do %>
-        <li><%=       entry.name %></li>
+        <li>No children.</li>
+      <%          else %>
+        <%=         for child <- entries do %>
+        <li>
+          <%= child.name %>,
+          -
+          <%= cond do %>
+            <% !is_nil(child.folder) -> %>
+              folder with <%= child.folder["childCount"] %> children
+            <% !is_nil(child.file) -> %>
+              file, last modified <%= format_iso8601(child.fileSystemInfo["lastModifiedDateTime"], "MST7MDT") %>
+          <% end %>
+        </li>
         <%          end %>
       <%          end %>
-      <%        {:error, {_code, msg}} -> %>
+      <%=       {:error, {_code, msg}} -> %>
         <li>Could not access SharePoint data: <%= msg %></li>
       <%      end %>
       <%    end %>

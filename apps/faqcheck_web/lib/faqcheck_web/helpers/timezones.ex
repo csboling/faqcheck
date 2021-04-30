@@ -5,6 +5,15 @@ defmodule FaqcheckWeb.Timezones do
     |> Calendar.strftime("%a, %B %d %Y %I:%M:%S %p")
   end
 
+  def format_iso8601(datetime, time_zone) do
+    IO.inspect datetime, label: "file modified time"
+    with {:ok, timestamp, _} <- DateTime.from_iso8601(datetime) do
+      FaqcheckWeb.Timezones.format_timestamp(timestamp, time_zone)
+    else
+      _ -> datetime
+    end
+  end
+
   @doc """
   Build a sequence of times of day from an hour range.
 
