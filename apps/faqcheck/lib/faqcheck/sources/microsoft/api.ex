@@ -4,15 +4,16 @@ defmodule Faqcheck.Sources.Microsoft.API do
   alias Faqcheck.Sources.Microsoft.Graph
   alias Faqcheck.Sources.Microsoft.Http
 
-  def list_drive(token) do
+  def list_drives(token) do
     call(token, "/drives", [%Graph.Entry{}])
   end
 
   def list_drive(token, id) do
-    case call(token, "/drives/#{id}/root/children", [%Graph.Entry{}]) do
-      {:ok, entries} -> {:ok, entries}
-      err -> err
-    end
+    call(token, "/drives/#{id}/root/children", [%Graph.Entry{}])
+  end
+
+  def list_folder(token, drive_id, folder_id) do
+    call(token, "/drives/#{drive_id}/items/#{folder_id}/children", [%Graph.Entry{}])
   end
 
   @doc """

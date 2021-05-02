@@ -27,7 +27,8 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
         id: "microsoft",
         service_name: "Microsoft Sharepoint",
         session: Map.take(session, ["_csrf_token", "microsoft"]),
-        assigns: [:resource, :drives],
+        resource: :drives,
+        breadcrumb: [],
         action_component: MicrosoftWeb.Components.Actions,
         data_component: MicrosoftWeb.Components.Data,
       }
