@@ -1,8 +1,7 @@
 defmodule FaqcheckWeb.FacilityImportSelectLive do
   use FaqcheckWeb, :live_view
 
-  alias Faqcheck.Sources.Microsoft
-  alias FaqcheckWeb.Oidc
+  alias FaqcheckWeb.MicrosoftWeb
 
   def render(assigns) do
     ~L"""
@@ -14,47 +13,44 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
         </option>
         <% end %>
       </select>
-      <%= link gettext("Log in with Microsoft"), class: "button", to: @ms_login_uri %>
+
+      <%= live_component @socket, @import_method.action_component, id: @import_method.id, locale: @locale, import_method: @import_method %>
     </form>
 
-    <%= case @sharepoint_data do %>
-    <%    {:ok, drives} -> %>
-    <ul>
-      <%=    for drive <- drives do %>
-      <%=      live_component @socket, SharepointDriveComponent, id: drive.id, locale: @locale, drive: drive, token: @ms_token %>
-      <%     end %>
-    </ul>
-    <%    {:error, {_code, msg}} -> %>
-    <p>Could not access SharePoint data: <%= msg %></p>
-    <%  end %>
+    <%= live_component @socket, @import_method.data_component, id: @import_method.id, locale: @locale, import_method: @import_method %>
     """
   end
 
   def mount(%{"locale" => locale}, session, socket) do
-    ms_login_uri = Oidc.login_link(
-      session,
-      :microsoft,
-      FaqcheckWeb.Router.Helpers.live_path(
-          socket, FaqcheckWeb.FacilityImportSelectLive, locale))
+    import_methods = [
+      %{
+        id: "microsoft",
+        service_name: "Microsoft Sharepoint",
+        session: Map.take(session, ["_csrf_token", "microsoft"]),
+        assigns: [:resource, :drives],
+        action_component: MicrosoftWeb.Components.Actions,
+        data_component: MicrosoftWeb.Components.Data,
+      }
+    ]
+    method = nil
+    import_method = Enum.find(
+      import_methods,
+      Enum.at(import_methods, 0),
+      fn m -> m.id == method end)
+    IO.inspect import_method, label: "import method"
+
     {:ok,
      socket
      |> assign(
        locale: locale,
-       sel_method: nil,
-       import_methods: [
-         %{
-           id: 1,
-           service_name: "Microsoft Sharepoint",
-           provider_name: "Microsoft",
-         }
-       ],
-       ms_token: session["microsoft"],
-       ms_login_uri: ms_login_uri,
-       sharepoint_data: Microsoft.API.list_drive(session["microsoft"]))}
+       sel_method: method,
+       import_method: import_method,
+       import_methods: import_methods)}
   end
 
   def handle_event("sel_source", %{"sel_method" => method}, socket) do
     send(self(), {:load, method})
+    {:noreply, socket}
   end
 
   def handle_info({:load, method}, socket) do

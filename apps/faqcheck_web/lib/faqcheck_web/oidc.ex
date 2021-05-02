@@ -12,16 +12,15 @@ defmodule FaqcheckWeb.Oidc do
     defstruct [:csrf, :redirect]
   end
 
-  def login_link(session, provider, path) do
+  def login_link(csrf, provider, path) do
     OpenIDConnect.authorization_uri(
       provider,
-      %{state: build_state(session, path), prompt: "consent"})
+      %{state: build_state(csrf, path), prompt: "consent"})
   end
 
   def get_token(provider, impl, input) do
     token_params = Map.merge(%{code: input.code}, impl.auth_params)
     with {:ok, tokens} <- OpenIDConnect.fetch_tokens(provider, token_params),
-         # {:ok, claims} <- OpenIDConnect.verify(provider, tokens["id_token"]),
          {:ok, uri} <- load_state(input.csrf, input.state) do
       {:ok,
        %TokenResult{
@@ -48,9 +47,9 @@ defmodule FaqcheckWeb.Oidc do
     end
   end
 
-  defp build_state(session, redirect) do
+  defp build_state(csrf, redirect) do
     %AuthorizeState{
-      csrf: session["_csrf_token"],
+      csrf: csrf,
       redirect: redirect,
     }
     |> Poison.encode!
