@@ -15,6 +15,16 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
       </select>
 
       <%= live_component @socket, @import_method.action_component, id: @import_method.id, locale: @locale, import_method: @import_method %>
+
+      <select value="<%= @sel_strategy %>" phx-change="sel_strategy">
+        <%= for strategy <- @import_method.strategies do %>
+        <option value="<%= strategy.id %>">
+          <%= strategy.name %>
+        </option>
+        <%  end %>
+      </select>
+
+      <button>Import</button>
     </form>
 
     <%= live_component @socket, @import_method.data_component, id: @import_method.id, locale: @locale, import_method: @import_method %>
@@ -31,20 +41,26 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
         breadcrumb: [],
         action_component: MicrosoftWeb.Components.Actions,
         data_component: MicrosoftWeb.Components.Data,
-      }
+        strategies: [
+          %{
+            id: 1,
+            name: "RRFB Client Resources spreadsheet",
+          },
+        ],
+      },
     ]
     method = nil
     import_method = Enum.find(
       import_methods,
       Enum.at(import_methods, 0),
       fn m -> m.id == method end)
-    IO.inspect import_method, label: "import method"
 
     {:ok,
      socket
      |> assign(
        locale: locale,
        sel_method: method,
+       sel_strategy: nil,
        import_method: import_method,
        import_methods: import_methods)}
   end
