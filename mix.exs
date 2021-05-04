@@ -71,7 +71,7 @@ defmodule Faqcheck.Umbrella.MixProject do
     [
       # run `mix setup` in all child apps
       setup: ["cmd mix setup"],
-      compile: ["compile --all-warnings --warnings-as-errors", &update_version/1],
+      compile: ["compile --all-warnings", &update_version/1],
     ]
   end
 end

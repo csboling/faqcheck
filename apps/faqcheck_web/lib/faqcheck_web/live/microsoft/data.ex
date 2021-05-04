@@ -15,10 +15,10 @@ defmodule FaqcheckWeb.MicrosoftWeb.Components.Data do
     <%      end %>
     </ul>
     
-    <%=   {:error, {_code, msg}} -> %>
+    <%    {:error, {_code, msg}} -> %>
     <p>Could not access SharePoint data: <%= msg %></p>
 
-    <%=   nil -> %>
+    <%    nil -> %>
     <p>To access your SharePoint files, log in to your Microsoft account by clicking the button above.</p>
 
     <% end %>

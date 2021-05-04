@@ -1,7 +1,6 @@
 defmodule FaqcheckWeb.MicrosoftWeb.Components.Entry do
   use FaqcheckWeb, :live_cmp  
 
-  alias Faqcheck.Sources.Microsoft
   alias FaqcheckWeb.MicrosoftWeb.Components
 
   def render(assigns) do
