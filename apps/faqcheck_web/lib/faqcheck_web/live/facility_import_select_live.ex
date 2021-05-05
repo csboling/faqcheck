@@ -1,8 +1,7 @@
 defmodule FaqcheckWeb.FacilityImportSelectLive do
   use FaqcheckWeb, :live_view
 
-  alias FaqcheckWeb.MicrosoftWeb
-  alias FaqcheckWeb.Upload
+  alias FaqcheckWeb.ImportMethods
 
   def render(assigns) do
     ~L"""
@@ -10,13 +9,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
       <%= select f, :id, @method_names, selected: @import_method.id %>
     </form>
 
-    <%= live_component @socket, @import_method.action_component,
-          id: @import_method.id,
-          locale: @locale,
-          import_method: @import_method,
-          uploads: @uploads %>
-
-    <%= live_component @socket, @import_method.data_component,
+    <%= live_component @socket, @import_method.component,
           id: @import_method.id,
           locale: @locale,
           import_method: @import_method,
@@ -34,8 +27,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
         session: Map.take(session, ["_csrf_token", "microsoft"]),
         resource: :drives,
         breadcrumb: [],
-        action_component: MicrosoftWeb.Components.Actions,
-        data_component: MicrosoftWeb.Components.Data,
+        component: ImportMethods.SharepointComponent,
         strategies: [
           %{
             id: 1,
@@ -48,8 +40,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
         display_name: "Upload a spreadsheet",
         session: %{},
         breadcrumb: [],
-        action_component: Upload.Components.Actions,
-        data_component: Upload.Components.Data,
+        component: ImportMethods.UploadComponent,
         strategies: [
           %{
             id: 2,

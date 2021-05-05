@@ -1,7 +1,7 @@
-defmodule FaqcheckWeb.MicrosoftWeb.Components.Entry do
+defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
   use FaqcheckWeb, :live_cmp  
 
-  alias FaqcheckWeb.MicrosoftWeb.Components
+  alias FaqcheckWeb.ImportMethods.SharepointDataComponent
 
   def render(assigns) do
     ~L"""
@@ -51,7 +51,7 @@ defmodule FaqcheckWeb.MicrosoftWeb.Components.Entry do
   end
 
   defp children(socket, id, type, locale, method) do
-    live_component socket, Components.Data,
+    live_component socket, SharepointDataComponent,
       id: id, locale: locale,
       import_method: Map.put(method, :resource, type)
   end

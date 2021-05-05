@@ -1,8 +1,8 @@
-defmodule FaqcheckWeb.MicrosoftWeb.Components.Data do
+defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
   use FaqcheckWeb, :live_cmp  
 
   alias Faqcheck.Sources.Microsoft
-  alias FaqcheckWeb.MicrosoftWeb.Components
+  alias FaqcheckWeb.ImportMethods.SharepointEntry
 
   def render(assigns) do
     ~L"""
@@ -11,7 +11,9 @@ defmodule FaqcheckWeb.MicrosoftWeb.Components.Data do
     <%    {:ok, entries} -> %>
     <ul>
     <%=     for entry <- entries do %>
-    <%=       live_component @socket, Components.Entry, id: entry.id, entry: entry, locale: @locale, import_method: @import_method %>
+    <%=       live_component @socket, SharepointEntry,
+                id: entry.id, locale: @locale,
+                entry: entry, import_method: @import_method %>
     <%      end %>
     </ul>
     
@@ -26,9 +28,13 @@ defmodule FaqcheckWeb.MicrosoftWeb.Components.Data do
   end
 
   def mount(socket) do
-    {:ok, socket |> assign(sharepoint_data: nil, locale: "en")}
+    {:ok,
+     socket
+     |> assign(
+       sharepoint_data: nil,
+       locale: "en")}
   end
- 
+
   def update(assigns, socket) do
     method = assigns.import_method
     breadcrumb = method.breadcrumb ++ [assigns.id]
