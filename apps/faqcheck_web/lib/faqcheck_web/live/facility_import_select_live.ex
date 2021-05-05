@@ -7,24 +7,14 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
   def render(assigns) do
     ~L"""
     <%= f = form_for :method_sel, "#", [phx_change: :sel_method, phx_submit: :import] %>
-      <%= select f, :id, @method_names %>
-
-      <%= live_component @socket, @import_method.action_component,
-            id: @import_method.id,
-            locale: @locale,
-            import_method: @import_method,
-            uploads: @uploads %>
-
-      <select value="<%= @sel_strategy %>" phx-change="sel_strategy">
-        <%= for strategy <- @import_method.strategies do %>
-        <option value="<%= strategy.id %>">
-          <%= strategy.name %>
-        </option>
-        <%  end %>
-      </select>
-
-      <button>Import</button>
+      <%= select f, :id, @method_names, selected: @import_method.id %>
     </form>
+
+    <%= live_component @socket, @import_method.action_component,
+          id: @import_method.id,
+          locale: @locale,
+          import_method: @import_method,
+          uploads: @uploads %>
 
     <%= live_component @socket, @import_method.data_component,
           id: @import_method.id,
@@ -83,14 +73,19 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
      |> allow_upload(:spreadsheet, accept: ~w(.csv .xlsx))}
   end
 
-  def handle_event("sel_method", %{"method_sel" => method}, socket) do
+  def handle_params(params, url, socket) do
+    method = params["method"]
     {:noreply,
      socket
-     |> assign(import_method: find_method(socket.assigns.import_methods, method["id"]))}
+     |> assign(
+       import_method: find_method(socket.assigns.import_methods, method),
+       params: params)}
   end
 
-  def handle_info({:load, method}, socket) do
-    {:noreply, socket}
+  def handle_event("sel_method", %{"method_sel" => %{"id" => method}}, socket) do
+    {:noreply,
+     socket
+     |> push_patch(to: self_path(socket, %{"method" => method}))}
   end
 
   def handle_info({:update, id, callbacks}, socket) do
@@ -106,5 +101,10 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
       methods,
       Enum.at(methods, 0),
       fn m -> m.id == id end)
+  end
+
+  defp self_path(socket, extra) do
+    Routes.live_path socket, __MODULE__, socket.assigns.locale,
+      Enum.into(extra, socket.assigns.params)
   end
 end
