@@ -22,6 +22,19 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
     method = nil
     import_methods = [
       %{
+        id: "upload",
+        display_name: "Upload a spreadsheet",
+        session: %{},
+        breadcrumb: [],
+        component: ImportMethods.UploadComponent,
+        strategies: [
+          %{
+            id: 2,
+            name: "NMCRG spreadsheet",
+          },
+        ],
+      },
+      %{
         id: "microsoft",
         display_name: "Microsoft Sharepoint",
         session: Map.take(session, ["_csrf_token", "microsoft"]),
@@ -32,19 +45,6 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
           %{
             id: 1,
             name: "RRFB Client Resources spreadsheet",
-          },
-        ],
-      },
-      %{
-        id: "upload",
-        display_name: "Upload a spreadsheet",
-        session: %{},
-        breadcrumb: [],
-        component: ImportMethods.UploadComponent,
-        strategies: [
-          %{
-            id: 2,
-            name: "NMCRG spreadsheet",
           },
         ],
       },

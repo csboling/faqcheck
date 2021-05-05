@@ -32,7 +32,7 @@ config :faqcheck_web, FaqcheckWeb.Endpoint,
   ]
 
 config :faqcheck, Faqcheck.Sources,
-  upload_dir: "c:/users/charl/Desktop/uploads"
+  upload_dir: "/var/uploads"
 
 # ## SSL Support
 #
