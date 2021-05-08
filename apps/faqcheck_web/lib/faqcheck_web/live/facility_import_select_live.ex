@@ -38,7 +38,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
         id: "microsoft",
         display_name: "Microsoft Sharepoint",
         session: Map.take(session, ["_csrf_token", "microsoft"]),
-        resource: :drives,
+        resource: :sites,
         breadcrumb: [],
         component: ImportMethods.SharepointComponent,
         strategies: [
@@ -64,7 +64,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
      |> allow_upload(:spreadsheet, accept: ~w(.csv .xlsx))}
   end
 
-  def handle_params(params, url, socket) do
+  def handle_params(params, _url, socket) do
     method = params["method"]
     {:noreply,
      socket

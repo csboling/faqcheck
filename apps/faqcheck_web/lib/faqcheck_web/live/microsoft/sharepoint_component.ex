@@ -12,7 +12,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointComponent do
     </form>
 
     <%= live_component @socket, SharepointDataComponent,
-          id: "drives", locale: @locale,
+          id: "sites", locale: @locale,
           import_method: @import_method %>
     """
   end

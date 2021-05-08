@@ -27,6 +27,15 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
     <li>
       <%= @entry.name %> - file, last modified <%= format_iso8601(@entry.fileSystemInfo["lastModifiedDateTime"], "MST7MDT") %>
     </li>
+
+    <%    true -> %>
+    <li phx-click="toggle_open" phx-target="<%= @myself %>">
+      <%= @entry.displayName %> - site
+      <%= if @open do %>
+      <%=   children @socket, @entry.id, :site_drives, @locale, @import_method %>
+      <%  end %>
+    </li>
+
     <%  end %>
     """
   end

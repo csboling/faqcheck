@@ -39,20 +39,24 @@ defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
     method = assigns.import_method
     breadcrumb = method.breadcrumb ++ [assigns.id]
     token = method.session["microsoft"]
+    IO.inspect method, label: "call with method"
+    data = token && load(method.resource, assigns.id, token, breadcrumb)
+    IO.inspect data, label: "sharepoint response"
     {:ok,
      socket
      |> assign(
        token: token,
        locale: assigns.locale,
        import_method: Map.put(method, :breadcrumb, breadcrumb),
-       sharepoint_data: token && load(method.resource, assigns.id, token, breadcrumb))}
+       sharepoint_data: data)}
   end
 
   defp load(type, id, token, breadcrumb) do
     IO.inspect breadcrumb, label: "breadcrumb"
     case type do
-      :drives -> Microsoft.API.list_drives(token)
-      :drive -> Microsoft.API.list_drive(token, id)
+      :sites -> Microsoft.API.list_sites(token)
+      :site_drives -> Microsoft.API.list_site_drives(token, id)
+      :drives -> Microsoft.API.list_drives(token, id)
       :folder -> Microsoft.API.list_folder(token, hd(tl(breadcrumb)), id)
     end
   end

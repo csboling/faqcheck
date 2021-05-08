@@ -4,16 +4,34 @@ defmodule Faqcheck.Sources.Microsoft.API do
   alias Faqcheck.Sources.Microsoft.Graph
   alias Faqcheck.Sources.Microsoft.Http
 
+  def list_sites(token) do
+    call token,
+      "/sites?search=*",
+      %{"value" => [%Graph.Entry{}]}
+  end
+
+  def list_site_drives(token, id) do
+    call token,
+      "/sites/#{id}/drives",
+      %{"value" => [%Graph.Entry{}]}
+  end
+
   def list_drives(token) do
-    call(token, "/drives", [%Graph.Entry{}])
+    call token,
+      "/drives",
+      %{"value" => [%Graph.Entry{}]}
   end
 
   def list_drive(token, id) do
-    call(token, "/drives/#{id}/root/children", [%Graph.Entry{}])
+    call token,
+      "/drives/#{id}/root/children",
+      %{"value" => [%Graph.Entry{}]}
   end
 
   def list_folder(token, drive_id, folder_id) do
-    call(token, "/drives/#{drive_id}/items/#{folder_id}/children", [%Graph.Entry{}])
+    call token,
+      "/drives/#{drive_id}/items/#{folder_id}/children",
+      %{"value" => [%Graph.Entry{}]}
   end
 
   @doc """
@@ -32,9 +50,11 @@ defmodule Faqcheck.Sources.Microsoft.API do
       {:error, {"InvalidAuthenticationToken", "Access token has expired or is not yet valid."}}
   """
   def decode(json, shape) do
-    case Poison.decode(json, as: %{"value" => shape}) do
-      {:ok, %{"error" => %{"code" => code, "message" => message}}} -> {:error, {code, message}}
+    case Poison.decode(json, as: shape) do
+      {:ok, %{"error" => error}} -> {:error, {error["code"], error["message"]}}
       {:ok, %{"value" => value}} -> {:ok, value}
+      {:ok, value} when is_nil(value.error) -> {:ok, [value]}
+      {:ok, value} -> {:error, {value.error["code"], value.error["message"]}}
     end
   end
   
