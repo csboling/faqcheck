@@ -11,5 +11,6 @@ defmodule Faqcheck.Sources.Strategies do
   def build_feed(strategy, params, session) do
     strategy.prepare_feed(params, session)
     |> Map.merge(%{params: params, session: session})
+    |> Map.update(:pages, [], &Enum.with_index/1)
   end
 end

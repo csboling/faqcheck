@@ -8,9 +8,27 @@ defmodule FaqcheckWeb.FacilityImportLive do
   def render(assigns) do
     ~L"""
     <h2>Importing: <%= @feed.name %></h2>
-    <h3>Current page: <%= @page.name %></h3>
     <h3>Import strategy: <%= @strategy.description %></h3>
-    <button phx-click="save_all"><%= gettext "Save all" %></button>
+
+    Current page: <%= @page.name %>
+    <details>
+      <summary>Pages</summary>
+      <ul>
+        <%= for {page, index} <- @feed.pages do %>
+          <li>
+            <%= if page == @page do %>
+              <%= page.name %>
+            <%  else %>
+              <a phx-click="sel_page" phx-value-index="<%= index %>">
+                <%= page.name %>
+              </a>
+            <%  end %>
+          </li>
+        <%  end %>
+      </ul>
+    </details>
+
+    <button phx-click="save_all"><%= gettext "Save all on this page" %></button>
     <table>
       <thead>
         <tr>
@@ -53,8 +71,20 @@ defmodule FaqcheckWeb.FacilityImportLive do
        changesets: changesets)}
   end
 
+  def handle_event("sel_page", %{"index" => index}, socket) do
+    {page, changesets} = build_changesets(
+      socket.assigns.strategy,
+      socket.assigns.feed,
+      String.to_integer(index))
+    {:noreply,
+     socket
+     |> assign(
+       page: page,
+       changesets: changesets)}
+  end
+
   defp build_changesets(strategy, feed, index) do
-    page = Enum.at(feed.pages, index)
+    {page, _ix} = Enum.at(feed.pages, index)
     {page, Enum.with_index(strategy.to_changesets(feed, page))}
   end
 end
