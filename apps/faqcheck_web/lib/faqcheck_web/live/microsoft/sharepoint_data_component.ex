@@ -1,7 +1,7 @@
 defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
   use FaqcheckWeb, :live_cmp  
 
-  alias Faqcheck.Sources.Microsoft
+  alias Faqcheck.Sources.Microsoft.API.Sharepoint
   alias FaqcheckWeb.ImportMethods.SharepointEntry
 
   def render(assigns) do
@@ -13,7 +13,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
     <%=     for entry <- entries do %>
     <%=       live_component @socket, SharepointEntry,
                 id: entry.id, locale: @locale,
-                entry: entry, import_method: @import_method %>
+                entry: entry, import_method: @import_method, token: @token %>
     <%      end %>
     </ul>
     
@@ -54,10 +54,11 @@ defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
   defp load(type, id, token, breadcrumb) do
     IO.inspect breadcrumb, label: "breadcrumb"
     case type do
-      :sites -> Microsoft.API.list_sites(token)
-      :site_drives -> Microsoft.API.list_site_drives(token, id)
-      :drives -> Microsoft.API.list_drives(token, id)
-      :folder -> Microsoft.API.list_folder(token, hd(tl(breadcrumb)), id)
+      :sites -> Sharepoint.list_sites(token)
+      :site_drives -> Sharepoint.list_site_drives(token, id)
+      :drives -> Sharepoint.list_drives(token, id)
+      :drive -> Sharepoint.list_drive(token, id)
+      :folder -> Sharepoint.list_folder(token, hd(tl(breadcrumb)), id)
     end
   end
 end

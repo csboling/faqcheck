@@ -6,8 +6,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
 
   def render(assigns) do
     ~L"""
-    <h3><%= gettext("Importing facilities from uploaded spreadsheet") %></h2>
-    <h4><%= link @upload.filename, to: @upload.server_path %></h4>
+    <h3><%= @strategy.description %></h2>
     <button phx-click="save_all"><%= gettext "Save all" %></button>
     <table>
       <thead>
@@ -19,7 +18,9 @@ defmodule FaqcheckWeb.FacilityImportLive do
       </thead>
       <tbody>
         <%= for {changeset, i} <- @changesets do %>
-          <%= live_component @socket, FacilityRowComponent, id: i, locale: @locale, facility: %Facility{}, changeset: changeset, editing: true %>
+          <%= live_component @socket, FacilityRowComponent,
+                id: i, locale: @locale,
+                facility: %Facility{}, changeset: changeset, editing: true %>
         <% end %>
       </tbody>
     </table>
@@ -27,15 +28,22 @@ defmodule FaqcheckWeb.FacilityImportLive do
     """
   end
 
-  def mount(%{"locale" => locale, "upload" => upload_id}, _session, socket) do
-    upload = Sources.get_upload!(upload_id)
-    strategy = Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX
-    changesets = strategy.to_changesets(upload.storage_path)
+  def mount(
+    %{
+      "locale" => locale,
+      "strategy" => strategy_id,
+      "data" => data,
+      "session" => session_keys,
+    } = params,
+    session,
+    socket) do
+    strategy = Faqcheck.Sources.Strategies.get!(strategy_id)
+    changesets = strategy.to_changesets(data, Map.take(session, session_keys))
     {:ok,
      socket
      |> assign(
        locale: locale,
-       upload: upload,
+       strategy: strategy,
        changesets: changesets |> Enum.with_index())}
   end
 end

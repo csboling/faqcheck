@@ -4,36 +4,6 @@ defmodule Faqcheck.Sources.Microsoft.API do
   alias Faqcheck.Sources.Microsoft.Graph
   alias Faqcheck.Sources.Microsoft.Http
 
-  def list_sites(token) do
-    call token,
-      "/sites?search=*",
-      %{"value" => [%Graph.Entry{}]}
-  end
-
-  def list_site_drives(token, id) do
-    call token,
-      "/sites/#{id}/drives",
-      %{"value" => [%Graph.Entry{}]}
-  end
-
-  def list_drives(token) do
-    call token,
-      "/drives",
-      %{"value" => [%Graph.Entry{}]}
-  end
-
-  def list_drive(token, id) do
-    call token,
-      "/drives/#{id}/root/children",
-      %{"value" => [%Graph.Entry{}]}
-  end
-
-  def list_folder(token, drive_id, folder_id) do
-    call token,
-      "/drives/#{drive_id}/items/#{folder_id}/children",
-      %{"value" => [%Graph.Entry{}]}
-  end
-
   @doc """
   Decode a Microsoft Graph API response.
 
@@ -53,8 +23,7 @@ defmodule Faqcheck.Sources.Microsoft.API do
     case Poison.decode(json, as: shape) do
       {:ok, %{"error" => error}} -> {:error, {error["code"], error["message"]}}
       {:ok, %{"value" => value}} -> {:ok, value}
-      {:ok, value} when is_nil(value.error) -> {:ok, [value]}
-      {:ok, value} -> {:error, {value.error["code"], value.error["message"]}}
+      {:ok, value} -> {:ok, value}
     end
   end
   
@@ -65,6 +34,13 @@ defmodule Faqcheck.Sources.Microsoft.API do
         Logger.info "Microsoft Graph response: #{body}"
         decode(body, shape)
       {:error, error} -> {:error, {"HTTP", error}}
+    end
+  end
+
+  def call!(token, url, shape) do
+    case call(token, url, shape) do
+      {:ok, result} -> result
+      {:error, err} -> raise Faqcheck.Sources.Microsoft.APIError, url: url, details: err
     end
   end
 end

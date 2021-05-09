@@ -23,8 +23,12 @@ defmodule FaqcheckWeb.ImportMethods.UploadComponent do
           <td>
             <%= live_patch gettext("Import facilities"), class: "button",
                   to: Routes.live_path(
-                    @socket, FaqcheckWeb.FacilityImportLive,
-                    @locale, upload: f) %>
+                    @socket, FaqcheckWeb.FacilityImportLive, @locale,
+                    strategy: Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX.id,
+                    data: %{
+                      upload_id: f.id,
+                    },
+                    session: []) %>
             <button phx-click="delete_upload"
                     phx-value-id="<%= f.id %>"
                     phx-target="<%= @myself %>">

@@ -2,12 +2,20 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX do
   @behaviour Faqcheck.Sources.Strategy
 
   alias Faqcheck.Referrals.Facility
+  alias Faqcheck.Sources
   alias Faqcheck.Sources.StringHelpers
   alias Faqcheck.Sources.XlsxHelpers
 
   @impl Faqcheck.Sources.Strategy
-  def to_changesets(filename) do
-    XlsxHelpers.map_xlsx(filename, &row_changeset/1)
+  def id(), do: "nmcrg_xlsx"
+
+  @impl Faqcheck.Sources.Strategy
+  def description(), do: "Import uploaded .xlsx spreadsheet from nmcrg.net"
+
+  @impl Faqcheck.Sources.Strategy
+  def to_changesets(%{"upload_id" => upload_id}, _session) do
+    upload = Sources.get_upload!(upload_id)
+    XlsxHelpers.map_xlsx(upload.storage_path, &row_changeset/1)
   end
 
   defp row_changeset(row) do
