@@ -3,7 +3,6 @@ defmodule FaqcheckWeb.ImportMethods.SharepointComponent do
 
   alias FaqcheckWeb.Oidc
   alias FaqcheckWeb.ImportMethods.SharepointDataComponent
-  alias FaqcheckWeb.ImportMethods.SharepointEntry
 
   def render(assigns) do
     ~L"""

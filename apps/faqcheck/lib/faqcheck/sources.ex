@@ -3,6 +3,10 @@ defmodule Faqcheck.Sources do
   alias Faqcheck.Sources.Upload
   alias Faqcheck.Sources.DataSource
 
+  defmodule Feed do
+    defstruct [:name, :params, :session, :pages]
+  end
+
   def create_file(source_path, entry, referral_type, mk_url) do
     config = Application.fetch_env!(:faqcheck, Faqcheck.Sources)
     upload_dir = Keyword.get(config, :upload_dir)

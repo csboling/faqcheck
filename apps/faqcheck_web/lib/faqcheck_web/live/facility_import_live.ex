@@ -2,11 +2,14 @@ defmodule FaqcheckWeb.FacilityImportLive do
   use FaqcheckWeb, :live_view
 
   alias Faqcheck.Sources
+  alias Faqcheck.Sources.Strategies
   alias Faqcheck.Referrals.Facility
 
   def render(assigns) do
     ~L"""
-    <h3><%= @strategy.description %></h2>
+    <h2>Importing: <%= @feed.name %></h2>
+    <h3>Current page: <%= @page.name %></h3>
+    <h3>Import strategy: <%= @strategy.description %></h3>
     <button phx-click="save_all"><%= gettext "Save all" %></button>
     <table>
       <thead>
@@ -34,16 +37,24 @@ defmodule FaqcheckWeb.FacilityImportLive do
       "strategy" => strategy_id,
       "data" => data,
       "session" => session_keys,
-    } = params,
+    },
     session,
     socket) do
-    strategy = Faqcheck.Sources.Strategies.get!(strategy_id)
-    changesets = strategy.to_changesets(data, Map.take(session, session_keys))
+    strategy = Strategies.get!(strategy_id)
+    feed = Strategies.build_feed(strategy, data, Map.take(session, session_keys))
+    {page, changesets} = build_changesets(strategy, feed, 0)
     {:ok,
      socket
      |> assign(
        locale: locale,
        strategy: strategy,
-       changesets: changesets |> Enum.with_index())}
+       feed: feed,
+       page: page,
+       changesets: changesets)}
+  end
+
+  defp build_changesets(strategy, feed, index) do
+    page = Enum.at(feed.pages, index)
+    {page, Enum.with_index(strategy.to_changesets(feed, page))}
   end
 end

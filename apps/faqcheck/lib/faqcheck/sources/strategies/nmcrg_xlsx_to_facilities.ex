@@ -6,16 +6,26 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX do
   alias Faqcheck.Sources.StringHelpers
   alias Faqcheck.Sources.XlsxHelpers
 
-  @impl Faqcheck.Sources.Strategy
+  @impl Sources.Strategy
   def id(), do: "nmcrg_xlsx"
 
-  @impl Faqcheck.Sources.Strategy
+  @impl Sources.Strategy
   def description(), do: "Import uploaded .xlsx spreadsheet from nmcrg.net"
 
-  @impl Faqcheck.Sources.Strategy
-  def to_changesets(%{"upload_id" => upload_id}, _session) do
+  @impl Sources.Strategy
+  def prepare_feed(%{"upload_id" => upload_id}, _session) do
     upload = Sources.get_upload!(upload_id)
-    XlsxHelpers.map_xlsx(upload.storage_path, &row_changeset/1)
+    %Sources.Feed{
+      name: upload.filename,
+      pages: [upload],
+    }
+  end
+
+  @impl Faqcheck.Sources.Strategy
+  def to_changesets(
+    _feed,
+    %Sources.Upload{storage_path: storage_path}) do
+    XlsxHelpers.map_xlsx(storage_path, &row_changeset/1)
   end
 
   defp row_changeset(row) do

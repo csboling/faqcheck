@@ -1,7 +1,6 @@
 defmodule Faqcheck.Sources.Microsoft.API do
   require Logger
 
-  alias Faqcheck.Sources.Microsoft.Graph
   alias Faqcheck.Sources.Microsoft.Http
 
   @doc """

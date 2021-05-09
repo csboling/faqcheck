@@ -3,5 +3,7 @@ defmodule Faqcheck.Sources.Strategy do
 
   @callback description() :: String.t
 
-  @callback to_changesets(Map.t, Map.t) :: list(Ecto.Changeset.t)
+  @callback prepare_feed(Map.t, Map.t) :: Faqcheck.Sources.Feed.t
+
+  @callback to_changesets(Faqcheck.Sources.Feed, Map.t) :: list(Ecto.Changeset.t)
 end

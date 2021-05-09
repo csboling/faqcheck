@@ -56,7 +56,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
     case type do
       :sites -> Sharepoint.list_sites(token)
       :site_drives -> Sharepoint.list_site_drives(token, id)
-      :drives -> Sharepoint.list_drives(token, id)
+      # :drives -> Sharepoint.list_drives(token, id)
       :drive -> Sharepoint.list_drive(token, id)
       :folder -> Sharepoint.list_folder(token, Enum.at(breadcrumb, 2), id)
     end

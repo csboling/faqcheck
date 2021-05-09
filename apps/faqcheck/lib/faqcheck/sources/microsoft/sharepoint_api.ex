@@ -31,4 +31,10 @@ defmodule Faqcheck.Sources.Microsoft.API.Sharepoint do
       "/drives/#{drive_id}/items/#{folder_id}/children",
       %{"value" => [%Graph.Entry{type: :item}]}
   end
+
+  def get_item(token, drive_id, item_id) do
+    API.call token,
+      "/drives/#{drive_id}/items/#{item_id}",
+      %Graph.Entry{type: :item}
+  end
 end
