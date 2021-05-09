@@ -31,7 +31,7 @@ defmodule Faqcheck.Sources.Microsoft.API do
     Logger.info "call Microsoft Graph: #{url}"
     case Http.get(url, [token]) do
       {:ok, %HTTPoison.Response{body: body}} ->
-        Logger.info "Microsoft Graph response: #{body}"
+        # Logger.info "Microsoft Graph response: #{body}"
         decode(body, shape)
       {:error, error} -> {:error, {"HTTP", error}}
     end

@@ -10,8 +10,14 @@ defmodule Faqcheck.Sources.Microsoft.API.Excel do
 
   def list_tables(token, drive_id, item_id, worksheet_id) do
     API.call token,
-      "/drives/#{drive_id}/items/#{item_id}/workbook/worksheets(#{worksheet_id})/tables",
+      "/drives/#{drive_id}/items/#{item_id}/workbook/worksheets('#{worksheet_id}')/tables",
       %{"value" => [%Graph.Table{}]}
+  end
+
+  def used_range(token, drive_id, item_id, worksheet_id) do
+    API.call token,
+      "/drives/#{drive_id}/items/#{item_id}/workbook/worksheets('#{worksheet_id}')/usedRange",
+      %{"values" => [[]]}
   end
   
   def get_range(token, drive_id, item_id, worksheet_id, range) do

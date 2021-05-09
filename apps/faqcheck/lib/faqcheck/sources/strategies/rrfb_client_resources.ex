@@ -21,37 +21,33 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
     worksheets
     |> Enum.flat_map(
       fn %Graph.Worksheet{id: worksheet_id, name: category} ->
-        {:ok, %{"values" => titles}} = API.Excel.get_range token,
-          drive_id, entry_id, worksheet_id,
-          "A2:A30"
-        IO.inspect titles, label: "section titles"
-        titles
-        |> Stream.with_index()
-        |> Stream.filter(fn {title, index} -> String.trim(Enum.at(title, 0)) == "" end)
-        |> Stream.map(fn {_title, index} ->
-          {:ok, %{"values" => [row]}} = API.Excel.get_range token,
-            drive_id, entry_id, worksheet_id,
-            "B#{index + 2}:F#{index + 2}"
-          IO.inspect row, label: "resource row"
-          row
-        end)
-        |> Stream.filter(fn row -> String.trim(Enum.at(row, 0)) != "" end)
-        |> Enum.map(fn row ->
-          %Facility{} 
-          |> Facility.changeset(%{
-            name: Enum.at(row, 0),
-            description: Enum.at(row, 4),
-            hours: Enum.map(
-              StringHelpers.extract_hours(Enum.at(row, 2)),
-              &Map.from_struct/2),
-            address: %{
-              street_address: Enum.at(row, 3),
-            },
-            contacts: %{
-              phone: Enum.at(row, 1),
-            },
-          })
-        end)
+        case API.Excel.used_range token,
+          drive_id, entry_id, worksheet_id do
+          {:ok, %{"values" => values}} when is_nil(values) ->
+            []
+          {:ok, %{"values" => values}} ->
+            values
+            |> Stream.with_index()
+            |> Stream.filter(fn {row, index} ->
+              String.trim(Enum.at(row, 0)) == "" && String.trim(Enum.at(row, 1)) != ""
+            end)
+            |> Enum.map(fn {row, _index} ->
+              %Facility{} 
+              |> Facility.changeset(%{
+                name: Enum.at(row, 1),
+                description: Enum.at(row, 5),
+                # hours: Enum.map(
+                #   StringHelpers.extract_hours(Enum.at(row, 3)),
+                #  &Map.from_struct/2),
+                address: %{
+                  street_address: Enum.at(row, 4),
+                },
+                contacts: %{
+                  phone: Enum.at(row, 2),
+                },
+              })
+            end)
+        end
       end)
   end
 end
