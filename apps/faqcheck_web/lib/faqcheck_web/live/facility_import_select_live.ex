@@ -76,7 +76,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
   def handle_event("sel_method", %{"method_sel" => %{"id" => method}}, socket) do
     {:noreply,
      socket
-     |> push_patch(to: self_path(socket, %{"method" => method}))}
+     |> push_patch(to: params_path(__MODULE__, socket, %{"method" => method}))}
   end
 
   def handle_info({:update, id, callbacks}, socket) do
@@ -92,10 +92,5 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
       methods,
       Enum.at(methods, 0),
       fn m -> m.id == id end)
-  end
-
-  defp self_path(socket, extra) do
-    Routes.live_path socket, __MODULE__, socket.assigns.locale,
-      Enum.into(extra, socket.assigns.params)
   end
 end

@@ -49,6 +49,7 @@ defmodule Faqcheck.MixProject do
       {:phoenix_pubsub, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:quarto, "~> 1.1.5"},
+      {:rummage_ecto, "~> 2.0.0"},
       {:xlsxir, "~> 1.6.4"},
     ]
   end

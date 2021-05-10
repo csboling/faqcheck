@@ -6,22 +6,16 @@ defmodule FaqcheckWeb.FacilitiesLive do
 
   def render(assigns) do
     ~L"""
-    <form phx-submit="search" class="flex-form">
-      <input
-        type="text"
-        name="query"
-        phx-change="suggest"
-        value="<%= @q_desc %>"
-        placeholder="<%= gettext "Search by name or description" %>"
-        <%= if @loading, do: "readonly" %>
-      />
+    <%= f = form_for :search, "#", [phx_submit: "search", class: "flex-form"] %>
+      <%= label f, :name, gettext("Name") %>
+      <%= text_input f, :name, placeholder: gettext("Search by name or description"), value: @params["search"]["name"] %>
       <div class="flex-row">
-        <select value="<%= @q_weekday %>">
-          <option value="<%= Weekday.Today %>">
-            <%= gettext "Open today" %>
-          </option>
+        <select>
           <option value="<%= Weekday.Any %>">
             <%= gettext "Open any day" %>
+          </option>
+          <option value="<%= Weekday.Today %>">
+            <%= gettext "Open today" %>
           </option>
           <option value="<%= Weekday.Monday %>">
             <%= gettext "Open on Mondays" %>
@@ -45,16 +39,10 @@ defmodule FaqcheckWeb.FacilitiesLive do
             <%= gettext "Open on Sundays" %>
           </option>
         </select>
-        <input
-          type="text"
-          name="zipcode"
-          phx-change="suggest"
-          value="<%= @q_zipcode %>"
-          placeholder="<%= gettext "Zipcode" %>"
-          <%= if @loading, do: "readonly" %>
-        />
+        <!-- <%= text_input :search, :zipcode, placeholder: gettext("Zipcode") %> -->
 
         <button type="submit"><%= gettext "Search" %></button>
+        <button type="button" phx-click="clear_search"><%= gettext "Reset search filters" %></button>
       </div>
     </form>
 
@@ -66,7 +54,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
           <th><%= gettext "Last updated" %></th>
         </tr>
       </thead>
-      <tbody phx-update="append" id="facilities">
+      <tbody id="facilities">
         <%= for fac <- @facilities do %>
           <%= live_component @socket, FacilityRowComponent, id: fac.id, locale: @locale, facility: fac %>
         <% end %>
@@ -85,32 +73,44 @@ defmodule FaqcheckWeb.FacilitiesLive do
      socket
      |> assign(
        page_size: 10,
+       params: %{},
        locale: locale,
-
-       q_desc: nil,
-       q_weekday: Weekday.Today,
-       q_zipcode: nil,
-
        loading: false)
      |> fetch(),
      temporary_assigns: [facilities: []]}
   end
 
   defp fetch(%{
-    assigns: %{page_size: page_size}
+    assigns: %{page_size: page_size, params: params}
   } = socket) do
-    facilities = Referrals.list_facilities limit: page_size
+    facilities = Referrals.list_facilities(
+      search: params["search"],
+      limit: page_size)
     assign socket,
       facilities: facilities.entries,
       after: facilities.metadata.after
+  end
+
+  def handle_params(params, _url, socket) do
+    {:noreply,
+     socket |> assign(params: params) |> fetch()}
   end
 
   def handle_event("suggest", _, socket) do
     {:noreply, socket}
   end
 
-  def handle_event("search", _, socket) do
-    {:noreply, socket}
+  def handle_event("search", params, socket) do
+    {:noreply,
+     socket
+     |> push_patch(to: params_path(__MODULE__, socket, Map.take(params, ["search"])))}  
+  end
+
+  def handle_event("clear_search", params, socket) do
+    path = FaqcheckWeb.Router.Helpers.live_path socket, __MODULE__, socket.assigns.locale
+    {:noreply,
+     socket
+     |> push_patch(to: path)}
   end
 
   def handle_event("load_more", _, %{assigns: assigns} = socket) do

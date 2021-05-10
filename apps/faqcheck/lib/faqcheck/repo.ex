@@ -9,8 +9,18 @@ defmodule Faqcheck.Repo do
   import Ecto.Changeset
   import PaperTrail.Serializer
 
+  def search(query, opts \\ []) do
+    search = Keyword.get(opts, :search, %{}) || %{}
+    params = search
+    |> Enum.map(fn {k, v} -> {String.to_atom(k), %{search_type: :like, search_term: v}} end)
+    |> Enum.into(%{})
+    {query, rummage} = Rummage.Ecto.rummage(query, %{search: params})
+    query
+  end
+
   def versions(changeset, options \\ []) do
-    changeset |> prepare_changes(fn cs ->
+    changeset
+    |> prepare_changes(fn cs ->
       case cs.action do
         :insert -> attach_versions(cs, options)
         :update -> update_versions(cs, options)

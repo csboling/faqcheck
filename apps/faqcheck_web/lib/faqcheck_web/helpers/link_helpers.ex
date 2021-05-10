@@ -39,4 +39,9 @@ defmodule FaqcheckWeb.LinkHelpers do
   def lang_link_self(conn, lang) do
     lang_link lang, tl(conn.path_info)
   end
+
+  def params_path(module, socket, extra) do
+    FaqcheckWeb.Router.Helpers.live_path socket, module, socket.assigns.locale,
+      Enum.into(extra, socket.assigns.params)
+  end
 end
