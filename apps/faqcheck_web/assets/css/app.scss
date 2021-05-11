@@ -43,3 +43,19 @@
     display: block;
   }
 }
+
+div.table { display: table; }
+div.table-head {
+  display: table-header-group;
+  font-weight: bold;
+}
+div.table-body { display: table-row-group; }
+.table-row { display: table-row; }
+div.table-head-cell {
+  display: table-cell;
+  padding: 1.2rem 1.5rem;
+}
+div.table-body-cell {
+  display: table-cell;
+  padding: 1.2rem 1.5rem;
+}
