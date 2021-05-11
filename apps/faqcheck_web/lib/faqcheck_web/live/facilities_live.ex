@@ -2,7 +2,6 @@ defmodule FaqcheckWeb.FacilitiesLive do
   use FaqcheckWeb, :live_view
 
   alias Faqcheck.Referrals
-  alias Faqcheck.Referrals.OperatingHours.Weekday
 
   def render(assigns) do
     ~L"""
@@ -11,36 +10,8 @@ defmodule FaqcheckWeb.FacilitiesLive do
         <%= label f, :name, gettext("Name") %>
         <%= text_input f, :name, placeholder: gettext("Search by name or description"), value: @params["search"]["name"] %>
         <div class="flex-row">
-          <select>
-            <option value="<%= Weekday.Any %>">
-              <%= gettext "Open any day" %>
-            </option>
-            <option value="<%= Weekday.Today %>">
-              <%= gettext "Open today" %>
-            </option>
-            <option value="<%= Weekday.Monday %>">
-              <%= gettext "Open on Mondays" %>
-            </option>
-            <option value="<%= Weekday.Tuesday %>">
-              <%= gettext "Open on Tuesdays" %>
-            </option>
-            <option value="<%= Weekday.Wednesday %>">
-              <%= gettext "Open on Wednesdays" %>
-            </option>
-            <option value="<%= Weekday.Thursday %>">
-              <%= gettext "Open on Thursdays" %>
-            </option>
-            <option value="<%= Weekday.Friday %>">
-              <%= gettext "Open on Fridays" %>
-            </option>
-            <option value="<%= Weekday.Saturday %>">
-              <%= gettext "Open on Saturdays" %>
-            </option>
-            <option value="<%= Weekday.Sunday %>">
-              <%= gettext "Open on Sundays" %>
-            </option>
-          </select>
-          <%= text_input :search, :zipcode, placeholder: gettext("Zipcode") %>
+          <%= weekday_filter_select f, :weekday %>
+          <%= text_input :search, :zipcode, placeholder: gettext("Zipcode"), value: @params["search"]["zipcode"] %>
           <button type="submit"><%= gettext "Search" %></button>
           <button type="button" phx-click="clear_search"><%= gettext "Reset search filters" %></button>
         </div>

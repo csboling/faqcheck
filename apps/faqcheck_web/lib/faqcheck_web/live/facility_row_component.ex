@@ -161,7 +161,7 @@ defmodule FacilityRowComponent do
   end
 
   def handle_event("validate", params, socket) do
-    IO.inspect params, label: "validate"
+    IO.inspect params, label: "validate params"
     # changeset = socket.assigns.facility
     # |> Facility.changeset(params)
     # {:noreply, socket |> assign(changeset: changeset)}

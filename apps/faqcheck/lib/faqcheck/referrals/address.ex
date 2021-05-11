@@ -22,7 +22,7 @@ defmodule Faqcheck.Referrals.Address do
 
   def changeset(addr, attrs) do
     addr
-    |> cast(attrs, [:street_address])
+    |> cast(attrs, [:street_address, :locality, :postcode])
     |> validate_required([:street_address])
     |> Faqcheck.Repo.versions()
   end
