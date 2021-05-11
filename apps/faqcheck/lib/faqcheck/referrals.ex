@@ -7,6 +7,7 @@ defmodule Faqcheck.Referrals do
   alias Faqcheck.Repo
   alias Faqcheck.Referrals.Organization
   alias Faqcheck.Referrals.Facility
+  alias Faqcheck.Referrals.FacilityFilters
 
   @doc """
   Returns the list of organizations.
@@ -111,13 +112,13 @@ defmodule Faqcheck.Referrals do
     Organization.changeset(organization, attrs)
   end
 
-  def list_facilities(opts \\ []) do
-    query = from f in Repo.search(Facility, opts),
-      order_by: [asc: f.id],
-      preload: [:address, :contacts, :hours, :organization]
-    ret = query
-    |> Repo.paginate(opts)
-    ret
+  def list_facilities(search \\ %{}, opts \\ []) do
+    with {:ok, query, _values} <- Filterable.apply_filters(Facility, search, FacilityFilters, opts) do
+      q = from f in query,
+        order_by: [asc: f.id],
+        preload: [:address, :contacts, :hours, :organization]
+      Repo.paginate(q, opts)
+    end
   end
 
   def get_facility!(id) do
