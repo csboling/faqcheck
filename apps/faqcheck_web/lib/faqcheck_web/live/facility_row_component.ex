@@ -10,68 +10,68 @@ defmodule FacilityRowComponent do
     ~L"""
 
       <%= if @editing do %>
-      	<%= f = form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself] %>
-      	  <div class="table-body-cell">
-      	    <%= inputs_for f, :organization, fn org -> %>
-      	      <%= text_input org, :name, placeholder: gettext("Organization name") %>
-      	    <% end %>
-      	    <%= text_input f, :name, placeholder: gettext("Facility name") %>
+        <%= f = form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself] %>
+          <div class="table-body-cell">
+            <%= inputs_for f, :organization, fn org -> %>
+              <%= text_input org, :name, placeholder: gettext("Organization name") %>
+            <% end %>
+            <%= text_input f, :name, placeholder: gettext("Facility name") %>
 
-      	    <br />
+            <br />
 
-      	    <%= submit gettext("Save") %>
-      	    <button type="button" phx-click="cancel" phx-target="<%= @myself %>"><%= gettext("Cancel") %></button>
-      	  </div>
+            <%= submit gettext("Save") %>
+            <button type="button" phx-click="cancel" phx-target="<%= @myself %>"><%= gettext("Cancel") %></button>
+          </div>
 
-      	  <div class="table-body-cell">
-      	    <p><%= textarea f, :description, placeholder: gettext("Facility description") %></p>
-      	    <p>
-      	      <%= inputs_for f, :address, fn addr -> %>
-      	        <%= text_input addr, :street_address, placeholder: gettext("Street address") %>
-      	        <%= text_input addr, :locality, placeholder: gettext("City and state/province")  %>
-      	        <%= text_input addr, :postcode, placeholder: gettext("Zip/postal code") %>
-      	      <% end %>
-      	    </p>
-      	    <table>
-      	      <thead>
-      	        <tr>
-      	          <th><%= gettext("Weekday") %></th>
-      	          <th><%= gettext("Opens") %></th>
-      	          <th><%= gettext("Closes") %></th>
-      	          <th></th>
-      	        </tr>
-      	      </thead>
-      	      <tbody>
-      	        <%= inputs_for f, :hours, fn h -> %>
-      	        <tr>
-      	          <td>
-      	           <%= weekday_select h, :weekday %>
-      	          </td>
-      	          <td>
-      	            <%= hour_select h, :opens %>
-      	          </td>
-      	          <td>
-      	            <%= hour_select h, :closes %>
-      	          </td>
-      	          <td>
-      	            <button type="button" phx-click="delete_hours" phx-target="<%= @myself %>" phx-value-index="<%= h.index %>">
-      	              <%= gettext("Delete") %>
-      	            </button>
-      	          </td>
-      	        </tr>
-      	        <% end %>
-      	      </tbody>
-      	      <tfoot>
-      	        <tr>
-      	          <td>
-      	            <button type="button" phx-click="add_hours" phx-target="<%= @myself %>">
-      	              <%= gettext("Add more hours") %>
-      	            </button>
-      	          </td>
-      	        </tr>
-      	      </tfoot>
-      	    </table>
-      	  </div class="table-body-cell">
+          <div class="table-body-cell">
+            <p><%= textarea f, :description, placeholder: gettext("Facility description") %></p>
+            <p>
+              <%= inputs_for f, :address, fn addr -> %>
+                <%= text_input addr, :street_address, placeholder: gettext("Street address") %>
+                <%= text_input addr, :locality, placeholder: gettext("City and state/province")  %>
+                <%= text_input addr, :postcode, placeholder: gettext("Zip/postal code") %>
+              <% end %>
+            </p>
+            <table>
+              <thead>
+                <tr>
+                  <th><%= gettext("Weekday") %></th>
+                  <th><%= gettext("Opens") %></th>
+                  <th><%= gettext("Closes") %></th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <%= for h <- inputs_for f, :hours do%>
+                <tr>
+                  <td>
+                   <%= weekday_select h, :weekday %>
+                  </td>
+                  <td>
+                    <%= hour_select h, :opens %>
+                  </td>
+                  <td>
+                    <%= hour_select h, :closes %>
+                  </td>
+                  <td>
+                    <button type="button" phx-click="delete_hours" phx-target="<%= @myself %>" phx-value-index="<%= h.index %>">
+                      <%= gettext("Delete") %>
+                    </button>
+                  </td>
+                </tr>
+                <% end %>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>
+                    <button type="button" phx-click="add_hours" phx-target="<%= @myself %>">
+                      <%= gettext("Add more hours") %>
+                    </button>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div class="table-body-cell">
 
           <div class="table-body-cell">
             <%= if !is_nil(@facility.id) do %>
@@ -79,40 +79,47 @@ defmodule FacilityRowComponent do
             <%  end %>
           </div class="table-body-cell">
 
-      	</form>
+        </form>
 
       <% else %>
         <div class="table-row">
-      	  <div class="table-body-cell">
-      	    <%= link @facility.name, to: Routes.facility_path(@socket, :show, @locale, @facility) %>
-      	  	<br />
-      	    <button phx-click="edit" phx-target="<%= @myself %>"><%= gettext("Edit") %></button>
-      	  </div class="table-body-cell">
+          <div class="table-body-cell">
+            <%= link @facility.name, to: Routes.facility_path(@socket, :show, @locale, @facility) %>
+            <br />
+            <%= if !is_nil(@current_user) do %>
+            <button phx-click="edit" phx-target="<%= @myself %>">
+              <%= gettext("Edit") %>
+            </button>
+            <%  else %>
+            <%= link gettext("Leave feedback"), class: "button",
+                  to: Routes.facility_feedback_path(@socket, :feedback, @locale, @facility) %>
+            <%  end %>
+          </div class="table-body-cell">
 
-      	  <div class="table-body-cell">
-      	    <p><%= @facility.description %></p>
-      	    <p>
-      	      <%= @facility.address.street_address %>
-      	      <br />
-      	      <%= @facility.address.locality %>
-      	      <%= @facility.address.postcode %>
-      	    </p>
-      	    <%= if !Enum.empty?(@facility.contacts) do %>
-      	    <ul>
-      	      <%= for c <- @facility.contacts do %>
-      	      <li><%= c.email %></li>
-      	      <li>%<= c.phone %></li>
-      	      <% end %>
-      	    </ul>
-      	    <% end %>
-      	    <%= if !Enum.empty?(@facility.hours) do %>
-      	    <table>
-      	      <thead>
-      	        <tr>
-      	          <th><%= gettext("Weekday") %></th>
-      	          <th><%= gettext("Opens") %></th>
-      	          <th><%= gettext("Closes") %></th>
-      	        </tr>
+          <div class="table-body-cell">
+            <p><%= @facility.description %></p>
+            <p>
+              <%= @facility.address.street_address %>
+              <br />
+              <%= @facility.address.locality %>
+              <%= @facility.address.postcode %>
+            </p>
+            <%= if !Enum.empty?(@facility.contacts) do %>
+            <ul>
+              <%= for c <- @facility.contacts do %>
+              <li><a href="mailto:<%= c.email %>" /></li>
+              <li><a href="tel:<%= c.phone %>" /></li>
+              <% end %>
+            </ul>
+            <% end %>
+            <%= if !Enum.empty?(@facility.hours) do %>
+            <table>
+              <thead>
+                <tr>
+                  <th><%= gettext("Weekday") %></th>
+                  <th><%= gettext("Opens") %></th>
+                  <th><%= gettext("Closes") %></th>
+                </tr>
                 <%= for h <- @facility.hours do %>
                 <tr>
                   <td><%= weekday_name h.weekday %></td>
@@ -120,10 +127,10 @@ defmodule FacilityRowComponent do
                   <td><%= hours_str h.closes %></td>
                 </tr>
                 <% end %>
-      	      </thead>
-      	    </table>
-      	    <% end %>
-      	  </div>
+              </thead>
+            </table>
+            <% end %>
+          </div>
 
           <div class="table-body-cell">
             <%= if !is_nil(@facility.id) do %>
@@ -160,12 +167,10 @@ defmodule FacilityRowComponent do
     {:noreply, socket |> assign(changeset: changeset)}
   end
 
-  def handle_event("validate", params, socket) do
-    IO.inspect params, label: "validate params"
-    # changeset = socket.assigns.facility
-    # |> Facility.changeset(params)
-    # {:noreply, socket |> assign(changeset: changeset)}
-    {:noreply, socket}
+  def handle_event("validate", %{"facility" => params}, socket) do
+    changeset = socket.assigns.facility
+    |> Facility.changeset(params)
+    {:noreply, socket |> assign(changeset: changeset)}
   end
 
   def handle_event("cancel", _params, socket) do

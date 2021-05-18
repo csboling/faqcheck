@@ -22,4 +22,10 @@ defmodule FaqcheckWeb.FacilityController do
       resource: facility,
       link: FaqcheckWeb.Router.Helpers.facility_path(conn, :show, locale, facility))
   end
+
+  def feedback(conn, %{"facility_id" => id, "locale" => locale}) do
+    facility = Referrals.get_facility!(id)
+    changeset = Referrals.leave_feedback(facility)
+    render(conn, "feedback.html", facility: facility, changeset: changeset)
+  end
 end

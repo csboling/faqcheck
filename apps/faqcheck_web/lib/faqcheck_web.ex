@@ -90,6 +90,7 @@ defmodule FaqcheckWeb do
       import FaqcheckWeb.LinkHelpers
       import FaqcheckWeb.Timezones
       import FaqcheckWeb.FormHelpers
+      import FaqcheckWeb.LiveUserHelpers
       alias FaqcheckWeb.Router.Helpers, as: Routes
     end
   end

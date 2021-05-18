@@ -155,7 +155,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
       iex> parse_day("Tues")
       Faqcheck.Referrals.OperatingHours.Weekday.Tuesday
 
-      iex> parse_day("Th")
+      iex> parse_day("TH")
       Faqcheck.Referrals.OperatingHours.Weekday.Thursday
   """
   def parse_day(str) do
@@ -163,7 +163,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
       s when s in ["M", "Mo", "Mon", "Monday"] -> Weekday.Monday
       s when s in ["T", "Tu", "Tue", "Tues", "Tuesday"] -> Weekday.Tuesday
       s when s in ["W", "Wed", "Weds", "Wednesday"] -> Weekday.Wednesday
-      s when s in ["R", "Th", "Thu", "Thurs", "Thursday"] -> Weekday.Thursday
+      s when s in ["R", "Th", "TH", "Thu", "Thurs", "Thursday"] -> Weekday.Thursday
       s when s in ["F", "Fr", "Fri", "Friday"] -> Weekday.Friday
       s when s in ["S", "Sat", "Saturday"] -> Weekday.Saturday
       s when s in ["Su", "Sun", "Sunday"] -> Weekday.Sunday

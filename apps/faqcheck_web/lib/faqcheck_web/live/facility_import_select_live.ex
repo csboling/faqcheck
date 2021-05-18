@@ -52,6 +52,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
 
     {:ok,
      socket
+     |> require_user(session)
      |> assign(
        locale: locale,
        sel_method: method,

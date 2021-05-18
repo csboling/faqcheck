@@ -17,7 +17,7 @@ config :faqcheck, Faqcheck.Repo,
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :faqcheck_web, FaqcheckWeb.Endpoint,
-  http: [port: 4000],
+  http: [ip: {0,0,0,0}, port: 4000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,

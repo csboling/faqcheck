@@ -13,13 +13,13 @@ defmodule FaqcheckWeb.FormHelpers do
   end
 
   @weekday_names [
-    gettext("Monday"),
-    gettext("Tuesday"),
-    gettext("Wednesday"),
-    gettext("Thursday"),
-    gettext("Friday"),
-    gettext("Saturday"),
-    gettext("Sunday"),
+    {gettext("Monday"), Weekday.Monday.value},
+    {gettext("Tuesday"), Weekday.Tuesday.value},
+    {gettext("Wednesday"), Weekday.Wednesday.value},
+    {gettext("Thursday"), Weekday.Thursday.value},
+    {gettext("Friday"), Weekday.Friday.value},
+    {gettext("Saturday"), Weekday.Saturday.value},
+    {gettext("Sunday"), Weekday.Sunday.value},
   ]
 
   @weekday_filters [
@@ -34,15 +34,16 @@ defmodule FaqcheckWeb.FormHelpers do
     {gettext("Open on Sundays"), Weekday.Sunday.value},
   ]
 
-  def weekday_name(w),
-    do: Enum.at(@weekday_names, w.value)
+  def weekday_name(w) do
+    {name, _} = Enum.at(@weekday_names, w.value)
+    name
+  end
 
   def hours_str(w),
     do: Calendar.strftime(w, "%I:%M %p")
 
   def weekday_select(form, field) do
-    select form, field,
-      options: @weekday_names
+    select form, field, @weekday_names
   end
 
   def weekday_filter_select(form, field) do

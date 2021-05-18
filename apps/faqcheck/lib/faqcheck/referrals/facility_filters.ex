@@ -3,7 +3,6 @@ defmodule Faqcheck.Referrals.FacilityFilters do
   use Filterable.DSL
   use Filterable.Ecto.Helpers
 
-  alias Faqcheck.Referrals.Address
   alias Faqcheck.Referrals.OperatingHours.Weekday
 
   filter name(query, value) do

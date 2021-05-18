@@ -1,7 +1,6 @@
 defmodule FaqcheckWeb.FacilityImportLive do
   use FaqcheckWeb, :live_view
 
-  alias Faqcheck.Sources
   alias Faqcheck.Sources.Strategies
   alias Faqcheck.Referrals.Facility
 
@@ -29,22 +28,22 @@ defmodule FaqcheckWeb.FacilityImportLive do
     </details>
 
     <button phx-click="save_all"><%= gettext "Save all on this page" %></button>
-    <table>
-      <thead>
-        <tr>
-          <th><%= gettext "Name" %></th>
-          <th><%= gettext "Description" %></th>
-          <th><%= gettext "Last updated" %></th>
-        </tr>
-      </thead>
-      <tbody>
+    <div class="table">
+      <div class="table-head">
+        <div class="table-row">
+          <div class="table-head-cell"><%= gettext "Name" %></div>
+          <div class="table-head-cell"><%= gettext "Description" %></div>
+          <div class="table-head-cell"><%= gettext "Last updated" %></div>
+        </div>
+      </div>
+      <div class="table-body">
         <%= for {changeset, i} <- @changesets do %>
           <%= live_component @socket, FacilityRowComponent,
                 id: i, locale: @locale,
                 facility: %Facility{}, changeset: changeset, editing: true %>
         <% end %>
-      </tbody>
-    </table>
+      </div>
+    </div>
     <button phx-click="save_all"><%= gettext "Save all" %></button>
     """
   end
@@ -58,6 +57,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
     },
     session,
     socket) do
+    socket = require_user(socket, session)
     strategy = Strategies.get!(strategy_id)
     feed = Strategies.build_feed(strategy, data, Map.take(session, session_keys))
     {page, changesets} = build_changesets(strategy, feed, 0)

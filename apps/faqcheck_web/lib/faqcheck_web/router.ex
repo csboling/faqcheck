@@ -62,7 +62,18 @@ defmodule FaqcheckWeb.Router do
       get "/microsoft", HelpController, :microsoft
     end
 
-    get "/search", SearchController, :index
+    scope "/" do
+      resources "/facilities", FacilityController, as: :facility do
+      	get "/history", FacilityController, :history, as: :history
+        get "/feedback", FacilityController, :feedback, as: :feedback
+      end
+
+      scope "/live" do
+	scope "/facilities" do
+	  live "/", FacilitiesLive
+        end
+      end
+    end
 
     scope "/" do
       pipe_through :require_authenticated_user
@@ -73,20 +84,14 @@ defmodule FaqcheckWeb.Router do
 	get "/history", OrganizationController, :history, as: :history
       end
 
-      resources "/facilities", FacilityController, as: :facility do
-      	get "/history", FacilityController, :history, as: :history
-      end
-
       scope "/live" do
 	scope "/facilities" do
-	  live "/", FacilitiesLive
 	  live "/upload", FacilityUploadLive
 	  live "/select-import", FacilityImportSelectLive
 	  live "/import", FacilityImportLive
 	end
       end
     end
-
 
     ## Authentication routes
     scope "/user" do

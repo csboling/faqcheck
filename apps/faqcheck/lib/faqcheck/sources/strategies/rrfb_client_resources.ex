@@ -19,6 +19,7 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
     %{"microsoft" => token}) do
     {:ok, entry} = API.Sharepoint.get_item(token, drive_id, entry_id)
     {:ok, worksheets} = API.Excel.list_worksheets(token, drive_id, entry_id)
+    IO.inspect worksheets, label: "available worksheets"
     %Sources.Feed{
       name: entry.name,
       pages: worksheets,
@@ -35,8 +36,10 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
     case API.Excel.used_range token,
       drive_id, entry_id, worksheet_id do
       {:ok, %{"values" => values}} when is_nil(values) ->
+        IO.inspect [], label: "no values in used range"
         []
       {:ok, %{"values" => values}} ->
+        IO.inspect values, label: "used range values"
         values
         |> Stream.filter(fn row ->
           String.trim(Enum.at(row, 0)) == "" && String.trim(Enum.at(row, 1)) != ""
@@ -46,9 +49,9 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
           |> Facility.changeset(%{
             name: Enum.at(row, 1),
             description: Enum.at(row, 5),
-            # hours: Enum.map(
-            #   StringHelpers.extract_hours(Enum.at(row, 3)),
-            #  &Map.from_struct/2),
+            hours: Enum.map(
+               StringHelpers.extract_hours(Enum.at(row, 3)),
+               &Map.from_struct/1),
             address: %{
               street_address: Enum.at(row, 4),
             },

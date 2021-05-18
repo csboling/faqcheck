@@ -27,7 +27,9 @@ defmodule FaqcheckWeb.FacilitiesLive do
         </div>
         <div class="table-body" id="facilities">
           <%= for fac <- @facilities do %>
-            <%= live_component @socket, FacilityRowComponent, id: fac.id, locale: @locale, facility: fac %>
+            <%= live_component @socket, FacilityRowComponent,
+                  id: fac.id, locale: @locale,
+                  facility: fac, current_user: @current_user %>
           <% end %>
         </div>
       </div>
@@ -40,9 +42,10 @@ defmodule FaqcheckWeb.FacilitiesLive do
     """
   end
 
-  def mount(%{"locale" => locale}, _session, socket) do
+  def mount(%{"locale" => locale}, session, socket) do
     {:ok,
      socket
+     |> assign_user(session)
      |> assign(
        page_size: 10,
        params: %{},
@@ -78,7 +81,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
      |> push_patch(to: params_path(__MODULE__, socket, Map.take(params, ["search"])))}  
   end
 
-  def handle_event("clear_search", params, socket) do
+  def handle_event("clear_search", _params, socket) do
     path = FaqcheckWeb.Router.Helpers.live_path socket, __MODULE__, socket.assigns.locale
     {:noreply,
      socket

@@ -8,6 +8,7 @@ defmodule Faqcheck.Referrals do
   alias Faqcheck.Referrals.Organization
   alias Faqcheck.Referrals.Facility
   alias Faqcheck.Referrals.FacilityFilters
+  alias Faqcheck.Referrals.Feedback
 
   @doc """
   Returns the list of organizations.
@@ -139,5 +140,10 @@ defmodule Faqcheck.Referrals do
     Repo.one from fac in Facility,
       where: fac.id == ^id,
       preload: [versions: :user]
+  end
+
+  def leave_feedback(facility) do
+    %Feedback{facility: facility}
+    |> Feedback.changeset(%{})
   end
 end

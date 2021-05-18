@@ -10,12 +10,12 @@ defmodule Faqcheck.Sources.Microsoft.API do
 
       iex> decode(
       ...>   ~s({"value": [{"id": "zxcv", "name": "test"}]}),
-      ...>   [%Faqcheck.Sources.Microsoft.Graph{}])
-      {:ok, [%Faqcheck.Sources.Microsoft.Graph{id: "zxcv", name: "test"}]}
+      ...>   %{"value" => [%Faqcheck.Sources.Microsoft.Graph.Entry{}]})
+      {:ok, [%Faqcheck.Sources.Microsoft.Graph.Entry{id: "zxcv", name: "test"}]}
 
       iex> decode(
-      ...>   ~s({"error": {"code": "InvalidAuthenticationToken", "innerError": {"date" => "2021-04-28T20:49:06"}, "message": "Access token has expired or is not yet valid."}}),
-      ...>   [%Faqcheck.Sources.Microsoft.Graph{}])
+      ...>   ~s({"error": {"code": "InvalidAuthenticationToken", "innerError": {"date": "2021-04-28T20:49:06"}, "message": "Access token has expired or is not yet valid."}}),
+      ...>   %{"value" => [%Faqcheck.Sources.Microsoft.Graph.Entry{}]})
       {:error, {"InvalidAuthenticationToken", "Access token has expired or is not yet valid."}}
   """
   def decode(json, shape) do
