@@ -190,10 +190,6 @@ defmodule FacilityRowComponent do
   end
 
   def handle_event("save", %{"facility" => params}, socket) do
-    # IO.inspect params, label: "save params"
-    # changeset = socket.assigns.facility
-    # |> Facility.changeset(validate_params(params))
-    # IO.inspect changeset, label: "upserting facility"
     inserted = Referrals.upsert_facility(
       socket.assigns.facility,
       validate_params(params))

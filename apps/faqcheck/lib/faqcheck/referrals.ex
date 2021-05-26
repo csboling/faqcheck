@@ -130,14 +130,30 @@ defmodule Faqcheck.Referrals do
   end
 
   def upsert_facility(facility, params) do
-    keywords = Repo.all(from t in Tag, where: t.keyword in ^params["keywords"])
+    keywords = get_keywords(facility, params)
     changeset = facility
     |> Facility.changeset(params)
     |> Ecto.Changeset.put_assoc(:keywords, keywords)
+
     if is_nil(changeset.data.id) do
       Repo.insert!(changeset)
     else
       Repo.update!(changeset)
+    end
+  end
+
+  def get_keywords(facility, params) do
+    case params["keywords"] do
+      nil -> Repo.all(from t in Tag, where: t.facility_id == ^facility.id)
+      kws ->
+        requested = MapSet.new(kws)
+        existing_kws = Repo.all(from t in Tag, where: t.keyword in ^kws)
+        existing_names = existing_kws
+        |> Enum.map(fn kw -> kw.keyword end)
+        |> MapSet.new()
+        new_kws = MapSet.difference(requested, existing_names)
+        |> Enum.map(fn kw -> %Tag{keyword: kw} end)
+        existing_kws ++ new_kws
     end
   end
 
