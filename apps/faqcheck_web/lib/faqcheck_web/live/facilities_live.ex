@@ -21,6 +21,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
         <div class="table-head">
           <div class="table-row">
             <div class="table-head-cell"><%= gettext "Name" %></div>
+            <div class="table-head-cell"><%= gettext "Keywords" %></div>
             <div class="table-head-cell"><%= gettext "Details" %></div>
             <div class="table-head-cell"><%= gettext "Last updated" %></div>
           </div>

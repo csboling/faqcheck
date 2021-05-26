@@ -5,6 +5,7 @@ defmodule Faqcheck.Referrals do
 
   import Ecto.Query, warn: false
   alias Faqcheck.Repo
+  alias Faqcheck.Referrals.Keyword, as: Tag
   alias Faqcheck.Referrals.Organization
   alias Faqcheck.Referrals.Facility
   alias Faqcheck.Referrals.FacilityFilters
@@ -117,7 +118,7 @@ defmodule Faqcheck.Referrals do
     with {:ok, query, _values} <- Filterable.apply_filters(Facility, search, FacilityFilters, opts) do
       q = from f in query,
         order_by: [asc: f.id],
-        preload: [:address, :contacts, :hours, :organization]
+        preload: [:address, :contacts, :hours, :keywords, :organization]
       Repo.paginate(q, opts)
     end
   end
@@ -125,10 +126,14 @@ defmodule Faqcheck.Referrals do
   def get_facility!(id) do
     Repo.one! from fac in Facility,
       where: fac.id == ^id,
-      preload: [:address, :contacts, :hours, :organization]
+      preload: [:address, :contacts, :hours, :keywords, :organization]
   end
 
-  def upsert_facility(changeset) do
+  def upsert_facility(facility, params) do
+    keywords = Repo.all(from t in Tag, where: t.keyword in ^params["keywords"])
+    changeset = facility
+    |> Facility.changeset(params)
+    |> Ecto.Changeset.put_assoc(:keywords, keywords)
     if is_nil(changeset.data.id) do
       Repo.insert!(changeset)
     else
@@ -146,4 +151,22 @@ defmodule Faqcheck.Referrals do
     %Feedback{facility: facility}
     |> Feedback.changeset(%{})
   end
+
+  # def find_keywords(kw_list) do
+  #   keywords = kw_list
+  #   |> String.split(';')
+  #   |> Enum.map(&String.trim/1)
+  #   |> MapSet.new()
+  #   existing = Repo.all from k in Tag,
+  #     where: k.name in ^keywords,
+  #     order_by: k.name
+  #   found = existing
+  #   |> Enum.map(fn kw -> kw.name end)
+  #   |> MapSet.new()
+  #   new = MapSet.difference(keywords, found)
+  #   |> Enum.map(fn name -> %Tag{keyword: name} end)
+
+  #   [existing ++ new]
+  #   |> Enum.sort_by(:name)
+  # end
 end

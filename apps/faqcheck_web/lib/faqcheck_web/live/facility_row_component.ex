@@ -24,6 +24,11 @@ defmodule FacilityRowComponent do
           </div>
 
           <div class="table-body-cell">
+            <%= text_input f, :keywords, placeholder: gettext("Keywords"),
+                value: Enum.join(Enum.map(@facility.keywords, fn kw -> kw.keyword end), "; ") %>
+          </div>
+
+          <div class="table-body-cell">
             <p><%= textarea f, :description, placeholder: gettext("Facility description") %></p>
             <p>
               <%= inputs_for f, :address, fn addr -> %>
@@ -97,6 +102,12 @@ defmodule FacilityRowComponent do
           </div class="table-body-cell">
 
           <div class="table-body-cell">
+            <%= for kw <- @facility.keywords do %>
+              <%= kw.keyword %>;&nbsp;
+            <%  end %>
+          </div>
+
+          <div class="table-body-cell">
             <p><%= @facility.description %></p>
             <p>
               <%= @facility.address.street_address %>
@@ -168,6 +179,7 @@ defmodule FacilityRowComponent do
   end
 
   def handle_event("validate", %{"facility" => params}, socket) do
+    {_kws, params} = Map.pop(params, "keywords")
     changeset = socket.assigns.facility
     |> Facility.changeset(params)
     {:noreply, socket |> assign(changeset: changeset)}
@@ -178,11 +190,22 @@ defmodule FacilityRowComponent do
   end
 
   def handle_event("save", %{"facility" => params}, socket) do
-    IO.inspect params, label: "save params"
-    changeset = socket.assigns.facility |> Facility.changeset(params)
-    IO.inspect changeset, label: "upserting facility"
-    inserted = Referrals.upsert_facility(changeset)
+    # IO.inspect params, label: "save params"
+    # changeset = socket.assigns.facility
+    # |> Facility.changeset(validate_params(params))
+    # IO.inspect changeset, label: "upserting facility"
+    inserted = Referrals.upsert_facility(
+      socket.assigns.facility,
+      validate_params(params))
     facility = Referrals.get_facility!(inserted.id)
     {:noreply, socket |> assign(editing: false, facility: facility)}
+  end
+
+  def validate_params(params) do
+    params
+    |> Map.update(
+      "keywords",
+      [],
+      &Referrals.Keyword.split/1)
   end
 end

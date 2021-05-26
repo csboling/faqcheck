@@ -19,7 +19,8 @@ defmodule Faqcheck.Referrals.Facility do
       preload_order: [asc: :weekday, asc: :opens]
     many_to_many :contacts, Faqcheck.Referrals.Contact,
       join_through: Faqcheck.Referrals.Affiliation
-
+    many_to_many :keywords, Faqcheck.Referrals.Keyword,
+      join_through: Faqcheck.Referrals.FacilityKeyword
     has_many :sources, Faqcheck.Sources.DataSource
 
     schema_versions()
