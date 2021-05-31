@@ -1,7 +1,9 @@
 defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
   @behaviour Faqcheck.Sources.Strategy
 
+  alias Faqcheck.Referrals.Contact
   alias Faqcheck.Referrals.Facility
+  alias Faqcheck.Referrals.Keyword, as: Tag
   alias Faqcheck.Sources
   alias Faqcheck.Sources.Microsoft.API
   alias Faqcheck.Sources.Microsoft.Graph
@@ -41,25 +43,38 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
       {:ok, %{"values" => values}} ->
         IO.inspect values, label: "used range values"
         values
-        |> Stream.filter(fn row ->
-          String.trim(Enum.at(row, 0)) == "" && String.trim(Enum.at(row, 1)) != ""
-        end)
-        |> Enum.map(fn row ->
-          %Facility{} 
-          |> Facility.changeset(%{
-            name: Enum.at(row, 1),
-            description: Enum.at(row, 5),
-            hours: Enum.map(
-               StringHelpers.extract_hours(Enum.at(row, 3)),
-               &Map.from_struct/1),
-            address: %{
-              street_address: Enum.at(row, 4),
-            },
-            contacts: %{
-              phone: Enum.at(row, 2),
-            },
-          })
-        end)
+        |> filter_rows()
+        |> Enum.map(&row_to_changeset/1)
     end
+  end
+
+  def filter_rows(rows) do
+    rows
+    |> Stream.drop(2)
+    |> Stream.filter(fn row ->
+      String.trim(Enum.at(row, 0)) == "" && String.trim(Enum.at(row, 1)) != ""
+    end)
+  end
+
+  def row_to_changeset(row) do
+    %Facility{} 
+    |> Facility.changeset(%{
+      name: Enum.at(row, 1),
+      keywords: Enum.at(row, 2)
+      |> Tag.split(),
+      contacts: Enum.concat([
+        Enum.at(row, 3) |> Contact.split(:phone),
+        Enum.at(row, 4) |> Contact.split(:email),
+        Enum.at(row, 5) |> Contact.split(:website),
+      ])
+      |> Enum.map(&Map.from_struct/1),
+      hours: Enum.map(
+        StringHelpers.extract_hours(Enum.at(row, 6)),
+        &Map.from_struct/1),
+      address: %{
+        street_address: Enum.at(row, 7),
+      },
+      description: Enum.at(row, 8),
+    })
   end
 end

@@ -103,8 +103,6 @@ defmodule Faqcheck.Referrals.Facility do
     next_hours = hours
     |> OperatingHours.next()
     |> Map.from_struct()
-    IO.inspect hours, label: "current hours"
-    IO.inspect next_hours, label: "next hours"
     cs
     |> changeset(%{
       hours: Enum.map(hours, &Map.from_struct/1) ++ [next_hours]

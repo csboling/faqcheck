@@ -33,7 +33,7 @@ defmodule FaqcheckWeb.Oidc do
     end
   end
 
-  defp load_state(csrf, state) do
+  def load_state(csrf, state) do
     if !is_nil(state) do
       with {:ok, json} <- Base.url_decode64(state),
            {:ok, auth_state} <- Poison.decode(json, as: %AuthorizeState{}),
@@ -47,7 +47,7 @@ defmodule FaqcheckWeb.Oidc do
     end
   end
 
-  defp build_state(csrf, redirect) do
+  def build_state(csrf, redirect) do
     %AuthorizeState{
       csrf: csrf,
       redirect: redirect,

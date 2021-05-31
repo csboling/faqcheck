@@ -10,10 +10,10 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSXTest do
         %Sources.Feed{},
         %Sources.Upload{storage_path: "data/nmcrg.net/NMCRG_ResorcesCrisis .xlsx"})
       assert Enum.count(changesets) == 2
-      data = Enum.map(changesets, fn cs ->
+      for cs <- changesets do 
 	assert cs.valid?
 	Ecto.Changeset.apply_changes(cs)
-      end)
+      end
     end
   end
 end
