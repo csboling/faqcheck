@@ -37,45 +37,45 @@ defmodule FacilityRowComponent do
                 <%= text_input addr, :postcode, placeholder: gettext("Zip/postal code") %>
               <% end %>
             </p>
-            <table>
-              <thead>
-                <tr>
-                  <th><%= gettext("Weekday") %></th>
-                  <th><%= gettext("Opens") %></th>
-                  <th><%= gettext("Closes") %></th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <%= for h <- inputs_for f, :hours do%>
-                <tr>
-                  <td>
-                   <%= weekday_select h, :weekday %>
-                  </td>
-                  <td>
+            <div class="table">
+              <div class="table-head">
+                <div class="table-row">
+                  <div class="table-head-cell"><%= gettext("Weekday") %></div>
+                  <div class="table-head-cell"><%= gettext("Opens") %></div>
+                  <div class="table-head-cell"><%= gettext("Closes") %></div>
+                  <div class="table-head-cell"></div>
+                </div>
+              </div>
+              <div class="table-body">
+                <%= inputs_for f, :hours, fn h -> %>
+                <div class="table-row">
+                  <div class="table-body-cell">
+                   <%= weekday_select h, :weekday, value: h.data.weekday.value %>
+                  </div>
+                  <div class="table-body-cell">
                     <%= hour_select h, :opens %>
-                  </td>
-                  <td>
+                  </div>
+                  <div class="table-body-cell">
                     <%= hour_select h, :closes %>
-                  </td>
-                  <td>
+                  </div>
+                  <div class="table-body-cell">
                     <button type="button" phx-click="delete_hours" phx-target="<%= @myself %>" phx-value-index="<%= h.index %>">
                       <%= gettext("Delete") %>
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
                 <% end %>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td>
+              </div>
+              <div class="table-foot">
+                <div class="table-row">
+                  <div class="table-foot-cell">
                     <button type="button" phx-click="add_hours" phx-target="<%= @myself %>">
                       <%= gettext("Add more hours") %>
                     </button>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div class="table-body-cell">
 
           <div class="table-body-cell">
@@ -179,7 +179,7 @@ defmodule FacilityRowComponent do
   end
 
   def handle_event("validate", %{"facility" => params}, socket) do
-    {_kws, params} = Map.pop(params, "keywords")
+    params = validate_params(params)
     changeset = socket.assigns.facility
     |> Facility.changeset(params)
     {:noreply, socket |> assign(changeset: changeset)}
@@ -199,6 +199,14 @@ defmodule FacilityRowComponent do
 
   def validate_params(params) do
     params
+    |> Map.update(
+      "hours",
+      [],
+      fn hours ->
+        Enum.map(hours, fn {k, h} ->
+          Map.update(h, "weekday", nil, &String.to_integer/1)
+        end)
+      end)
     |> Map.update(
       "keywords",
       [],

@@ -7,7 +7,13 @@ defmodule Faqcheck.Referrals.FacilityFilters do
 
   filter name(query, value) do
     query
-    |> where([f], ilike(f.name, ^"%#{value}%") or ilike(f.description, ^"%#{value}%"))
+    |> join(:left, [f], k in assoc(f, :keywords))
+    |> where(
+      [f, k],
+      ilike(f.name, ^"%#{value}%")
+      or ilike(f.description, ^"%#{value}%")
+      or ilike(k.keyword, ^"%#{value}"))
+    |> distinct(true)
   end
 
   @options cast: :integer

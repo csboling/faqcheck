@@ -167,22 +167,4 @@ defmodule Faqcheck.Referrals do
     %Feedback{facility: facility}
     |> Feedback.changeset(%{})
   end
-
-  # def find_keywords(kw_list) do
-  #   keywords = kw_list
-  #   |> String.split(';')
-  #   |> Enum.map(&String.trim/1)
-  #   |> MapSet.new()
-  #   existing = Repo.all from k in Tag,
-  #     where: k.name in ^keywords,
-  #     order_by: k.name
-  #   found = existing
-  #   |> Enum.map(fn kw -> kw.name end)
-  #   |> MapSet.new()
-  #   new = MapSet.difference(keywords, found)
-  #   |> Enum.map(fn name -> %Tag{keyword: name} end)
-
-  #   [existing ++ new]
-  #   |> Enum.sort_by(:name)
-  # end
 end

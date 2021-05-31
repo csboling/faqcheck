@@ -39,6 +39,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
   def changeset(hours, attrs) do
     hours
     |> cast(attrs, [:weekday, :opens, :closes, :valid_from, :valid_to])
+    |> Weekday.validate(:weekday)
     |> validate_required([:weekday, :opens, :closes])
     |> Faqcheck.Repo.versions()
   end

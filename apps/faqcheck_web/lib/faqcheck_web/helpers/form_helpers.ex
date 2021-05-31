@@ -13,13 +13,13 @@ defmodule FaqcheckWeb.FormHelpers do
   end
 
   @weekday_names [
-    {gettext("Monday"), Weekday.Monday.value},
-    {gettext("Tuesday"), Weekday.Tuesday.value},
-    {gettext("Wednesday"), Weekday.Wednesday.value},
-    {gettext("Thursday"), Weekday.Thursday.value},
-    {gettext("Friday"), Weekday.Friday.value},
-    {gettext("Saturday"), Weekday.Saturday.value},
-    {gettext("Sunday"), Weekday.Sunday.value},
+    {gettext("Monday"), Integer.to_string(Weekday.Monday.value)},
+    {gettext("Tuesday"), Integer.to_string(Weekday.Tuesday.value)},
+    {gettext("Wednesday"), Integer.to_string(Weekday.Wednesday.value)},
+    {gettext("Thursday"), Integer.to_string(Weekday.Thursday.value)},
+    {gettext("Friday"), Integer.to_string(Weekday.Friday.value)},
+    {gettext("Saturday"), Integer.to_string(Weekday.Saturday.value)},
+    {gettext("Sunday"), Integer.to_string(Weekday.Sunday.value)},
   ]
 
   @weekday_filters [
@@ -42,11 +42,11 @@ defmodule FaqcheckWeb.FormHelpers do
   def hours_str(w),
     do: Calendar.strftime(w, "%I:%M %p")
 
-  def weekday_select(form, field) do
-    select form, field, @weekday_names
+  def weekday_select(form, field, opts \\ []) do
+    select form, field, @weekday_names, opts
   end
 
-  def weekday_filter_select(form, field) do
-    select form, field, @weekday_filters
+  def weekday_filter_select(form, field, opts \\ []) do
+    select form, field, @weekday_filters, opts
   end
 end

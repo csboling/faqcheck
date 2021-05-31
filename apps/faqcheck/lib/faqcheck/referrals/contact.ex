@@ -9,4 +9,12 @@ defmodule Faqcheck.Referrals.Contact do
 
     timestamps()
   end
+
+  def split(str, field) do
+    str
+    |> String.split(";")
+    |> Enum.map(fn item ->
+      struct %Faqcheck.Referrals.Contact{}, %{field => String.trim(item)}
+    end)
+  end
 end
