@@ -21,7 +21,6 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
     %{"microsoft" => token}) do
     {:ok, entry} = API.Sharepoint.get_item(token, drive_id, entry_id)
     {:ok, worksheets} = API.Excel.list_worksheets(token, drive_id, entry_id)
-    IO.inspect worksheets, label: "available worksheets"
     %Sources.Feed{
       name: entry.name,
       pages: worksheets,
@@ -38,10 +37,8 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
     case API.Excel.used_range token,
       drive_id, entry_id, worksheet_id do
       {:ok, %{"values" => values}} when is_nil(values) ->
-        IO.inspect [], label: "no values in used range"
         []
       {:ok, %{"values" => values}} ->
-        IO.inspect values, label: "used range values"
         values
         |> filter_rows()
         |> Enum.map(&row_to_changeset/1)
@@ -57,24 +54,40 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
   end
 
   def row_to_changeset(row) do
-    %Facility{} 
-    |> Facility.changeset(%{
-      name: Enum.at(row, 1),
-      keywords: Enum.at(row, 2)
-      |> Tag.split(),
-      contacts: Enum.concat([
-        Enum.at(row, 3) |> Contact.split(:phone),
-        Enum.at(row, 4) |> Contact.split(:email),
-        Enum.at(row, 5) |> Contact.split(:website),
-      ])
-      |> Enum.map(&Map.from_struct/1),
-      hours: Enum.map(
-        StringHelpers.extract_hours(Enum.at(row, 6)),
-        &Map.from_struct/1),
-      address: %{
-        street_address: Enum.at(row, 7),
-      },
-      description: Enum.at(row, 8),
-    })
+    IO.inspect row, label: "processing row"
+    %Facility{}
+    |> Facility.changeset(%{})
+    |> try_process(:name, Enum.at(row, 1))
+    |> try_process(:keywords, Enum.at(row, 2), &Tag.split/1)
+    |> try_process(
+      :contacts,
+      [
+        Enum.at(row, 3),
+        Enum.at(row, 4),
+        Enum.at(row, 5),
+      ],
+      fn [phone, email, website] ->
+        [
+          Contact.split(phone, :phone),
+          Contact.split(email, :email),
+          Contact.split(website, :website),
+        ]
+      end)
+    |> try_process(:hours, Enum.at(row, 6), &StringHelpers.parse_hours/1)
+    |> try_process(:address, Enum.at(row, 7))
+    |> try_process(:description, Enum.at(row, 8))
+    |> Facility.changeset(%{})
+  end
+
+  def try_process(changeset, key, data),
+    do: try_process(changeset, key, data, &Function.identity/1)
+
+  def try_process(changeset, key, data, processor) do
+    try do
+      result = processor.(data)
+      Ecto.Changeset.put_change(changeset, key, result)
+    rescue
+      e -> Ecto.Changeset.add_error(changeset, key, Exception.message(e))
+    end
   end
 end

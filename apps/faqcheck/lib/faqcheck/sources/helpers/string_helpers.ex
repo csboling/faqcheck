@@ -74,4 +74,65 @@ defmodule Faqcheck.Sources.StringHelpers do
   def capture_hours(desc) do
     Regex.named_captures(@extract_hours_regex, desc)
   end
+
+  @doc """
+  Build business hours using a simple syntax.
+
+  ## Examples
+
+      iex> parse_hours("M, T, TH, F: 8am-5pm & W: 8am-7pm")
+      [
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Monday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:00:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Tuesday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:00:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Wednesday,
+          opens: ~T[08:00:00],
+          closes: ~T[19:00:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Thursday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:00:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Friday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:00:00],
+        },
+      ]
+o
+      iex> parse_hours("M: 8am-12pm, 1pm-5pm")
+      [
+         %Faqcheck.Referrals.OperatingHours{
+           weekday: Faqcheck.Referrals.OperatingHours.Weekday.Monday,
+           opens: ~T[08:00:00],
+           closes: ~T[12:00:00],
+         },
+         %Faqcheck.Referrals.OperatingHours{
+           weekday: Faqcheck.Referrals.OperatingHours.Weekday.Monday,
+           opens: ~T[13:00:00],
+           closes: ~T[17:00:00],
+         },
+      ]
+  """
+  def parse_hours(desc) do
+    String.split(desc, "&")
+    |> Enum.flat_map(fn g ->
+      [days_str, hours_str] = String.split(g, ":", parts: 2)
+      days = String.split(days_str, ",")
+      |> Enum.flat_map(&OperatingHours.parse_days/1)
+      hours = String.split(hours_str, ",")
+      |> Enum.map(&OperatingHours.parse_hours/1)
+      for d <- days, {opens, closes} <- hours, do: %OperatingHours{weekday: d, opens: opens, closes: closes}
+    end)
+    |> Enum.sort_by(fn h -> h.weekday.value end)
+  end
 end

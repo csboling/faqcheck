@@ -90,8 +90,8 @@ defmodule Faqcheck.Referrals.OperatingHours do
       ]
   """
   def from_description(first_day_str, last_day_str, opens_str, closes_str) do
-    opens = parse_hours(opens_str)
-    given_closes = parse_hours(closes_str)
+    opens = parse_hour(opens_str)
+    given_closes = parse_hour(closes_str)
     closes = case Time.compare(opens, given_closes) do
       :gt -> given_closes
       |> Time.add(12 * 60 * 60, :second)
@@ -121,28 +121,76 @@ defmodule Faqcheck.Referrals.OperatingHours do
   end
 
   @doc """
-  Parse hours from a string description.
+  Parse time of day from a string description.
   
   ## Examples
 
-      iex> parse_hours("10:30:00")
+      iex> parse_hour("10:30:00")
       ~T[10:30:00]
 
-      iex> parse_hours("10:30")
+      iex> parse_hour("10:30")
       ~T[10:30:00]
 
-      iex> parse_hours("5")
+      iex> parse_hour("5")
       ~T[05:00:00]
   """
-  def parse_hours(str) do
+  def parse_hour(str) do
     segments = String.split(str, ":")
     if length(segments) < 3 do
-      parse_hours(str <> ":00")
+      parse_hour(str <> ":00")
     else
       hours_seg = hd(segments)
       hours = String.length(hours_seg) == 2 && hours_seg || "0" <> hours_seg
       Time.from_iso8601!(Enum.join([hours | tl(segments)], ":"))
     end
+  end
+
+  @doc """
+  Parse opening and closing hours from a string description.
+
+  ## Examples
+
+      iex> parse_hours("9-5")
+      {~T[09:00:00], ~T[17:00:00]}
+
+      iex> parse_hours("1pm-5pm")
+      {~T[13:00:00], ~T[17:00:00]}
+  """
+  def parse_hours(str) do
+    [opens, closes] = String.split(str, "-", parts: 2)
+    |> Enum.map(fn s ->
+      s = s |> String.trim()
+      hour = s
+      |> String.trim_trailing("pm")
+      |> String.trim_trailing("am")
+      |> String.trim()
+      |> parse_hour()
+      if String.ends_with?(s, "pm") do
+        plus_12h hour
+      else
+        hour
+      end
+    end)
+    order_hours(opens, closes)
+  end
+
+  def order_hours(opens, closes) do
+    case Time.compare(opens, closes) do
+      :gt -> {
+        opens,
+        plus_12h(closes),
+      }
+      _ -> {
+        opens,
+        closes,
+      }
+    end
+  end
+
+  def plus_12h(t) do
+    t
+    |> Time.add(12 * 60 * 60, :second)
+    |> Time.truncate(:second)
   end
 
   @doc """
@@ -166,9 +214,23 @@ defmodule Faqcheck.Referrals.OperatingHours do
       s when s in ["W", "Wed", "Weds", "Wednesday"] -> Weekday.Wednesday
       s when s in ["R", "Th", "TH", "Thu", "Thurs", "Thursday"] -> Weekday.Thursday
       s when s in ["F", "Fr", "Fri", "Friday"] -> Weekday.Friday
-      s when s in ["S", "Sat", "Saturday"] -> Weekday.Saturday
+      s when s in ["S      IO.inspect days
+      IO.inspect hours
+", "Sat", "Saturday"] -> Weekday.Saturday
       s when s in ["Su", "Sun", "Sunday"] -> Weekday.Sunday
       _ -> raise "unknown weekday format: #{str}"
+    end
+  end
+
+  def parse_days(str) do
+    parts = String.split(str, "-", parts: 2)
+    case length parts do
+      1 -> [parts |> Enum.at(0) |> String.trim() |> parse_day()]
+      2 -> 
+        first_day = parts |> Enum.at(0) |> String.trim() |> parse_day()
+        last_day = parts |> Enum.at(1) |> String.trim() |> parse_day()
+        first_day.value..last_day.value |> Enum.map(&Weekday.from/1)
+      _ -> raise "expected day (M) or day range (M-W), got: #{str}"
     end
   end
 end

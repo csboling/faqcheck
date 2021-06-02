@@ -31,6 +31,7 @@ defmodule Faqcheck.Referrals.Facility do
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:address)
     |> cast_assoc(:hours)
+    |> cast_assoc(:keywords)
     |> validate_required([:name, :description])
     |> Faqcheck.Repo.versions()
   end

@@ -55,6 +55,8 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources.Tests do
     test "produces valid changeset" do
       changeset = RRFBClientResources.row_to_changeset(@row)
       assert changeset.valid?
+      assert !Enum.empty?(Ecto.Changeset.get_change(changeset, :keywords))
+      assert !Enum.empty?(Ecto.Changeset.get_change(changeset, :hours))
     end
   end
 end

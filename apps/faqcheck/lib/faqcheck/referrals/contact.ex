@@ -13,8 +13,10 @@ defmodule Faqcheck.Referrals.Contact do
   def split(str, field) do
     str
     |> String.split(";")
+    |> Stream.map(&String.trim/1)
+    |> Stream.filter(&(&1 != ""))
     |> Enum.map(fn item ->
-      struct %Faqcheck.Referrals.Contact{}, %{field => String.trim(item)}
+      struct %Faqcheck.Referrals.Contact{}, %{field => item}
     end)
   end
 end

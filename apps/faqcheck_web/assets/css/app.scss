@@ -50,7 +50,11 @@ div.table-head {
   font-weight: bold;
 }
 div.table-body { display: table-row-group; }
-.table-row { display: table-row; }
+.table-row {
+  display: table-row;
+}
+.table-body > .table-row:nth-child(odd) { background: #F7F7F7; }
+
 div.table-head-cell {
   display: table-cell;
   padding: 1.2rem 1.5rem;

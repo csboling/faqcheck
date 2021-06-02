@@ -24,8 +24,12 @@ defmodule FacilityRowComponent do
           </div>
 
           <div class="table-body-cell">
-            <%= text_input f, :keywords, placeholder: gettext("Keywords"),
-                value: Enum.join(Enum.map(@facility.keywords, fn kw -> kw.keyword end), "; ") %>
+            <%= inputs_for f, :keywords, fn kw -> %>
+              <%= text_input kw, :keyword, style: "width: 100px;" %>
+            <%  end %>
+            <button type="button">
+              <%= gettext("Add keywords") %>
+            </button>
           </div>
 
           <div class="table-body-cell">
@@ -70,7 +74,7 @@ defmodule FacilityRowComponent do
                 <div class="table-row">
                   <div class="table-foot-cell">
                     <button type="button" phx-click="add_hours" phx-target="<%= @myself %>">
-                      <%= gettext("Add more hours") %>
+                      <%= gettext("Add hours") %>
                     </button>
                   </div>
                 </div>

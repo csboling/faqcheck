@@ -39,6 +39,7 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       add :name,  :string
       add :phone, :string
       add :email, :string
+      add :website, :string
 
       timestamps()
     end
