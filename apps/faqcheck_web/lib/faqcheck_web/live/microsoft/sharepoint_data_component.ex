@@ -18,7 +18,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
     </ul>
     
     <%    {:error, {_code, msg}} -> %>
-    <p>Could not access SharePoint data: <%= msg %></p>
+    <p>Could not access SharePoint data: <%= msg %> This often means you need to log in to Microsoft again.</p>
 
     <%    nil -> %>
     <p>To access your SharePoint files, log in to your Microsoft account by clicking the button above.</p>

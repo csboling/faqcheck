@@ -10,12 +10,14 @@ defmodule FacilityRowComponent do
     ~L"""
 
       <%= if @editing do %>
-        <%= f = form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself] %>
+        <%= form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself], fn f -> %>
           <div class="table-body-cell">
             <%= inputs_for f, :organization, fn org -> %>
               <%= text_input org, :name, placeholder: gettext("Organization name") %>
+              <%= error_tag org, :name %>
             <% end %>
             <%= text_input f, :name, placeholder: gettext("Facility name") %>
+            <%= error_tag f, :name %>
 
             <br />
 
@@ -26,6 +28,7 @@ defmodule FacilityRowComponent do
           <div class="table-body-cell">
             <%= inputs_for f, :keywords, fn kw -> %>
               <%= text_input kw, :keyword, style: "width: 100px;" %>
+              <%= error_tag kw, :keyword %>
             <%  end %>
             <button type="button">
               <%= gettext("Add keywords") %>
@@ -37,8 +40,11 @@ defmodule FacilityRowComponent do
             <p>
               <%= inputs_for f, :address, fn addr -> %>
                 <%= text_input addr, :street_address, placeholder: gettext("Street address") %>
-                <%= text_input addr, :locality, placeholder: gettext("City and state/province")  %>
+                <%= error_tag addr, :street_address %>
+                <%= text_input addr, :locality, placeholder: gettext("City and state/province") %>
+                <%= error_tag addr, :locality %>
                 <%= text_input addr, :postcode, placeholder: gettext("Zip/postal code") %>
+                <%= error_tag addr, :postcode %>
               <% end %>
             </p>
             <div class="table">
@@ -88,7 +94,7 @@ defmodule FacilityRowComponent do
             <%  end %>
           </div class="table-body-cell">
 
-        </form>
+        <%= end %>
 
       <% else %>
         <div class="table-row">
@@ -186,7 +192,7 @@ defmodule FacilityRowComponent do
     params = validate_params(params)
     changeset = socket.assigns.facility
     |> Facility.changeset(params)
-    {:noreply, socket |> assign(changeset: changeset)}
+    {:noreply, socket |> assign(changeset: %{changeset | action: :validate})}
   end
 
   def handle_event("cancel", _params, socket) do
@@ -211,9 +217,5 @@ defmodule FacilityRowComponent do
           Map.update(h, "weekday", nil, &String.to_integer/1)
         end)
       end)
-    |> Map.update(
-      "keywords",
-      [],
-      &Referrals.Keyword.split/1)
   end
 end

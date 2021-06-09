@@ -146,12 +146,13 @@ defmodule Faqcheck.Referrals do
     case params["keywords"] do
       nil -> Repo.all(from t in Tag, where: t.facility_id == ^facility.id)
       kws ->
-        requested = MapSet.new(kws)
-        existing_kws = Repo.all(from t in Tag, where: t.keyword in ^kws)
+        requested = kws
+        |> Enum.map(fn {k, v} -> v["keyword"] end)
+        existing_kws = Repo.all(from t in Tag, where: t.keyword in ^requested)
         existing_names = existing_kws
         |> Enum.map(fn kw -> kw.keyword end)
         |> MapSet.new()
-        new_kws = MapSet.difference(requested, existing_names)
+        new_kws = MapSet.difference(requested |> MapSet.new(), existing_names)
         |> Enum.map(fn kw -> %Tag{keyword: kw} end)
         existing_kws ++ new_kws
     end

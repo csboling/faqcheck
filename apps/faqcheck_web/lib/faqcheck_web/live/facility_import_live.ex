@@ -86,6 +86,9 @@ defmodule FaqcheckWeb.FacilityImportLive do
 
   defp build_changesets(strategy, feed, index) do
     {page, _ix} = Enum.at(feed.pages, index)
-    {page, Enum.with_index(strategy.to_changesets(feed, page))}
+    changesets = strategy.to_changesets(feed, page)
+    |> Stream.map(fn cs -> %{cs | action: :insert} end)
+    |> Enum.with_index()
+    {page, changesets}
   end
 end

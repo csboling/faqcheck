@@ -54,7 +54,6 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
   end
 
   def row_to_changeset(row) do
-    IO.inspect row, label: "processing row"
     %Facility{}
     |> Facility.changeset(%{})
     |> try_process(:name, Enum.at(row, 1))
@@ -87,7 +86,7 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
       result = processor.(data)
       Ecto.Changeset.put_change(changeset, key, result)
     rescue
-      e -> Ecto.Changeset.add_error(changeset, key, Exception.message(e))
+      e -> Ecto.Changeset.add_error(changeset, key, Exception.message(e), data: data)
     end
   end
 end
