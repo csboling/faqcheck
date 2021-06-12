@@ -6,6 +6,13 @@ defmodule FaqcheckWeb.FacilityImportLive do
 
   def render(assigns) do
     ~L"""
+    <%= if !is_nil(@error) do %>
+    <h2><%= gettext "An error occurred accessing the data source." %></h2>
+    <p>Error message: <%= inspect @error %></p>
+    <p>
+    <%= live_patch gettext("Click here to try importing data again."), to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
+    </p>
+    <% else %>
     <h2>Importing: <%= @feed.name %></h2>
     <h3>Import strategy: <%= @strategy.description %></h3>
 
@@ -34,7 +41,6 @@ defmodule FaqcheckWeb.FacilityImportLive do
           <div class="table-head-cell"><%= gettext "Name" %></div>
           <div class="table-head-cell" style="width: 100px;"><%= gettext "Keywords" %></div>
           <div class="table-head-cell"><%= gettext "Description" %></div>
-          <div class="table-head-cell"><%= gettext "Last updated" %></div>
         </div>
       </div>
       <div class="table-body">
@@ -46,6 +52,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
       </div>
     </div>
     <button phx-click="save_all"><%= gettext "Save all" %></button>
+    <% end %>
     """
   end
 
@@ -60,16 +67,21 @@ defmodule FaqcheckWeb.FacilityImportLive do
     socket) do
     socket = require_user(socket, session)
     strategy = Strategies.get!(strategy_id)
-    feed = Strategies.build_feed(strategy, data, Map.take(session, session_keys))
-    {page, changesets} = build_changesets(strategy, feed, 0)
-    {:ok,
-     socket
-     |> assign(
-       locale: locale,
-       strategy: strategy,
-       feed: feed,
-       page: page,
-       changesets: changesets)}
+    with {:ok, feed} <- Strategies.build_feed(strategy, data, Map.take(session, session_keys)) do
+      {page, changesets} = build_changesets(strategy, feed, 0)
+      {:ok,
+       socket
+       |> assign(
+         locale: locale,
+         strategy: strategy,
+         feed: feed,
+         page: page,
+         changesets: changesets,
+         error: nil)}
+    else
+      {:error, error} -> {:ok, socket |> assign(locale: locale, error: error)}
+      e -> raise e
+    end
   end
 
   def handle_event("sel_page", %{"index" => index}, socket) do
@@ -87,7 +99,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
   defp build_changesets(strategy, feed, index) do
     {page, _ix} = Enum.at(feed.pages, index)
     changesets = strategy.to_changesets(feed, page)
-    |> Stream.map(fn cs -> %{cs | action: :insert} end)
+    |> Stream.map(fn cs -> %{cs | action: :validate} end)
     |> Enum.with_index()
     {page, changesets}
   end

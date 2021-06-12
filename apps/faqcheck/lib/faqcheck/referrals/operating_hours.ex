@@ -214,9 +214,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
       s when s in ["W", "Wed", "Weds", "Wednesday"] -> Weekday.Wednesday
       s when s in ["R", "Th", "TH", "Thu", "Thurs", "Thursday"] -> Weekday.Thursday
       s when s in ["F", "Fr", "Fri", "Friday"] -> Weekday.Friday
-      s when s in ["S      IO.inspect days
-      IO.inspect hours
-", "Sat", "Saturday"] -> Weekday.Saturday
+      s when s in ["S", "Sat", "Saturday"] -> Weekday.Saturday
       s when s in ["Su", "Sun", "Sunday"] -> Weekday.Sunday
       _ -> raise "unknown weekday format: #{str}"
     end

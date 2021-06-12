@@ -47,13 +47,49 @@ defmodule FacilityRowComponent do
                 <%= error_tag addr, :postcode %>
               <% end %>
             </p>
+
+            <div class="table">
+              <div class="table-head">
+                <div class="table-row">
+                  <div class="table-head-cell"><%= gettext("Phone") %></div>
+                  <div class="table-head-cell"><%= gettext("Website") %></div>
+                  <div class="table-head-cell"><%= gettext("Email") %></div>
+                  <div class="table-head-cell">
+                    <button type="button" phx-click="add_contact" phx-target="<%= @myself %>">
+                      <%= gettext("Add contact info") %>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="table-body">
+                <%= inputs_for f, :contacts, fn c -> %>
+                <div class="table-row">
+                  <div class="table-body-cell">
+                    <%= text_input c, :phone %>
+                  </div>
+                  <div class="table-body-cell">
+                  </div>
+                  <div class="table-body-cell">
+                    <%= text_input c, :email %>
+                  </div>
+                  <div class="table-body-cell">
+                  </div>
+                </div>
+                <% end %>
+              </div>
+            </div>
+
             <div class="table">
               <div class="table-head">
                 <div class="table-row">
                   <div class="table-head-cell"><%= gettext("Weekday") %></div>
                   <div class="table-head-cell"><%= gettext("Opens") %></div>
                   <div class="table-head-cell"><%= gettext("Closes") %></div>
-                  <div class="table-head-cell"></div>
+                  <div class="table-head-cell">
+                    <button type="button" phx-click="add_hours" phx-target="<%= @myself %>">
+                      <%= gettext("Add hours") %>
+                    </button>
+                  </div>
                 </div>
               </div>
               <div class="table-body">
@@ -75,15 +111,6 @@ defmodule FacilityRowComponent do
                   </div>
                 </div>
                 <% end %>
-              </div>
-              <div class="table-foot">
-                <div class="table-row">
-                  <div class="table-foot-cell">
-                    <button type="button" phx-click="add_hours" phx-target="<%= @myself %>">
-                      <%= gettext("Add hours") %>
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </div class="table-body-cell">

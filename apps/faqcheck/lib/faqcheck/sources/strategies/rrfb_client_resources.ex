@@ -19,12 +19,15 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
   def prepare_feed(
     %{"drive_id" => drive_id, "entry_id" => entry_id},
     %{"microsoft" => token}) do
-    {:ok, entry} = API.Sharepoint.get_item(token, drive_id, entry_id)
-    {:ok, worksheets} = API.Excel.list_worksheets(token, drive_id, entry_id)
-    %Sources.Feed{
-      name: entry.name,
-      pages: worksheets,
-    }
+    with {:ok, entry} <- API.Sharepoint.get_item(token, drive_id, entry_id),
+         {:ok, worksheets} <- API.Excel.list_worksheets(token, drive_id, entry_id) do
+      {:ok, %Sources.Feed{
+        name: entry.name,
+        pages: worksheets,
+      }}
+    else
+      error -> error
+    end
   end
 
   @impl Sources.Strategy
@@ -58,22 +61,22 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
     |> Facility.changeset(%{})
     |> try_process(:name, Enum.at(row, 1))
     |> try_process(:keywords, Enum.at(row, 2), &Tag.split/1)
-    |> try_process(
-      :contacts,
-      [
-        Enum.at(row, 3),
-        Enum.at(row, 4),
-        Enum.at(row, 5),
-      ],
-      fn [phone, email, website] ->
-        [
-          Contact.split(phone, :phone),
-          Contact.split(email, :email),
-          Contact.split(website, :website),
-        ]
-      end)
+    # |> try_process(
+    #   :contacts,
+    #   [
+    #     Enum.at(row, 3),
+    #     Enum.at(row, 4),
+    #     Enum.at(row, 5),
+    #   ],
+    #   fn [phone, email, website] ->
+    #     [
+    #       Contact.split(phone, :phone),
+    #       Contact.split(email, :email),
+    #       Contact.split(website, :website),
+    #     ]
+    #  end)
     |> try_process(:hours, Enum.at(row, 6), &StringHelpers.parse_hours/1)
-    |> try_process(:address, Enum.at(row, 7))
+    |> try_process(:address, %{street_address: Enum.at(row, 7)})
     |> try_process(:description, Enum.at(row, 8))
     |> Facility.changeset(%{})
   end

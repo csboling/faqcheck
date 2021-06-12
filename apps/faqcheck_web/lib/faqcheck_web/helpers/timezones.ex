@@ -6,7 +6,6 @@ defmodule FaqcheckWeb.Timezones do
   end
 
   def format_iso8601(datetime, time_zone) do
-    IO.inspect datetime, label: "file modified time"
     with {:ok, timestamp, _} <- DateTime.from_iso8601(datetime) do
       FaqcheckWeb.Timezones.format_timestamp(timestamp, time_zone)
     else

@@ -9,8 +9,13 @@ defmodule Faqcheck.Sources.Strategies do
   def get!(id), do: @strategy_map[id]
 
   def build_feed(strategy, params, session) do
-    strategy.prepare_feed(params, session)
-    |> Map.merge(%{params: params, session: session})
-    |> Map.update(:pages, [], &Enum.with_index/1)
+    with {:ok, feed} <- strategy.prepare_feed(params, session) do
+      {:ok,
+       feed
+       |> Map.merge(%{params: params, session: session})
+       |> Map.update(:pages, [], &Enum.with_index/1)}
+    else
+      error -> error
+    end
   end
 end

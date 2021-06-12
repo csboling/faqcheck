@@ -14,8 +14,8 @@ defmodule FaqcheckWeb.ErrorHelpers do
     |> Enum.map(fn error ->
       content_tag(:span, translate_error(error),
         class: "invalid-feedback",
-        phx_feedback_for: input_name(form, field)
-      )
+        phx_feedback_for: input_name(form, field),
+        data: [phx_error_for: field])
     end)
   end
 
