@@ -126,7 +126,7 @@ defmodule FacilityRowComponent do
       <% else %>
         <div class="table-row">
           <div class="table-body-cell">
-            <%= link @facility.name, to: Routes.facility_path(@socket, :show, @locale, @facility) %>
+	    <span><%= @facility.name %></span>
             <br />
             <%= if !is_nil(@current_user) do %>
             <button phx-click="edit" phx-target="<%= @myself %>">

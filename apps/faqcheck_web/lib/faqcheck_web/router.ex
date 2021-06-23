@@ -48,6 +48,13 @@ defmodule FaqcheckWeb.Router do
 
     get "/microsoft-callback", OidcController, :microsoft_callback
     get "/google-callback", OidcController, :microsoft_callback
+
+  end
+
+  scope "/", FaqcheckWeb do
+    pipe_through :api
+
+    post "/microsoft/messages", MicrosoftTeamsController, :message
   end
 
   scope "/:locale", FaqcheckWeb do

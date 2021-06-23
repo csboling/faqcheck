@@ -14,10 +14,6 @@
     <strong><%= gettext "Street address" <> ":" %></strong>
     <%= @facility.address.street_address %>
   </li>
-  <li>
-    <strong><%= gettext "Affiliated with organization" <> ":" %></strong>
-    <%= link @facility.organization.name, to: Routes.organization_path(@conn, :show, @locale, @facility.organization) %>
-  </li>
 </ul>
 
 <nav>

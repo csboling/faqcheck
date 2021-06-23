@@ -46,7 +46,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
       <div class="table-body">
         <%= for {changeset, i} <- @changesets do %>
           <%= live_component @socket, FacilityRowComponent,
-                id: i, locale: @locale,
+                id: i, locale: @locale, current_user: @current_user,
                 facility: %Facility{}, changeset: changeset, editing: true %>
         <% end %>
       </div>
@@ -65,7 +65,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
     },
     session,
     socket) do
-    socket = require_user(socket, session)
+    socket = assign_user(socket, session)
     strategy = Strategies.get!(strategy_id)
     with {:ok, feed} <- Strategies.build_feed(strategy, data, Map.take(session, session_keys)) do
       {page, changesets} = build_changesets(strategy, feed, 0)

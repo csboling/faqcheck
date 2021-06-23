@@ -2,9 +2,11 @@
 title: Connecting FaqCheck with Microsoft SharePoint and Teams
 ---
 
-## Connecting FaqCheck with Microsoft SharePoint and Teams
+# Connecting FaqCheck with Microsoft SharePoint and Teams
 
-You can allow FaqCheck to connect with your Microsoft cloud services such as SharePoint in order to pull data from sources like Excel spreadsheets stored in Teams.
+You can allow FaqCheck to connect with your Microsoft cloud services. Depending on what you enable, FaqCheck can then read files from SharePoint (like importing data from an Excel spreadsheet) and send and receive messages with Teams (like answering questions or posting reminders in a particular channel).
+
+## SharePoint
 
 ### App registration
 
@@ -39,3 +41,21 @@ The first step is to set up FaqCheck as an application that is authorized to int
 
 
 #### Windows 10 instructions
+
+## Teams
+
+You can use FaqCheck as a Microsoft Teams bot to let users interact with the FaqCheck database from Teams.
+
+- When logged in to Teams, click "Apps" and search for "App Studio".
+
+- In App Studio, create a new bot registration and go through the wizard.
+
+- The "Bot endpoint address" should be the URL for your FaqCheck site followed by /microsoft/messages, like https://faqcheck.my-agency.org/microsoft/messages
+
+- You will be prompted to generate a client ID and client secret. These should be added to the prod.secret.exs configuration file like so:
+
+```elixir
+config :faqcheck, Microsoft.BotFramework,
+  client_id: "*****",
+  client_secret: "*****"
+```
