@@ -15,7 +15,8 @@ defmodule FaqcheckWeb.Application do
       # Start the Telemetry supervisor
       FaqcheckWeb.Telemetry,
       # Start the Endpoint (http/https)
-      FaqcheckWeb.Endpoint
+      FaqcheckWeb.Endpoint,
+      {Cachex, name: :api_tokens},
       # Start a worker by calling: FaqcheckWeb.Worker.start_link(arg)
       # {FaqcheckWeb.Worker, arg}
     ]

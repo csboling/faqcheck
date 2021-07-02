@@ -3,9 +3,14 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
 
   def message(conn, params) do
     IO.inspect params, label: "teams message"
+    token = Cachex.fetch!(:api_tokens, "microsoft_teams", fn key ->
+      {:commit, access_token()}
+    end)
+    respond(token, params, "hello")
+    send_resp(conn, 200, "{}")
+  end
 
-    token = access_token()
-
+  def respond(token, params, message) do
     url = params["serviceUrl"] <> "v3/conversations/" <> params["conversation"]["id"] <> "/activities/" <> params["id"]
     activity = %{
       "conversation" => params["conversation"],
@@ -14,12 +19,9 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
       "locale" => params["locale"],
       "replyToId" => params["id"],
       "type" => "message",
-      "text" => "hello from FaqCheck"
+      "text" => message,
     }
-    response = HTTPoison.post!(url, Poison.encode!(activity), %{"Authorization" => "Bearer #{token}"})
-    IO.inspect response, label: "teams reply response"
-
-    send_resp(conn, 200, "{}")
+    HTTPoison.post!(url, Poison.encode!(activity), %{"Authorization" => "Bearer #{token}"})
   end
 
   def access_token do
@@ -37,6 +39,9 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
       %{"Content-Type" => "application/x-www-form-urlencoded"})
     IO.inspect response, label: "teams authentication response"
     json = Poison.decode!(response.body)
+    IO.inspect json
+    Cachex.expire_at :api_tokens, "microsoft_teams",
+      System.system_time(:millisecond) + (1000 * json["expires_in"])
     json["access_token"]
   end
 end

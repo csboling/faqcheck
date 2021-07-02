@@ -39,6 +39,7 @@ defmodule FaqcheckWeb.MixProject do
     [
       {:faqcheck, in_umbrella: true},
 
+      {:cachex, "~> 3.4"},
       {:csv, "~> 2.4.1"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
