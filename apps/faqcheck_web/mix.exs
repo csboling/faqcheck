@@ -24,7 +24,7 @@ defmodule FaqcheckWeb.MixProject do
   def application do
     [
       mod: {FaqcheckWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools, :set_locale]
+      extra_applications: [:logger, :runtime_tools, :set_locale, :ex_microsoftbot]
     ]
   end
 
@@ -41,6 +41,7 @@ defmodule FaqcheckWeb.MixProject do
 
       {:cachex, "~> 3.4"},
       {:csv, "~> 2.4.1"},
+      {:ex_microsoftbot, git: "https://github.com/zabirauf/ex_microsoftbot.git"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:phoenix, "~> 1.5.8"},

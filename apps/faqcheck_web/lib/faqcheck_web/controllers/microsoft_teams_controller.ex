@@ -1,47 +1,98 @@
 defmodule FaqcheckWeb.MicrosoftTeamsController do
   use FaqcheckWeb, :controller
 
+  alias ExMicrosoftBot.Models.Activity
+  alias ExMicrosoftBot.Models.Attachment
+  alias ExMicrosoftBot.Client.Conversations
+  alias Faqcheck.Referrals
+
   def message(conn, params) do
-    IO.inspect params, label: "teams message"
-    token = Cachex.fetch!(:api_tokens, "microsoft_teams", fn key ->
-      {:commit, access_token()}
-    end)
-    respond(token, params, "hello")
-    send_resp(conn, 200, "{}")
+    with {:ok, activity} <- Activity.parse(params) do
+      facilities = Referrals.list_facilities(
+	%{ "name" => activity.text },
+	limit: 10)
+      message = "Found these facilities:"
+
+      [locale | _] = String.split(params["locale"], "-")
+      origin = FaqcheckWeb.Router.Helpers.url(conn)
+      resp_activity = %Activity{
+	type: "message",
+	conversation: activity.conversation,
+	recipient: activity.from,
+	from: activity.recipient,
+	replyToId: activity.id,
+	text: message,
+	attachments: [
+	  %Attachment{
+	    name: "results",
+	    contentType: "application/vnd.microsoft.card.adaptive",
+	    content: %{
+	      "type" => "AdaptiveCard",
+	      "msTeams" => %{
+		"width" => "full",
+	      },
+	      "version" => "1.0",
+	      "body" => [
+		%{
+		  "type" => "ColumnSet",
+		  "columns" => [
+		    column(
+		      facilities.entries,
+		      "Name",
+		      fn f ->
+			path = FaqcheckWeb.Router.Helpers.facility_path conn,
+			  :show, locale, f
+		        "[#{f.name}](#{origin <> path})"
+		      end),
+		    column(
+		      facilities.entries,
+		      "Address",
+		      fn f -> f.address.street_address end),
+		    column(
+		      facilities.entries,
+		      "Keywords",
+		      fn f ->
+			f.keywords
+			|> Enum.map(fn k -> k.keyword end)
+			|> Enum.join(", ")
+	              end),
+		  ],
+		},
+	      ],
+            },
+          },
+        ],
+      }
+
+      Conversations.reply_to_activity(
+	activity.serviceUrl,
+	activity.conversation.id,
+	activity.id,
+	resp_activity)
+
+      send_resp(conn, 200, "{}")
+    else
+      _ ->
+	send_resp(conn, 400, "{}")
+    end
   end
 
-  def respond(token, params, message) do
-    url = params["serviceUrl"] <> "v3/conversations/" <> params["conversation"]["id"] <> "/activities/" <> params["id"]
-    activity = %{
-      "conversation" => params["conversation"],
-      "from" => params["recipient"],
-      "recipient" => params["from"],
-      "locale" => params["locale"],
-      "replyToId" => params["id"],
-      "type" => "message",
-      "text" => message,
+  def column(rows, title, fetch) do
+    %{
+      "type" => "Column",
+      "items" => [
+        %{
+          "type" => "TextBlock",
+	  "weight" => "bolder",
+	  "text" => title,
+        } | Enum.map(rows, fn r ->
+	  %{
+            "type" => "TextBlock",
+	    "separator" => true,
+	    "text" => fetch.(r),
+          }
+        end)
+      ]
     }
-    HTTPoison.post!(url, Poison.encode!(activity), %{"Authorization" => "Bearer #{token}"})
-  end
-
-  def access_token do
-    endpoint = "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token"
-    config = Application.fetch_env!(:faqcheck, Microsoft.BotFramework)
-    query = URI.encode_query(%{
-      "grant_type" => "client_credentials",
-      "client_id" => Keyword.get(config, :client_id),
-      "client_secret" => Keyword.get(config, :client_secret),
-      "scope" => "https://api.botframework.com/.default",
-    })
-    response = HTTPoison.post!(
-      endpoint,
-      query,
-      %{"Content-Type" => "application/x-www-form-urlencoded"})
-    IO.inspect response, label: "teams authentication response"
-    json = Poison.decode!(response.body)
-    IO.inspect json
-    Cachex.expire_at :api_tokens, "microsoft_teams",
-      System.system_time(:millisecond) + (1000 * json["expires_in"])
-    json["access_token"]
   end
 end
