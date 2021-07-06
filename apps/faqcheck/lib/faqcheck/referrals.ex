@@ -147,7 +147,7 @@ defmodule Faqcheck.Referrals do
       nil -> Repo.all(from t in Tag, where: t.facility_id == ^facility.id)
       kws ->
         requested = kws
-        |> Enum.map(fn {k, v} -> v["keyword"] end)
+        |> Enum.map(fn {_, v} -> v["keyword"] end)
         existing_kws = Repo.all(from t in Tag, where: t.keyword in ^requested)
         existing_names = existing_kws
         |> Enum.map(fn kw -> kw.keyword end)

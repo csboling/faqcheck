@@ -11,7 +11,7 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
       facilities = Referrals.list_facilities(
 	%{ "name" => activity.text },
 	limit: 10)
-      message = "Found these facilities:"
+      message = "I found these facilities:"
 
       [locale | _] = String.split(params["locale"], "-")
       origin = FaqcheckWeb.Router.Helpers.url(conn)
@@ -32,6 +32,7 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
 		"width" => "full",
 	      },
 	      "version" => "1.0",
+
 	      "body" => [
 		%{
 		  "type" => "ColumnSet",

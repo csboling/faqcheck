@@ -3,8 +3,17 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
 
   alias FaqcheckWeb.ImportMethods
 
+  def title, do: "Select import method"
+
   def render(assigns) do
     ~L"""
+    <nav>
+      <%= for b <- @breadcrumb do %>
+        <%= live_patch b.title, to: b.path %>
+	&nbsp;&sol;&nbsp;
+      <%  end %>
+    </nav>
+
     <%= f = form_for :method_sel, "#", [phx_change: :sel_method, phx_submit: :import] %>
       <%= select f, :id, @method_names, selected: @import_method.id %>
     </form>
@@ -55,6 +64,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
      |> require_user(session)
      |> assign(
        locale: locale,
+       breadcrumb: [],
        sel_method: method,
        sel_strategy: nil,
 
@@ -65,10 +75,11 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
      |> allow_upload(:spreadsheet, accept: ~w(.csv .xlsx))}
   end
 
-  def handle_params(params, _url, socket) do
+  def handle_params(params, url, socket) do
     method = params["method"]
     {:noreply,
      socket
+     |> assign_breadcrumb(url)
      |> assign(
        import_method: find_method(socket.assigns.import_methods, method),
        params: params)}

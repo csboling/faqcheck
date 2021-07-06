@@ -1,4 +1,5 @@
 defmodule FaqcheckWeb.LinkHelpers do
+  import Phoenix.LiveView
 
   @doc """
   Build a relative link from path components, starting with
@@ -43,5 +44,32 @@ defmodule FaqcheckWeb.LinkHelpers do
   def params_path(module, socket, extra) do
     FaqcheckWeb.Router.Helpers.live_path socket, module, socket.assigns.locale,
       Enum.into(extra, socket.assigns.params)
+  end
+
+  def breadcrumb(url) do
+    uri = URI.parse(url)
+    ["" | [locale | ["live" | segments]]] = String.split(uri.path, "/")
+    segments
+    |> Stream.filter(fn x -> x != "" end)
+    |> Stream.scan(fn s, p -> "#{p}/#{s}" end)
+    |> Stream.map(fn p ->
+      path = "/#{locale}/live/#{p}"
+      info = Phoenix.Router.route_info FaqcheckWeb.Router,
+        "GET", path, ""
+      case info.phoenix_live_view do
+        {view, _} -> %{
+          title: view.title,
+	  path: path,
+	  view: view,
+	}
+	_ -> nil
+      end
+    end)
+    |> Enum.filter(fn x -> x end)
+  end
+
+  def assign_breadcrumb(socket, url) do
+    socket
+    |> assign(breadcrumb: breadcrumb(url))
   end
 end

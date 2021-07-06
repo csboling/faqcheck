@@ -19,7 +19,7 @@ defmodule Faqcheck.Sources.StringHelpers do
           opens: ~T[10:00:00],
           closes: ~T[15:30:00],
         })
-      
+
       iex> extract_hours("M-TH 8-5 & F 10-3")
       [
         %Faqcheck.Referrals.OperatingHours{
@@ -65,9 +65,9 @@ defmodule Faqcheck.Sources.StringHelpers do
 
   @doc """
   Capture business hours fields using a regex search.
-  
+
   ## Examples
-  
+
       iex> capture_hours("M-TH 8-5")
       %{"start_day" => "M", "end_day" => "TH", "opens" => "8", "closes" => "5"}
   """
@@ -108,7 +108,6 @@ defmodule Faqcheck.Sources.StringHelpers do
           closes: ~T[17:00:00],
         },
       ]
-o
       iex> parse_hours("M: 8am-12pm, 1pm-5pm")
       [
          %Faqcheck.Referrals.OperatingHours{

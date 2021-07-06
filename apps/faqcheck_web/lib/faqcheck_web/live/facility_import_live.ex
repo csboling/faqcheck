@@ -4,8 +4,17 @@ defmodule FaqcheckWeb.FacilityImportLive do
   alias Faqcheck.Sources.Strategies
   alias Faqcheck.Referrals.Facility
 
+  def title, do: "Confirm facilities to import"
+
   def render(assigns) do
     ~L"""
+    <nav>
+      <%= for b <- @breadcrumb do %>
+        <%= live_patch b.title, to: b.path %>
+	&nbsp;&sol;&nbsp;
+      <%  end %>
+    </nav>
+
     <%= if !is_nil(@error) do %>
     <h2><%= gettext "An error occurred accessing the data source." %></h2>
     <p>Error message: <%= inspect @error %></p>
@@ -73,6 +82,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
        socket
        |> assign(
          locale: locale,
+         breadcrumb: [],
          strategy: strategy,
          feed: feed,
          page: page,
@@ -82,6 +92,12 @@ defmodule FaqcheckWeb.FacilityImportLive do
       {:error, error} -> {:ok, socket |> assign(locale: locale, error: error)}
       e -> raise e
     end
+  end
+
+  def handle_params(params, url, socket) do
+    {:noreply,
+     socket
+     |> assign_breadcrumb(url)}
   end
 
   def handle_event("sel_page", %{"index" => index}, socket) do

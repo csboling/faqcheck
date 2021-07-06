@@ -3,9 +3,18 @@ defmodule FaqcheckWeb.FacilitiesLive do
 
   alias Faqcheck.Referrals
 
+  def title, do: "Browse facilities"
+
   def render(assigns) do
     ~L"""
     <div>
+      <nav>
+        <%= for b <- @breadcrumb do %>
+          <%= live_patch b.title, to: b.path %>
+          &nbsp;&sol;&nbsp;
+        <%  end %>
+      </nav>
+
       <%= f = form_for :search, "#", [phx_submit: "search", class: "flex-form"] %>
         <%= label f, :name, gettext("Name") %>
         <%= text_input f, :name, placeholder: gettext("Search by name or description"), value: @params["search"]["name"] %>
@@ -36,7 +45,9 @@ defmodule FaqcheckWeb.FacilitiesLive do
       </div>
 
       <div>
-        <button phx-disable-with="loading..." phx-click="load_more"><%= gettext "Load more" %></button>
+        <button phx-disable-with="loading..." phx-click="load_more">
+          <%= gettext "Load more" %>
+        </button>
         <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
       </div>
     </div>
@@ -51,6 +62,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
        page_size: 10,
        params: %{},
        locale: locale,
+       breadcrumb: [],
        loading: false)
      |> fetch(),
      temporary_assigns: [facilities: []]}
@@ -62,14 +74,18 @@ defmodule FaqcheckWeb.FacilitiesLive do
     facilities = Referrals.list_facilities(
       params["search"],
       limit: page_size)
-    assign socket,
+    socket
+    |> assign(
       facilities: facilities.entries,
-      after: facilities.metadata.after
+      after: facilities.metadata.after)
   end
 
-  def handle_params(params, _url, socket) do
+  def handle_params(params, url, socket) do
     {:noreply,
-     socket |> assign(params: params) |> fetch()}
+     socket
+     |> assign_breadcrumb(url)
+     |> assign(params: params)
+     |> fetch()}
   end
 
   def handle_event("suggest", _, socket) do
@@ -79,7 +95,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
   def handle_event("search", params, socket) do
     {:noreply,
      socket
-     |> push_patch(to: params_path(__MODULE__, socket, Map.take(params, ["search"])))}  
+     |> push_patch(to: params_path(__MODULE__, socket, Map.take(params, ["search"])))}
   end
 
   def handle_event("clear_search", _params, socket) do
