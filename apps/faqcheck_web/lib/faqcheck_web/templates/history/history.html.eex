@@ -14,3 +14,37 @@
     </li>
   <% end %>
 </ul>
+
+<h3>Edit history for related resources:</h3>
+
+<%= if @resource.address do %>
+<b>Address</b>
+<ul>
+  <%= for v <- @resource.address.versions do %>
+    <li>
+      <%= format_timestamp(v.inserted_at, "MST7MDT") %>: <b><%= v.event %></b> by <b><%= v.user && v.user.name || "unknown user" %></b>
+      <ul>
+        <%= for {k, v} <- v.item_changes, v != nil && !String.ends_with?(k, "id") do %>
+	  <li>modified '<%= k %>' to: <%= v %></li>
+        <% end %>
+      </ul>
+    </li>
+  <%  end %>
+</ul>
+<%  end %>
+
+<%= if @resource.organization do %>
+<b>Organization</b>
+<ul>
+  <%= for v <- @resource.organization.versions do %>
+    <li>
+      <%= format_timestamp(v.inserted_at, "MST7MDT") %>: <b><%= v.event %></b> by <b><%= v.user && v.user.name || "unknown user" %></b>
+      <ul>
+        <%= for {k, v} <- v.item_changes, v != nil && !String.ends_with?(k, "id") do %>
+	  <li>modified '<%= k %>' to: <%= v %></li>
+        <% end %>
+      </ul>
+    </li>
+  <%  end %>
+</ul>
+<%  end %>

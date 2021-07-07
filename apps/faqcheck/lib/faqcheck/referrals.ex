@@ -129,6 +129,16 @@ defmodule Faqcheck.Referrals do
       preload: [:address, :contacts, :hours, :keywords, :organization]
   end
 
+  def facility_history(id) do
+    Repo.one from fac in Facility,
+      where: fac.id == ^id,
+      left_join: addr in assoc(fac, :address),
+      left_join: org in assoc(fac, :organization),
+      preload: [versions: :user,
+		address: {addr, [versions: :user]},
+		organization: {org, [versions: :user]}]
+  end
+
   def upsert_facility(facility, params) do
     keywords = get_keywords(facility, params)
     changeset = facility
@@ -156,12 +166,6 @@ defmodule Faqcheck.Referrals do
         |> Enum.map(fn kw -> %Tag{keyword: kw} end)
         existing_kws ++ new_kws
     end
-  end
-
-  def facility_history(id) do
-    Repo.one from fac in Facility,
-      where: fac.id == ^id,
-      preload: [versions: :user]
   end
 
   def leave_feedback(facility) do

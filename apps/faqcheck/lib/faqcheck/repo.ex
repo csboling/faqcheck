@@ -22,8 +22,11 @@ defmodule Faqcheck.Repo do
 
   defp attach_versions(changeset, options) do
     version_id = get_sequence_id("versions") + 1
+    # require IEx; IEx.pry
     changeset_data =
-      changeset.data
+      # changeset.data
+      changeset
+      |> apply_changes()
       |> Map.merge(%{
         id: get_sequence_id(changeset) + 1,
         first_version_id: version_id,
