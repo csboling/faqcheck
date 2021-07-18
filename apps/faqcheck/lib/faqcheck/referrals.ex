@@ -129,6 +129,17 @@ defmodule Faqcheck.Referrals do
       preload: [:address, :contacts, :hours, :keywords, :organization]
   end
 
+  def get_or_create_facility(name) do
+    found = Repo.one from fac in Facility,
+      where: fac.name == ^name,
+      preload: [:address, :contacts, :hours, :keywords, :organization],
+      limit: 1
+    case found do
+      nil -> %Facility{}
+      facility -> facility
+    end
+  end
+
   def facility_history(id) do
     Repo.one from fac in Facility,
       where: fac.id == ^id,
@@ -145,10 +156,9 @@ defmodule Faqcheck.Referrals do
     |> Facility.changeset(params)
     |> Ecto.Changeset.put_assoc(:keywords, keywords)
 
-    if is_nil(changeset.data.id) do
-      Repo.insert!(changeset)
-    else
-      Repo.update!(changeset)
+    case Ecto.get_meta(facility, :state) do
+      :loaded -> Repo.update!(changeset)
+      :built -> Repo.insert!(changeset)
     end
   end
 

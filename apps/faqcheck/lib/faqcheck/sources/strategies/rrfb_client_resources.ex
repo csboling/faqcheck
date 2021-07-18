@@ -1,6 +1,7 @@
 defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
   @behaviour Faqcheck.Sources.Strategy
 
+  alias Faqcheck.Referrals
   alias Faqcheck.Referrals.Contact
   alias Faqcheck.Referrals.Facility
   alias Faqcheck.Referrals.Keyword, as: Tag
@@ -57,9 +58,10 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
   end
 
   def row_to_changeset(row) do
-    %Facility{}
+    name = Enum.at(row, 1)
+    Referrals.get_or_create_facility(name)
     |> Facility.changeset(%{})
-    |> try_process(:name, Enum.at(row, 1))
+    |> try_process(:name, name)
     |> try_process(:keywords, Enum.at(row, 2), &Tag.split/1)
     |> try_process(
       :contacts,

@@ -56,7 +56,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
           <%= for {changeset, i} <- @changesets do %>
             <%= live_component @socket, FacilityRowComponent,
                   id: i, locale: @locale, current_user: @current_user,
-                  facility: %Facility{}, changeset: changeset, editing: true %>
+                  facility: changeset.data, changeset: changeset, editing: true %>
           <% end %>
         </div>
       </div>

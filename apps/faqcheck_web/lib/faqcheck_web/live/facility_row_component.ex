@@ -1,6 +1,7 @@
 defmodule FacilityRowComponent do
   use FaqcheckWeb, :live_cmp
 
+  alias Ecto
   require Logger
 
   alias Faqcheck.Referrals
@@ -23,6 +24,14 @@ defmodule FacilityRowComponent do
             <%= error_tag f, :name %>
 
             <br />
+
+            <%= if Ecto.get_meta(@changeset.data, :state) == :loaded do %>
+            <p class="alert alert-warning">
+              <%= gettext "You are editing an existing item. Last edit: " %>
+              <%= link format_timestamp(@changeset.data.updated_at, "MST7MDT"),
+                    to: Routes.facility_history_path(@socket, :history, @locale, @changeset.data) %>
+            </p>
+            <%  end %>
 
             <%= submit gettext("Save") %>
             <button type="button" phx-click="cancel" phx-target="<%= @myself %>"><%= gettext("Cancel") %></button>
@@ -228,11 +237,12 @@ defmodule FacilityRowComponent do
   end
 
   def handle_event("edit", _params, socket) do
+    changeset = Facility.changeset(socket.assigns.facility, %{})
     {:noreply,
      socket
      |> assign(
        editing: true,
-       changeset: Facility.changeset(socket.assigns.facility, %{}))}
+       changeset: changeset)}
   end
 
   def handle_event("add_hours", _params, socket) do

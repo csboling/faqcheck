@@ -37,7 +37,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
     <li>
       <%= @entry.name %> - file, last modified <%= format_iso8601(@entry.fileSystemInfo["lastModifiedDateTime"], "MST7MDT") %>
       <%= if String.ends_with?(@entry.name, "xlsx") do %>
-        <%= live_patch gettext("Import facilities"), class: "button",
+        <%= live_patch gettext("Import"), class: "button",
               to: Routes.live_path(
                 @socket, FaqcheckWeb.FacilityImportLive, @locale,
                 strategy: Faqcheck.Sources.Strategies.RRFBClientResources.id,
