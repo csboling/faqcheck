@@ -46,7 +46,7 @@ defmodule Faqcheck.MixProject do
       {:paper_trail, "~> 0.12.3"},
       {:poison, "~> 4.0.1"},
       {:openid_connect, "~> 0.2.2"},
-      {:pbkdf2_elixir, "~> 1.3.0"},
+      {:pbkdf2_elixir, "~> 1.4.1"},
       {:phoenix_pubsub, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:quarto, "~> 1.1.5"},

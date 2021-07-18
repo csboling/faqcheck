@@ -26,7 +26,7 @@
   <%= label do %>
   <%=   radio_button f, :helpful, "yes" %>
   <%=   gettext "Helpful" %>
-  <%= end %>
+  <%  end %>
   <%= label do %>
   <%=   radio_button f, :helpful, "no" %>
   <%=   gettext "Not helpful" %>
@@ -36,7 +36,7 @@
   <%= label do %>
   <%=   radio_button f, :accurate, "yes" %>
   <%=   gettext "Accurate" %>
-  <%= end %>
+  <%  end %>
   <%= label do %>
   <%=   radio_button f, :accurate, "no" %>
   <%=   gettext "Not accurate" %>

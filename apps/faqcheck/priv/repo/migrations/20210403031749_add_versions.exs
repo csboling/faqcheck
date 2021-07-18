@@ -24,7 +24,6 @@ defmodule Repo.Migrations.AddVersions do
 
     versioned_tables = [
       :addresses,
-      :affiliations,
       :contacts,
       :facilities,
       :operating_hours,

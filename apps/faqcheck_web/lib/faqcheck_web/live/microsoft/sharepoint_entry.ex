@@ -80,7 +80,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
   end
 
   defp children(socket, id, type, locale, method) do
-    live_component socket, SharepointDataComponent,
+    live_component SharepointDataComponent,
       id: id, locale: locale,
       import_method: Map.put(method, :resource, type)
   end

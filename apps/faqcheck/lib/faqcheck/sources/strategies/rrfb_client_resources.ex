@@ -69,7 +69,6 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
         Enum.at(row, 5),
       ],
       fn [phone, email, website] ->
-	IO.inspect [phone, email, website], label: "contact info"
         Enum.concat([
           Contact.split(phone, :phone),
           Contact.split(email, :email),

@@ -10,9 +10,9 @@ defmodule FacilityRowComponent do
     ~L"""
       <%= if @editing do %>
         <details>
-	  <summary>changeset</summary>
+          <summary>changeset</summary>
           <pre><%= inspect @changeset, pretty: true %></pre>
-	</details>
+        </details>
         <%= form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself], fn f -> %>
           <div class="table-body-cell">
             <%= inputs_for f, :organization, fn org -> %>
@@ -71,6 +71,7 @@ defmodule FacilityRowComponent do
                     <%= text_input c, :phone %>
                   </div>
                   <div class="table-body-cell">
+                    <%= text_input c, :website %>
                   </div>
                   <div class="table-body-cell">
                     <%= text_input c, :email %>
@@ -124,12 +125,12 @@ defmodule FacilityRowComponent do
             <%  end %>
           </div class="table-body-cell">
 
-        <%= end %>
+        <%  end %>
 
       <% else %>
         <div class="table-row">
           <div class="table-body-cell">
-	    <span><%= @facility.name %></span>
+          <span><%= @facility.name %></span>
             <br />
             <%= if !is_nil(@current_user) do %>
             <button phx-click="edit" phx-target="<%= @myself %>">
@@ -154,17 +155,43 @@ defmodule FacilityRowComponent do
               <br />
               <%= @facility.address.locality %>
               <%= @facility.address.postcode %>
-	      <br />
-	      <%= link gettext("Get directions (Google Maps)"), to: "https://www.google.com/maps/dir/?api=1&destination=" <> URI.encode_www_form(@facility.address.street_address) %>
+              <br />
+              <%= link gettext("Get directions (Google Maps)"), to: "https://www.google.com/maps/dir/?api=1&destination=" <> URI.encode_www_form(@facility.address.street_address) %>
             </p>
+
             <%= if !Enum.empty?(@facility.contacts) do %>
-            <ul>
-              <%= for c <- @facility.contacts do %>
-              <li><a href="mailto:<%= c.email %>" /></li>
-              <li><a href="tel:<%= c.phone %>" /></li>
-              <% end %>
-            </ul>
+            <table>
+              <thead>
+                <tr>
+                  <th><%= gettext("Phone") %></th>
+                  <th><%= gettext("Website") %></th>
+                  <th><%= gettext("Email") %></th>
+                </tr>
+              </thead>
+              <tbody>
+                <%= for c <- @facility.contacts do %>
+                <tr>
+                  <td>
+                    <%= if c.phone do %>
+                    <%= link c.phone, to: "tel:#{c.phone}" %>
+                    <%  end %>
+                  </td>
+                  <td>
+                    <%= if c.website do %>
+                    <%= link c.website, to: c.website %>
+                    <%  end %>
+                  </td>
+                  <td>
+                    <%= if c.email do %>
+                    <%= link c.email, to: "mailto:#{c.email}" %>
+                    <%  end %>
+                  </td>
+                </tr>
+                <%  end %>
+              </tbody>
+            </table>
             <% end %>
+
             <%= if !Enum.empty?(@facility.hours) do %>
             <table>
               <thead>
@@ -193,7 +220,7 @@ defmodule FacilityRowComponent do
         </div>
 
       <% end %>
-    """
+      """
   end
 
   def mount(socket) do
@@ -245,7 +272,7 @@ defmodule FacilityRowComponent do
       "hours",
       [],
       fn hours ->
-        Enum.map(hours, fn {k, h} ->
+        Enum.map(hours, fn {_k, h} ->
           Map.update(h, "weekday", nil, &String.to_integer/1)
         end)
       end)

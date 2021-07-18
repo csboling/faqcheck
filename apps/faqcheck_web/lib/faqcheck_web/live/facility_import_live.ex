@@ -94,7 +94,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
     end
   end
 
-  def handle_params(params, url, socket) do
+  def handle_params(_params, url, socket) do
     {:noreply,
      socket
      |> assign_breadcrumb(url)}

@@ -7,5 +7,7 @@ defmodule Faqcheck.Referrals.Affiliation do
 
     belongs_to :facility, Faqcheck.Referrals.Facility
     belongs_to :contact, Faqcheck.Referrals.Contact
+
+    timestamps()
   end
 end

@@ -26,15 +26,18 @@ defmodule FaqcheckWeb.FacilityController do
   def feedback(conn, %{"facility_id" => id, "locale" => locale}) do
     facility = Referrals.get_facility!(id)
     changeset = Referrals.leave_feedback(facility)
-    render(conn, "feedback.html", facility: facility, changeset: changeset)
+    render conn, "feedback.html",
+      facility: facility,
+      changeset: changeset,
+      locale: locale
   end
 
   def save_feedback(conn, %{"feedback" => params, "locale" => locale}) do
     case Referrals.save_feedback(params) do
-      {:ok, feedback} ->
+      {:ok, _feedback} ->
 	conn
-	|> put_flash(:info, gettext("Thank you for your feedback."))
-	|> redirect(to: Faqcheck.Router.Helpers.live_path(conn, FaqcheckWeb.FacilitiesLive, @locale))
+	|> put_flash(:info, gettext("Thank you for your feedback. If you included an email address you will receive an email confirmation shortly."))
+	|> redirect(to: FaqcheckWeb.Router.Helpers.live_path(conn, FaqcheckWeb.FacilitiesLive, locale))
       {:error, %Ecto.Changeset{} = changeset} ->
 	render(conn, "feedback.html", changeset: changeset)
     end
