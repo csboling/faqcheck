@@ -18,4 +18,12 @@ defmodule Faqcheck.Sources.Strategies do
       error -> error
     end
   end
+
+  def build_changesets(strategy, feed, index) do
+    {page, _ix} = Enum.at(feed.pages, index)
+    changesets = strategy.to_changesets(feed, page)
+    |> Stream.map(fn cs -> %{cs | action: :validate} end)
+    |> Enum.with_index()
+    {page, changesets}
+  end
 end

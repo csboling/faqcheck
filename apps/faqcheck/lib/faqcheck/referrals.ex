@@ -172,4 +172,10 @@ defmodule Faqcheck.Referrals do
     %Feedback{facility: facility}
     |> Feedback.changeset(%{})
   end
+
+  def save_feedback(params) do
+    %Feedback{}
+    |> Feedback.changeset(params)
+    |> Repo.insert()
+  end
 end

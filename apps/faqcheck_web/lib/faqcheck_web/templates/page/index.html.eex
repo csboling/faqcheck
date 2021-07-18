@@ -1,6 +1,6 @@
 <section class="phx-hero">
   <h1><%= gettext "Welcome to %{name}!", name: "FaqCheck" %></h1>
-  <p><%= gettext "Free software for building question-and-answer systems" %></p>
+  <p><%= gettext "Free software for referral management and question-and-answer systems" %></p>
 </section>
 
 <section class="row">

@@ -21,14 +21,6 @@ defmodule Faqcheck.Referrals.Organization do
     org
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:facilities)
-    |> validate_name()
-    |> validate_required([:description])
     |> Faqcheck.Repo.versions()
-  end
-
-  defp validate_name(changeset) do
-    changeset
-    |> validate_required([:name])
-    |> unique_constraint(:name)
   end
 end

@@ -16,7 +16,9 @@ defmodule Faqcheck.Referrals.Contact do
     |> Stream.map(&String.trim/1)
     |> Stream.filter(&(&1 != ""))
     |> Enum.map(fn item ->
-      struct %Faqcheck.Referrals.Contact{}, %{field => item}
+      s = %{field => item}
+      IO.inspect s, label: "Contact.split item"
+      struct %Faqcheck.Referrals.Contact{}, s
     end)
   end
 end

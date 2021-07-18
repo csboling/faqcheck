@@ -8,8 +8,11 @@ defmodule FacilityRowComponent do
 
   def render(assigns) do
     ~L"""
-
       <%= if @editing do %>
+        <details>
+	  <summary>changeset</summary>
+          <pre><%= inspect @changeset, pretty: true %></pre>
+	</details>
         <%= form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself], fn f -> %>
           <div class="table-body-cell">
             <%= inputs_for f, :organization, fn org -> %>
@@ -133,7 +136,7 @@ defmodule FacilityRowComponent do
               <%= gettext("Edit") %>
             </button>
             <%  else %>
-            <%= link gettext("Leave feedback"), class: "button",
+            <%= link gettext("Leave feedback"),
                   to: Routes.facility_feedback_path(@socket, :feedback, @locale, @facility) %>
             <%  end %>
           </div class="table-body-cell">
@@ -151,6 +154,8 @@ defmodule FacilityRowComponent do
               <br />
               <%= @facility.address.locality %>
               <%= @facility.address.postcode %>
+	      <br />
+	      <%= link gettext("Get directions (Google Maps)"), to: "https://www.google.com/maps/dir/?api=1&destination=" <> URI.encode_www_form(@facility.address.street_address) %>
             </p>
             <%= if !Enum.empty?(@facility.contacts) do %>
             <ul>

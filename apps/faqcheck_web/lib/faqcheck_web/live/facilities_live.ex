@@ -44,6 +44,8 @@ defmodule FaqcheckWeb.FacilitiesLive do
         </div>
       </div>
 
+      <hr />
+
       <div>
         <button phx-disable-with="loading..." phx-click="load_more">
           <%= gettext "Load more" %>

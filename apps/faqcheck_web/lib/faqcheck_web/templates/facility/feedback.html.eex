@@ -1,6 +1,9 @@
 <h1><%= gettext "Leave feedback about %{facility_name}", facility_name: @facility.name %></h1>
 
-<p><%= gettext "Your feedback will only be visible to %{operator_name}, the operators of this %{app_name} site. It will not be shared with %{facility_name} directly. To contact %{facility_name}, use the contact information below. All feedback and contact information on this form is optional. You may optionally include your email address or phone number if you would like someone from %{operator_name} to contact you about this feedback.", operator_name: "Roadrunner Food Bank", app_name: "FaqCheck", facility_name: @facility.name %></p>
+<p><%= gettext "Your feedback will only be visible to %{operator_name}, the operators of this %{app_name} site. It will not be shared with %{facility_name} directly. To contact %{facility_name} instead, use the following contact information, if available:",
+       operator_name: "Roadrunner Food Bank",
+       app_name: "FaqCheck",
+       facility_name: @facility.name %></p>
 
 <%= if !Enum.empty?(@facility.contacts) do %>
 <p><%= gettext "Contact information for %{facility_name}:", facility_name: @facility.name %></p>
@@ -14,8 +17,11 @@
 <p><%= gettext "No contact information is available for %{facility_name}.", facility_name: @facility.name %></p>
 <%  end %>
 
+<p><%= gettext "All feedback and contact information on this form is optional. You may optionally include your email address or phone number if you would like someone from %{operator_name} to contact you about this feedback.",
+       operator_name: "Roadrunner Food Bank"  %></p>
+
 <%= form_for @changeset, Routes.facility_feedback_path(@conn, :feedback, @locale, @facility), fn f -> %>
-  
+
   <%= label f, :helpful, gettext "Was the information about this facility helpful?" %>
   <%= label do %>
   <%=   radio_button f, :helpful, "yes" %>
@@ -35,9 +41,9 @@
   <%=   radio_button f, :accurate, "no" %>
   <%=   gettext "Not accurate" %>
   <%  end %>
-  
+
   <%= textarea f, :client_comments, placeholder: gettext("Enter any other comments here.")  %>
   <%= text_input f, :client_email, placeholder: gettext("Email address") %>
-  <%= telephone_input f, :client_phone, placeholder: gettext("Phone number") %> 
+  <%= telephone_input f, :client_phone, placeholder: gettext("Phone number") %>
 
 <%  end %>
