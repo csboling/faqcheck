@@ -142,12 +142,15 @@ defmodule FacilityRowComponent do
           <span><%= @facility.name %></span>
             <br />
             <%= if !is_nil(@current_user) do %>
+
+            <%= link gettext("View feedback"),
+                  to: Routes.facility_feedback_path(@socket, :index, @locale, @facility) %>
             <button phx-click="edit" phx-target="<%= @myself %>">
               <%= gettext("Edit") %>
             </button>
             <%  else %>
             <%= link gettext("Leave feedback"),
-                  to: Routes.facility_feedback_path(@socket, :feedback, @locale, @facility) %>
+                  to: Routes.facility_feedback_path(@socket, :new, @locale, @facility) %>
             <%  end %>
           </div class="table-body-cell">
 

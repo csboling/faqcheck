@@ -72,7 +72,7 @@ defmodule FaqcheckWeb.Router do
     scope "/" do
       resources "/facilities", FacilityController, as: :facility do
       	get "/history", FacilityController, :history, as: :history
-        get "/feedback", FacilityController, :feedback, as: :feedback
+        resources "/feedback", FeedbackController, as: :feedback
       end
 
       scope "/live" do

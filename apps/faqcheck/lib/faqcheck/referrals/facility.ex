@@ -21,6 +21,7 @@ defmodule Faqcheck.Referrals.Facility do
       join_through: Faqcheck.Referrals.Affiliation
     many_to_many :keywords, Faqcheck.Referrals.Keyword,
       join_through: Faqcheck.Referrals.FacilityKeyword
+    has_many :feedback, Faqcheck.Referrals.Feedback
     has_many :sources, Faqcheck.Sources.DataSource
 
     schema_versions()

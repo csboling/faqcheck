@@ -1,0 +1,5 @@
+<h3><%= gettext "Feedback about %{facility_name}", facility_name: @facility.name %></h3>
+
+<%= for f <- @facility.feedback do %>
+  <%= f.inserted_at %>
+<%  end %>

@@ -178,13 +178,19 @@ defmodule Faqcheck.Referrals do
     end
   end
 
+  def get_facility_feedback(id) do
+    Repo.one! from fac in Facility,
+      where: fac.id == ^id,
+      preload: [:feedback]
+  end
+
   def leave_feedback(facility) do
     %Feedback{facility: facility}
     |> Feedback.changeset(%{})
   end
 
-  def save_feedback(params) do
-    %Feedback{}
+  def save_feedback(facility_id, params) do
+    %Feedback{facility_id: facility_id}
     |> Feedback.changeset(params)
     |> Repo.insert()
   end
