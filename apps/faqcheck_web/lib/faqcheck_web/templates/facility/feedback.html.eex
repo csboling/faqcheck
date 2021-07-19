@@ -7,12 +7,36 @@
 
 <%= if !Enum.empty?(@facility.contacts) do %>
 <p><%= gettext "Contact information for %{facility_name}:", facility_name: @facility.name %></p>
-<ul>
-  <%= for c <- @facility.contacts do %>
-  <li><a href="mailto:<%= c.email %>" /></li>
-  <li><a href="tel:<%= c.phone %>" /></li>
-  <% end %>
-</ul>
+<table>
+  <thead>
+    <tr>
+      <th><%= gettext("Phone") %></th>
+      <th><%= gettext("Website") %></th>
+      <th><%= gettext("Email") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for c <- @facility.contacts do %>
+        <tr>
+          <td>
+            <%= if c.phone do %>
+            <%= link c.phone, to: "tel:#{c.phone}" %>
+            <%  end %>
+          </td>
+          <td>
+            <%= if c.website do %>
+            <%= link c.website, to: c.website %>
+            <%  end %>
+          </td>
+          <td>
+            <%= if c.email do %>
+            <%= link c.email, to: "mailto:#{c.email}" %>
+            <%  end %>
+          </td>
+        </tr>
+        <%  end %>
+  </tbody>
+</table>            
 <%  else %>
 <p><%= gettext "No contact information is available for %{facility_name}.", facility_name: @facility.name %></p>
 <%  end %>
