@@ -6,6 +6,7 @@ defmodule FacilityRowComponent do
 
   alias Faqcheck.Referrals
   alias Faqcheck.Referrals.Facility
+  alias Faqcheck.Referrals.OperatingHours
 
   def render(assigns) do
     ~L"""
@@ -209,14 +210,12 @@ defmodule FacilityRowComponent do
               <thead>
                 <tr>
                   <th><%= gettext("Weekday") %></th>
-                  <th><%= gettext("Opens") %></th>
-                  <th><%= gettext("Closes") %></th>
+                  <th><%= gettext("Hours") %></th>
                 </tr>
-                <%= for h <- @facility.hours do %>
+                <%= for {day, hours} <- OperatingHours.format_hours(@facility.hours) do %>
                 <tr>
-                  <td><%= weekday_name h.weekday %></td>
-                  <td><%= hours_str h.opens %></td>
-                  <td><%= hours_str h.closes %></td>
+                  <td><%= weekday_name day %></td>
+                  <td><%= hours %></td>
                 </tr>
                 <% end %>
               </thead>

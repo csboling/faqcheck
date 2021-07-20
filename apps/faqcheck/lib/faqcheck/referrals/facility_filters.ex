@@ -36,6 +36,6 @@ defmodule Faqcheck.Referrals.FacilityFilters do
   filter zipcode(query, value) do
     query
     |> join(:inner, [f], a in assoc(f, :address))
-    |> where([f, a], a.postcode == ^value)
+    |> where([f, a], a.postcode == ^value or ilike(a.street_address, ^"%#{value}%"))
   end
 end

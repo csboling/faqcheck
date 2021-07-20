@@ -231,4 +231,21 @@ defmodule Faqcheck.Referrals.OperatingHours do
       _ -> raise "expected day (M) or day range (M-W), got: #{str}"
     end
   end
+
+  def hours_str(t),
+    do: Calendar.strftime(t, "%I:%M %p")
+
+  def format_hours(hours) do
+    hours
+    |> Enum.group_by(fn h -> h.weekday end)
+    |> Enum.map(fn {day, hs} ->
+      {day,
+       hs
+       |> Enum.map(fn h ->
+	 "#{hours_str h.opens} - #{hours_str h.closes}"
+       end)
+       |> Enum.join(", ")}
+    end)
+    |> Enum.sort_by(fn {d, h} -> d.value end)
+  end
 end

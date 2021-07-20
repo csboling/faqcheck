@@ -3,13 +3,14 @@ defmodule FaqcheckWeb.FormHelpers do
 
   import FaqcheckWeb.Gettext
   import FaqcheckWeb.Timezones
+  alias Faqcheck.Referrals.OperatingHours
   alias Faqcheck.Referrals.OperatingHours.Weekday
 
   def hour_select(form, field, from \\ 6, to \\ 20, minute_step \\ 15) do
     select form, field,
       options: Enum.map(
 	hour_range(from, to, minute_step),
-	&{hours_str(&1), Time.to_iso8601(&1)})
+	&{OperatingHours.hours_str(&1), Time.to_iso8601(&1)})
   end
 
   @weekday_names [
@@ -38,9 +39,6 @@ defmodule FaqcheckWeb.FormHelpers do
     {name, _} = Enum.at(@weekday_names, w.value)
     name
   end
-
-  def hours_str(w),
-    do: Calendar.strftime(w, "%I:%M %p")
 
   def weekday_select(form, field, opts \\ []) do
     select form, field, @weekday_names, opts

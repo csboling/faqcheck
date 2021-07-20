@@ -16,7 +16,8 @@ defmodule Faqcheck.Referrals.Facility do
     belongs_to :organization, Faqcheck.Referrals.Organization
     has_one :address, Faqcheck.Referrals.Address
     has_many :hours, Faqcheck.Referrals.OperatingHours,
-      preload_order: [asc: :weekday, asc: :opens]
+      preload_order: [asc: :weekday, asc: :opens],
+      on_replace: :delete_if_exists
     many_to_many :contacts, Faqcheck.Referrals.Contact,
       join_through: Faqcheck.Referrals.Affiliation
     many_to_many :keywords, Faqcheck.Referrals.Keyword,
@@ -117,6 +118,7 @@ defmodule Faqcheck.Referrals.Facility do
   def remove_hours(cs, index) do
     existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
     hours = existing ++ (get_change(cs, :hours) || [])
+    IO.inspect hours, label: "hours to delete from"
     put_assoc(
       cs,
       :hours,
