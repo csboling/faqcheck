@@ -1,5 +1,11 @@
 <h3><%= gettext "Feedback about %{facility_name}", facility_name: @facility.name %></h3>
 
 <%= for f <- @facility.feedback do %>
-  <%= f.inserted_at %>
+  <hr />
+  <%= gettext "Comment left at %{timestamp}", timestamp: f.inserted_at %>
+  <p><%= format_bool gettext("Helpful"), f.helpful %></p>
+  <p><%= format_bool gettext("Accurate"), f.accurate %></p>
+  <%= if f.client_comments do %>
+  <p><%= gettext("Comment") <> ": " <> f.client_comments %></p>
+  <%  end %>
 <%  end %>

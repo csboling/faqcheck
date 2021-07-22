@@ -47,4 +47,12 @@ defmodule FaqcheckWeb.FormHelpers do
   def weekday_filter_select(form, field, opts \\ []) do
     select form, field, @weekday_filters, opts
   end
+
+  def format_bool(caption, value) do
+    case value do
+      nil -> caption <> ": " <> gettext("no answer")
+      true -> caption <> ": " <> gettext("yes")
+      false -> caption <> ": " <> gettext("no")
+    end
+  end
 end

@@ -39,6 +39,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
           <%= for fac <- @facilities do %>
             <%= live_component @socket, FacilityRowComponent,
                   id: fac.id, locale: @locale,
+		  allow_delete: true,
                   facility: fac, current_user: @current_user %>
           <% end %>
         </div>
@@ -109,5 +110,10 @@ defmodule FaqcheckWeb.FacilitiesLive do
 
   def handle_event("load_more", _, %{assigns: assigns} = socket) do
     {:noreply, socket |> assign(page: assigns.page + 1) |> fetch()}
+  end
+
+  def handle_event("delete", %{"id" => id}, socket) do
+    Referrals.delete_facility(String.to_integer(id))
+    {:noreply, socket |> fetch()}
   end
 end

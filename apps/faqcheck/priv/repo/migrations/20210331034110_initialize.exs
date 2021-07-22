@@ -14,8 +14,7 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       add :description, :text, null: false
 
       add :organization_id,
-        references(:organizations),
-        on_delete: :nilify_all
+        references(:organizations, on_delete: :nilify_all)
 
       timestamps()
     end
@@ -28,9 +27,8 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       add :valid_to,    :utc_datetime
 
       add :facility_id,
-        references(:facilities),
-        null: false,
-        on_delete: :delete_all
+        references(:facilities, on_delete: :delete_all),
+        null: false
 
       timestamps()
     end
@@ -48,13 +46,11 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       add :title, :string
 
       add :facility_id,
-        references(:facilities),
-        null: false,
-        on_delete: :delete_all
+        references(:facilities, on_delete: :delete_all),
+        null: false
       add :contact_id,
-        references(:contacts),
-        null: false,
-        on_delete: :delete_all
+        references(:contacts, on_delete: :delete_all),
+        null: false
 
       timestamps()
     end
@@ -70,9 +66,8 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       add :osm_way,         :integer
 
       add :facility_id,
-        references(:facilities),
-        null: false,
-        on_delete: :delete_all
+        references(:facilities, on_delete: :delete_all),
+        null: false
 
       timestamps()
     end

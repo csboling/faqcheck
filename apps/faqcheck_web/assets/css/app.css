@@ -38,10 +38,10 @@
 .flex-row {
   display: flex;
   flex-direction: row;
+}
 
-  label, input {
-    display: block;
-  }
+label.flex-row, input.flex-row {
+  display: block;
 }
 
 div.table { display: table; }

@@ -9,13 +9,11 @@ defmodule Faqcheck.Repo.Migrations.AddKeywords do
 
     create table(:facility_keywords) do
       add :facility_id,
-        references(:facilities),
-        null: false,
-        on_delete: :delete_all
+        references(:facilities, on_delete: :delete_all),
+        null: false
       add :keyword_id,
-        references(:keywords),
-        null: false,
-        on_delete: :delete_all
+        references(:keywords, on_delete: :delete_all),
+        null: false
 
       timestamps()
     end

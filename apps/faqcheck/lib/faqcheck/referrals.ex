@@ -150,6 +150,13 @@ defmodule Faqcheck.Referrals do
 		organization: {org, [versions: :user]}]
   end
 
+  def upsert_facility(changeset) do
+    case Ecto.get_meta(changeset.data, :state) do
+      :loaded -> Repo.update!(%{changeset | action: :update})
+      :built -> Repo.insert!(%{changeset | action: :insert})
+    end
+  end
+
   def upsert_facility(facility, params) do
     keywords = get_keywords(facility, params)
     changeset = facility
@@ -160,6 +167,10 @@ defmodule Faqcheck.Referrals do
       :loaded -> Repo.update!(changeset)
       :built -> Repo.insert!(changeset)
     end
+  end
+
+  def delete_facility(id) do
+    Repo.delete!(%Facility{id: id})
   end
 
   def get_keywords(facility, params) do

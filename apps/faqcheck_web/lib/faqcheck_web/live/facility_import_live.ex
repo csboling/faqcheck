@@ -1,8 +1,9 @@
 defmodule FaqcheckWeb.FacilityImportLive do
   use FaqcheckWeb, :live_view
 
-  alias Faqcheck.Sources.Strategies
+  alias Faqcheck.Referrals
   alias Faqcheck.Referrals.Facility
+  alias Faqcheck.Sources.Strategies
 
   def title, do: "Confirm facilities to import"
 
@@ -56,6 +57,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
           <%= for {changeset, i} <- @changesets do %>
             <%= live_component @socket, FacilityRowComponent,
                   id: i, locale: @locale, current_user: @current_user,
+		  allow_delete: false,
                   facility: changeset.data, changeset: changeset, editing: true %>
           <% end %>
         </div>
@@ -110,5 +112,27 @@ defmodule FaqcheckWeb.FacilityImportLive do
      |> assign(
        page: page,
        changesets: changesets)}
+  end
+
+  def handle_event("save_all", _params, socket) do
+    for {changeset, i} <- socket.assigns.changesets do
+      Referrals.upsert_facility(changeset)
+    end
+
+    if socket.assigns.page.index + 1 < Enum.count(socket.assigns.feed.pages) do
+      {page, changesets} = Strategies.build_changesets(
+        socket.assigns.strategy,
+        socket.assigns.feed,
+        socket.assigns.page.index + 1)
+      {:noreply,
+       socket
+       |> assign(
+         page: page,
+         changesets: changesets)}
+    else
+      {:noreply,
+       socket
+       |> push_patch(to: FaqcheckWeb.Router.Helpers.live_path(socket, FaqcheckWeb.FacilitiesLive, socket.assigns.locale))}
+    end
   end
 end

@@ -8,8 +8,7 @@ defmodule Repo.Migrations.AddVersions do
       add :item_id,      :integer
       add :item_changes, :map, null: false
       add :originator_id,
-        references(:users),
-        on_delete: :nilify_all
+        references(:users, on_delete: :nilify_all)
       add :origin,       :string, size: 50
       add :meta,         :map
 

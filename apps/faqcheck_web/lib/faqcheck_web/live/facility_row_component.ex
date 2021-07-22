@@ -20,7 +20,7 @@ defmodule FacilityRowComponent do
             <%= inputs_for f, :organization, fn org -> %>
               <%= text_input org, :name, placeholder: gettext("Organization name") %>
               <%= error_tag org, :name %>
-            <% end %>
+            <%  end %>
             <%= text_input f, :name, placeholder: gettext("Facility name") %>
             <%= error_tag f, :name %>
 
@@ -32,6 +32,12 @@ defmodule FacilityRowComponent do
               <%= link format_timestamp(@changeset.data.updated_at, "MST7MDT"),
                     to: Routes.facility_history_path(@socket, :history, @locale, @changeset.data) %>
             </p>
+	    <%=   if @allow_delete do %>
+	    <%= link gettext("Delete"), to: "#",
+	      phx_click: "delete", phx_value_id: @facility.id,
+	      data: [confirm: gettext("Do you want to delete this facility?")],
+	      class: "button" %>
+	    <%    end %>
             <%  end %>
 
             <%= submit gettext("Save") %>

@@ -12,7 +12,7 @@ defmodule Faqcheck.Referrals.FacilityFilters do
       [f, k],
       ilike(f.name, ^"%#{value}%")
       or ilike(f.description, ^"%#{value}%")
-      or ilike(k.keyword, ^"%#{value}"))
+      or ilike(k.keyword, ^"%#{value}%"))
     |> distinct(true)
   end
 
