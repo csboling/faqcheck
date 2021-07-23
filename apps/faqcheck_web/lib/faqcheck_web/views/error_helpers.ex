@@ -9,12 +9,14 @@ defmodule FaqcheckWeb.ErrorHelpers do
   Generates tag for inlined form input errors.
   """
   def error_tag(form, field) do
+    name = input_name(form, field)
     form.errors
     |> Keyword.get_values(field)
     |> Enum.map(fn error ->
-      content_tag(:span, translate_error(error),
+      content_tag(:span,
+	name <> ": " <> translate_error(error),
         class: "invalid-feedback",
-        phx_feedback_for: input_name(form, field),
+        phx_feedback_for: name,
         data: [phx_error_for: field])
     end)
   end

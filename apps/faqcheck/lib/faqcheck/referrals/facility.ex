@@ -14,14 +14,17 @@ defmodule Faqcheck.Referrals.Facility do
     timestamps()
 
     belongs_to :organization, Faqcheck.Referrals.Organization
-    has_one :address, Faqcheck.Referrals.Address
+    has_one :address, Faqcheck.Referrals.Address,
+      on_replace: :update
     has_many :hours, Faqcheck.Referrals.OperatingHours,
       preload_order: [asc: :weekday, asc: :opens],
       on_replace: :delete_if_exists
     many_to_many :contacts, Faqcheck.Referrals.Contact,
-      join_through: Faqcheck.Referrals.Affiliation
+      join_through: Faqcheck.Referrals.Affiliation,
+      on_replace: :delete
     many_to_many :keywords, Faqcheck.Referrals.Keyword,
-      join_through: Faqcheck.Referrals.FacilityKeyword
+      join_through: Faqcheck.Referrals.FacilityKeyword,
+      on_replace: :delete
     has_many :feedback, Faqcheck.Referrals.Feedback
     has_many :sources, Faqcheck.Sources.DataSource
 

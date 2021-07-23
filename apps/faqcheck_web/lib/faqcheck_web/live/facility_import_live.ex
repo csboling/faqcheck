@@ -44,13 +44,14 @@ defmodule FaqcheckWeb.FacilityImportLive do
         </ul>
       </details>
 
-      <button phx-click="save_all"><%= gettext "Save all on this page" %></button>
+      <!-- <button phx-click="save_all"><%= gettext "Save all on this page" %></button> -->
+
       <div class="table">
         <div class="table-head">
           <div class="table-row">
             <div class="table-head-cell"><%= gettext "Name" %></div>
             <div class="table-head-cell" style="width: 100px;"><%= gettext "Keywords" %></div>
-            <div class="table-head-cell"><%= gettext "Description" %></div>
+            <div class="table-head-cell"><%= gettext "Details" %></div>
           </div>
         </div>
         <div class="table-body">
@@ -62,7 +63,9 @@ defmodule FaqcheckWeb.FacilityImportLive do
           <% end %>
         </div>
       </div>
-      <button phx-click="save_all"><%= gettext "Save all" %></button>
+
+      <!-- <button phx-click="save_all"><%= gettext "Save all on this page" %></button> -->
+
       <% end %>
       """
   end

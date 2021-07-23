@@ -11,10 +11,14 @@ defmodule FacilityRowComponent do
   def render(assigns) do
     ~L"""
       <%= if @editing do %>
+
+        <%= if false do %>
         <details>
           <summary>changeset</summary>
           <pre><%= inspect @changeset, pretty: true %></pre>
         </details>
+	<%  end %>
+
         <%= form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself], fn f -> %>
           <div class="table-body-cell">
             <%= inputs_for f, :organization, fn org -> %>
@@ -28,10 +32,17 @@ defmodule FacilityRowComponent do
 
             <%= if Ecto.get_meta(@changeset.data, :state) == :loaded do %>
             <p class="alert alert-warning">
-              <%= gettext "You are editing an existing item. Last edit: " %>
+              <%= gettext "You are editing an existing item, saving will replace all its fields with the values displayed here. Last edit: " %>
               <%= link format_timestamp(@changeset.data.updated_at, "MST7MDT"),
                     to: Routes.facility_history_path(@socket, :history, @locale, @changeset.data) %>
             </p>
+
+            <%= if !@changeset.valid? do %>
+	    <p class="alert alert-danger">
+              <%= gettext "One or more inputs for this facility aren't in the expected format." %>
+            </p>
+            <%  end %>
+
 	    <%=   if @allow_delete do %>
 	    <%= link gettext("Delete"), to: "#",
 	      phx_click: "delete", phx_value_id: @facility.id,
@@ -40,8 +51,12 @@ defmodule FacilityRowComponent do
 	    <%    end %>
             <%  end %>
 
-            <%= submit gettext("Save") %>
-            <button type="button" phx-click="cancel" phx-target="<%= @myself %>"><%= gettext("Cancel") %></button>
+            <%= submit gettext("Save"), phx_disable_with: "Saving...", disabled: !@changeset.valid? %>
+            <button type="button"
+	      phx-click="cancel"
+	      phx-target="<%= @myself %>">
+ 	      <%= gettext("Cancel") %>
+	    </button>
           </div>
 
           <div class="table-body-cell">
@@ -112,6 +127,8 @@ defmodule FacilityRowComponent do
                   </div>
                 </div>
               </div>
+
+              <%= error_tag f, :hours %>
               <div class="table-body">
                 <%= inputs_for f, :hours, fn h -> %>
                 <div class="table-row">
