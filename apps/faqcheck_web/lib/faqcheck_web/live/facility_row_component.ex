@@ -71,6 +71,7 @@ defmodule FacilityRowComponent do
 
           <div class="table-body-cell">
             <p><%= textarea f, :description, placeholder: gettext("Facility description") %></p>
+            <%= error_tag f, :description %>
             <p>
               <%= inputs_for f, :address, fn addr -> %>
                 <%= text_input addr, :street_address, placeholder: gettext("Street address") %>
