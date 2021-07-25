@@ -50,6 +50,13 @@
     </header>
 
     <main role="main" class="container locale-<%= @locale %>">
+      <nav>
+        <%= for b <- @breadcrumb do %>
+          <%= live_patch b.title, to: b.path %>
+          &nbsp;&sol;&nbsp;
+        <%  end %>
+      </nav>
+
       <%= @inner_content %>
     </main>
 

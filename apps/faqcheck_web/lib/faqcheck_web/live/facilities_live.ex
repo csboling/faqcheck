@@ -8,13 +8,6 @@ defmodule FaqcheckWeb.FacilitiesLive do
   def render(assigns) do
     ~L"""
     <div>
-      <nav>
-        <%= for b <- @breadcrumb do %>
-          <%= live_patch b.title, to: b.path %>
-          &nbsp;&sol;&nbsp;
-        <%  end %>
-      </nav>
-
       <%= f = form_for :search, "#", [phx_submit: "search", class: "flex-form"] %>
         <%= label f, :name, gettext("Name") %>
         <%= text_input f, :name, placeholder: gettext("Search by name or description"), value: @params["search"]["name"] %>

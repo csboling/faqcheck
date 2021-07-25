@@ -7,13 +7,6 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
 
   def render(assigns) do
     ~L"""
-      <nav>
-        <%= for b <- @breadcrumb do %>
-          <%= live_patch b.title, to: b.path %>
-          &nbsp;&sol;&nbsp;
-        <%  end %>
-      </nav>
-
       <%= f = form_for :method_sel, "#", [phx_change: :sel_method, phx_submit: :import] %>
         <%= select f, :id, @method_names, selected: @import_method.id %>
       </form>

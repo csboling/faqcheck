@@ -9,13 +9,6 @@ defmodule FaqcheckWeb.FacilityImportLive do
 
   def render(assigns) do
     ~L"""
-      <nav>
-        <%= for b <- @breadcrumb do %>
-          <%= live_patch b.title, to: b.path %>
-      	&nbsp;&sol;&nbsp;
-        <%  end %>
-      </nav>
-
       <%= if !is_nil(@error) do %>
       <h2><%= gettext "An error occurred accessing the data source." %></h2>
       <p>Error message: <%= inspect @error %></p>

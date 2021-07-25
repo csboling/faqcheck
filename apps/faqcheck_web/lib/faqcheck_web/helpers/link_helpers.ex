@@ -48,21 +48,31 @@ defmodule FaqcheckWeb.LinkHelpers do
 
   def breadcrumb(url) do
     uri = URI.parse(url)
-    ["" | [locale | ["live" | segments]]] = String.split(uri.path, "/")
+    ["" | [locale | segments]] = String.split(uri.path, "/")
     segments
     |> Stream.filter(fn x -> x != "" end)
     |> Stream.scan(fn s, p -> "#{p}/#{s}" end)
     |> Stream.map(fn p ->
-      path = "/#{locale}/live/#{p}"
+      path = "/#{locale}/#{p}"
+      IO.inspect path, label: "breadcrumb path"
       info = Phoenix.Router.route_info FaqcheckWeb.Router,
         "GET", path, ""
-      case info.phoenix_live_view do
-        {view, _} -> %{
-          title: view.title,
+      cond do
+	!is_map(info) ->
+	  nil
+        Map.has_key?(info, :phoenix_live_view) ->
+          case info.phoenix_live_view do
+      	    {view, _} -> %{
+      	      title: view.title,
+      	       path: path,
+      	       view: view,
+      	    }
+      	    _ -> nil
+      	  end
+        Map.has_key?(info, :plug) -> %{
+          title: info.plug.title(info.plug_opts),
 	  path: path,
-	  view: view,
 	}
-	_ -> nil
       end
     end)
     |> Enum.filter(fn x -> x end)
