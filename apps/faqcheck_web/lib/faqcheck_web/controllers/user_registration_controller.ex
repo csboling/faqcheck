@@ -5,6 +5,13 @@ defmodule FaqcheckWeb.UserRegistrationController do
   alias Faqcheck.Accounts.User
   alias FaqcheckWeb.UserAuth
 
+  def title(action) do
+    case action do
+      :new -> gettext "Register a user account"
+      :create -> gettext "Error registering account"
+    end
+  end
+
   def new(conn, _params) do
     changeset = Accounts.change_user_registration(%User{})
     render(conn, "new.html", changeset: changeset)

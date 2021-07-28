@@ -5,6 +5,13 @@ defmodule FaqcheckWeb.UserResetPasswordController do
 
   plug :get_user_by_reset_password_token when action in [:edit, :update]
 
+  def title(action) do
+    case action do
+      :new -> gettext "Reset your password"
+      :edit -> gettext "Change your password"
+    end
+  end
+
   def new(conn, _params) do
     render(conn, "new.html")
   end

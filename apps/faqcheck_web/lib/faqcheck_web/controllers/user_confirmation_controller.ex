@@ -3,6 +3,12 @@ defmodule FaqcheckWeb.UserConfirmationController do
 
   alias Faqcheck.Accounts
 
+  def title(action) do
+    case action do
+      :new -> gettext "Create a user account"
+    end
+  end
+
   def new(conn, _params) do
     render(conn, "new.html")
   end

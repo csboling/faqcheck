@@ -6,6 +6,12 @@ defmodule FaqcheckWeb.UserSettingsController do
 
   plug :assign_email_and_password_changesets
 
+  def title(action) do
+    case action do
+      :edit -> gettext "Edit your account information"
+    end
+  end
+
   def edit(conn, _params) do
     render(conn, "edit.html")
   end

@@ -4,6 +4,13 @@ defmodule FaqcheckWeb.UserSessionController do
   alias Faqcheck.Accounts
   alias FaqcheckWeb.UserAuth
 
+  def title(action) do
+    case action do
+      :new -> gettext "Log in"
+      :create -> gettext "Error logging in"
+    end
+  end
+
   def new(conn, _params) do
     render(conn, "new.html", error_message: nil)
   end

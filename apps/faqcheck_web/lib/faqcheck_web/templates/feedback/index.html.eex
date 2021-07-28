@@ -2,6 +2,10 @@
 
 <%= for f <- @facility.feedback do %>
   <hr />
+  <details>
+    <summary>data</summary>
+    <pre><%= inspect @facility.feedback, pretty: true %></pre>
+  </details>
   <%= gettext "Comment left at %{timestamp}", timestamp: f.inserted_at %>
   <p><%= format_bool gettext("Helpful"), f.helpful %></p>
   <p><%= format_bool gettext("Accurate"), f.accurate %></p>

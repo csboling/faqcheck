@@ -12,7 +12,7 @@ defmodule FacilityRowComponent do
     ~L"""
       <%= if @editing do %>
 
-        <%= if false do %>
+        <%= if true do %>
         <details>
           <summary>changeset</summary>
           <pre><%= inspect @changeset, pretty: true %></pre>

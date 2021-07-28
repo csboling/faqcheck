@@ -4,6 +4,12 @@ defmodule FaqcheckWeb.OrganizationController do
   alias Faqcheck.Referrals
   alias Faqcheck.Referrals.Organization
 
+  def action(action) do
+    case action do
+      :index -> gettext "List organizations"
+    end
+  end
+
   def index(conn, _params) do
     organizations = Referrals.list_organizations()
     render(conn, "index.html", organizations: organizations)
