@@ -74,6 +74,23 @@ defmodule Faqcheck.Referrals.OperatingHours do
     end
   end
 
+  def always_open do
+    [
+      Faqcheck.Referrals.OperatingHours.Weekday.Monday,
+      Faqcheck.Referrals.OperatingHours.Weekday.Tuesday,
+      Faqcheck.Referrals.OperatingHours.Weekday.Wednesday,
+      Faqcheck.Referrals.OperatingHours.Weekday.Thursday,
+      Faqcheck.Referrals.OperatingHours.Weekday.Friday,
+    ]
+    |> Enum.map(fn d ->
+      %Faqcheck.Referrals.OperatingHours{
+        weekday: d,
+        opens: ~T[00:00:00],
+        closes: ~T[23:59:59],
+      }
+    end)
+  end
+
   @doc """
   Given string descriptions for operating hours, generate
   a set of OperatingHours.
@@ -98,7 +115,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
       |> Time.truncate(:second)
       _ -> given_closes
     end
-   
+
     first_day = parse_day(first_day_str)
     if is_nil(last_day_str) or last_day_str == "" do
       [
@@ -122,7 +139,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
 
   @doc """
   Parse time of day from a string description.
-  
+
   ## Examples
 
       iex> parse_hour("10:30:00")
@@ -155,6 +172,9 @@ defmodule Faqcheck.Referrals.OperatingHours do
 
       iex> parse_hours("1pm-5pm")
       {~T[13:00:00], ~T[17:00:00]}
+
+      iex> parse_hours("8AM-5PM")
+      {~T[08:00:00], ~T[17:00:00]}
   """
   def parse_hours(str) do
     [opens, closes] = String.split(str, "-", parts: 2)
@@ -162,10 +182,13 @@ defmodule Faqcheck.Referrals.OperatingHours do
       s = s |> String.trim()
       hour = s
       |> String.trim_trailing("pm")
+      |> String.trim_trailing("PM")
       |> String.trim_trailing("am")
+      |> String.trim_trailing("AM")
+      |> String.trim_trailing("noon")
       |> String.trim()
       |> parse_hour()
-      if String.ends_with?(s, "pm") do
+      if String.ends_with?(s, "pm") or String.ends_with?(s, "PM") do
         plus_12h hour
       else
         hour
@@ -200,7 +223,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
 
       iex> parse_day("Mon")
       Faqcheck.Referrals.OperatingHours.Weekday.Monday
-      
+
       iex> parse_day("Tues")
       Faqcheck.Referrals.OperatingHours.Weekday.Tuesday
 
@@ -224,7 +247,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
     parts = String.split(str, "-", parts: 2)
     case length parts do
       1 -> [parts |> Enum.at(0) |> String.trim() |> parse_day()]
-      2 -> 
+      2 ->
         first_day = parts |> Enum.at(0) |> String.trim() |> parse_day()
         last_day = parts |> Enum.at(1) |> String.trim() |> parse_day()
         first_day.value..last_day.value |> Enum.map(&Weekday.from/1)

@@ -17,7 +17,7 @@ defmodule FacilityRowComponent do
           <summary>changeset</summary>
           <pre><%= inspect @changeset, pretty: true %></pre>
         </details>
-	<%  end %>
+        <%  end %>
 
         <%= form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself], fn f -> %>
           <div class="table-body-cell">
@@ -39,24 +39,24 @@ defmodule FacilityRowComponent do
             <%  end %>
 
             <%= if !@changeset.valid? do %>
-	    <p class="alert alert-danger">
+            <p class="alert alert-danger">
               <%= gettext "One or more inputs for this facility aren't in the expected format." %>
             </p>
             <%  end %>
 
-	    <%= if @allow_delete do %>
-	    <%= link gettext("Delete"), to: "#",
-	      phx_click: "delete", phx_value_id: @facility.id,
-	      onclick: "(function(){ if (!confirm('Are you sure?')) {event.stopImmediatePropagation();} }).call(event)",
-	      class: "button" %>
-	    <%  end %>
+            <%= if @allow_delete do %>
+            <%= link gettext("Delete"), to: "#",
+              phx_click: "delete", phx_value_id: @facility.id,
+              onclick: "(function(){ if (!confirm('Are you sure?')) {event.stopImmediatePropagation();} }).call(event)",
+              class: "button" %>
+            <%  end %>
 
             <%= submit gettext("Save"), phx_disable_with: "Saving...", disabled: !@changeset.valid? %>
             <button type="button"
-	      phx-click="cancel"
-	      phx-target="<%= @myself %>">
- 	      <%= gettext("Cancel") %>
-	    </button>
+              phx-click="cancel"
+              phx-target="<%= @myself %>">
+              <%= gettext("Cancel") %>
+            </button>
           </div>
 
           <div class="table-body-cell">
