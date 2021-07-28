@@ -36,6 +36,7 @@ defmodule FacilityRowComponent do
               <%= link format_timestamp(@changeset.data.updated_at, "MST7MDT"),
                     to: Routes.facility_history_path(@socket, :history, @locale, @changeset.data) %>
             </p>
+            <%  end %>
 
             <%= if !@changeset.valid? do %>
 	    <p class="alert alert-danger">
@@ -43,13 +44,12 @@ defmodule FacilityRowComponent do
             </p>
             <%  end %>
 
-	    <%=   if @allow_delete do %>
+	    <%= if @allow_delete do %>
 	    <%= link gettext("Delete"), to: "#",
 	      phx_click: "delete", phx_value_id: @facility.id,
-	      data: [confirm: gettext("Do you want to delete this facility?")],
+	      onclick: "(function(){ if (!confirm('Are you sure?')) {event.stopImmediatePropagation();} }).call(event)",
 	      class: "button" %>
-	    <%    end %>
-            <%  end %>
+	    <%  end %>
 
             <%= submit gettext("Save"), phx_disable_with: "Saving...", disabled: !@changeset.valid? %>
             <button type="button"
