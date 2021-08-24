@@ -7,6 +7,10 @@
     </div>
   <% end %>
 
+  providers:
+  <%= for link <- PowAssent.Phoenix.ViewHelpers.provider_links(@conn),
+    do: content_tag(:span, link) %>
+
   <%= label f, :email, gettext("Email") %>
   <%= email_input f, :email, required: true %>
 

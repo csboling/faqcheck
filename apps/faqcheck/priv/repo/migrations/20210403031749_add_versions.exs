@@ -27,7 +27,6 @@ defmodule Repo.Migrations.AddVersions do
       :facilities,
       :operating_hours,
       :organizations,
-      :users,
     ]
     for t <- versioned_tables do
       alter table(t) do

@@ -49,6 +49,10 @@ config :paper_trail, repo: Faqcheck.Repo, strict_mode: true,
 config :faqcheck, :openid_connect_providers,
   []
 
+config :faqcheck_web, :pow,
+  user: Faqcheck.Users.User,
+  repo: Faqcheck.Repo
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

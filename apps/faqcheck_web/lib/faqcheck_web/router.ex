@@ -1,5 +1,7 @@
 defmodule FaqcheckWeb.Router do
   use FaqcheckWeb, :router
+  use Pow.Phoenix.Router
+  use PowAssent.Phoenix.Router
 
   import FaqcheckWeb.UserAuth
 
@@ -16,6 +18,13 @@ defmodule FaqcheckWeb.Router do
       gettext: FaqcheckWeb.Gettext,
       default_locale: "en")
     plug FaqcheckWeb.Plugs.Breadcrumb
+  end
+
+  pipeline :skip_csrf_protection do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_flash
+    plug :put_secure_browser_headers
   end
 
   pipeline :api do
@@ -43,6 +52,10 @@ defmodule FaqcheckWeb.Router do
     end
   end
 
+  # scope "/" do
+  #   pipe_through :browser
+  # end
+
   scope "/", FaqcheckWeb do
     pipe_through :browser
     get "/", PageController, :dummy
@@ -56,6 +69,23 @@ defmodule FaqcheckWeb.Router do
     pipe_through :api
 
     post "/microsoft/messages", MicrosoftTeamsController, :message
+  end
+
+  scope "/:locale" do
+    pipe_through :browser
+    pow_routes()
+    pow_assent_routes()
+  end
+
+  scope "/" do
+    pipe_through :browser
+    pow_routes()
+    pow_assent_routes()
+  end
+
+  scope "/" do
+    pipe_through :skip_csrf_protection
+    pow_assent_authorization_post_callback_routes()
   end
 
   scope "/:locale", FaqcheckWeb do

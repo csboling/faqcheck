@@ -70,8 +70,8 @@ defmodule FaqcheckWeb.LinkHelpers do
       	    _ -> nil
       	  end
         Map.has_key?(info, :plug) -> %{
-          title: info.plug.title(info.plug_opts),
-	  path: path,
+          title: Kernel.function_exported?(info.plug, :title, 1) && info.plug.title(info.plug_opts) || "untitled page",
+          path: path,
 	}
       end
     end)
