@@ -52,6 +52,7 @@ config :faqcheck, :openid_connect_providers,
 config :faqcheck_web, :pow,
   user: Faqcheck.Users.User,
   repo: Faqcheck.Repo
+  # web_module: FaqcheckWeb
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

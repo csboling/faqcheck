@@ -1,16 +1,15 @@
 <h1><%= gettext "Log in" %></h1>
 
+<%= for link <- PowAssent.Phoenix.ViewHelpers.provider_links(@conn),
+  do: content_tag(:span, link) %>
+
+<!--
 <%= form_for @conn, Routes.user_session_path(@conn, :create, @locale), [as: :user], fn f -> %>
   <%= if @error_message do %>
     <div class="alert alert-danger">
       <p><%= @error_message %></p>
     </div>
   <% end %>
-
-  providers:
-  <%= for link <- PowAssent.Phoenix.ViewHelpers.provider_links(@conn),
-    do: content_tag(:span, link) %>
-
   <%= label f, :email, gettext("Email") %>
   <%= email_input f, :email, required: true %>
 
@@ -29,3 +28,4 @@
   <%= link gettext("Register"), to: Routes.user_registration_path(@conn, :new, @locale) %> |
   <%= link gettext("Forgot your password?"), to: Routes.user_reset_password_path(@conn, :new, @locale) %>
 </p>
+-->

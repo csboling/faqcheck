@@ -4,7 +4,7 @@ defmodule FaqcheckWeb.LiveUserHelpers do
   alias Faqcheck.Accounts
 
   def require_user(socket, session) do
-    socket = assign_user(socket, session) 
+    socket = assign_user(socket, session)
     if !is_nil(socket.assigns.current_user) do
       socket
     else

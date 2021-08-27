@@ -10,9 +10,11 @@ defmodule FaqcheckWeb.Router do
     plug :fetch_session
     plug :fetch_live_flash
     plug :protect_from_forgery
-    # plug :put_secure_browser_headers,
+    # plug :put_secure_browser_headers
+    # plug PowAssent.Plug.Reauthorization,
+    #   handler: PowAssent.Phoenix.ReauthorizationPlugHandler
     #   %{"content-security-policy" => "default-src 'self';"}
-    plug :fetch_current_user
+    # plug :fetch_current_user
     plug :put_root_layout, {FaqcheckWeb.LayoutView, :root}
     plug(SetLocale,
       gettext: FaqcheckWeb.Gettext,
@@ -25,6 +27,11 @@ defmodule FaqcheckWeb.Router do
     plug :fetch_session
     plug :fetch_flash
     plug :put_secure_browser_headers
+  end
+
+  pipeline :protected do
+    plug Pow.Plug.RequireAuthenticated,
+      error_handler: Pow.Phoenix.PlugErrorHandler
   end
 
   pipeline :api do
@@ -74,13 +81,13 @@ defmodule FaqcheckWeb.Router do
   scope "/:locale" do
     pipe_through :browser
     pow_routes()
-    pow_assent_routes()
+    pow_assent_authorization_routes()
   end
 
   scope "/" do
     pipe_through :browser
     pow_routes()
-    pow_assent_routes()
+    pow_assent_authorization_routes()
   end
 
   scope "/" do
@@ -101,6 +108,8 @@ defmodule FaqcheckWeb.Router do
     end
 
     scope "/" do
+      get "/sign_in", SignInController, :index
+
       resources "/facilities", FacilityController, as: :facility do
       	get "/history", FacilityController, :history, as: :history
         resources "/feedback", FeedbackController, as: :feedback
@@ -132,34 +141,34 @@ defmodule FaqcheckWeb.Router do
     end
 
     ## Authentication routes
-    scope "/user" do
-      scope "/" do
-        pipe_through :redirect_if_user_is_authenticated
+    # scope "/user" do
+    #   scope "/" do
+    #     pipe_through :redirect_if_user_is_authenticated
 
-        get "/register", UserRegistrationController, :new
-        post "/register", UserRegistrationController, :create
-        get "/log_in", UserSessionController, :new
-        post "/log_in", UserSessionController, :create
-        get "/reset_password", UserResetPasswordController, :new
-        post "/reset_password", UserResetPasswordController, :create
-        get "/reset_password/:token", UserResetPasswordController, :edit
-        put "/reset_password/:token", UserResetPasswordController, :update
-      end
+    #     get "/register", UserRegistrationController, :new
+    #     post "/register", UserRegistrationController, :create
+    #     get "/log_in", UserSessionController, :new
+    #     post "/log_in", UserSessionController, :create
+    #     get "/reset_password", UserResetPasswordController, :new
+    #     post "/reset_password", UserResetPasswordController, :create
+    #     get "/reset_password/:token", UserResetPasswordController, :edit
+    #     put "/reset_password/:token", UserResetPasswordController, :update
+    #   end
 
-      scope "/" do
-        pipe_through :require_authenticated_user
+    #   scope "/" do
+    #     pipe_through :require_authenticated_user
 
-        get "/settings", UserSettingsController, :edit
-        put "/settings", UserSettingsController, :update
-        get "/settings/confirm_email/:token", UserSettingsController, :confirm_email
-      end
+    #     get "/settings", UserSettingsController, :edit
+    #     put "/settings", UserSettingsController, :update
+    #     get "/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    #   end
 
-      scope "/" do
-        delete "/log_out", UserSessionController, :delete
-        get "/confirm", UserConfirmationController, :new
-        post "/confirm", UserConfirmationController, :create
-        get "/confirm/:token", UserConfirmationController, :confirm
-      end
-    end
+    #   scope "/" do
+    #     delete "/log_out", UserSessionController, :delete
+    #     get "/confirm", UserConfirmationController, :new
+    #     post "/confirm", UserConfirmationController, :create
+    #     get "/confirm/:token", UserConfirmationController, :confirm
+    #   end
+    # end
   end
 end
