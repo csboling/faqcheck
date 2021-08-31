@@ -68,6 +68,7 @@ defmodule FaqcheckWeb.Router do
     scope "/help" do
       get "/", HelpController, :index
       get "/microsoft", HelpController, :microsoft
+      get "/contributing", HelpController, :contributing
     end
 
     scope "/" do
