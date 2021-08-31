@@ -10,9 +10,9 @@
       <li>
 	<%= link gettext("Browse facilities"), to: Routes.live_path(@conn, FaqcheckWeb.FacilitiesLive, @locale) %>
       </li>
-      <li>
-        <%= gettext "Browse common questions" %>
-      </li>
+      <!-- <li> -->
+      <!--   <%= gettext "Browse common questions" %> -->
+      <!-- </li> -->
     </ul>
   </article>
   <article class="column">
@@ -40,7 +40,7 @@
         <%= link gettext("Where can I find technical information about %{name}?", name: "FaqCheck"), to: Routes.help_path(@conn, :index, @locale) <> "/#technical" %>
       </li>
       <li>
-        <%= link gettext("How can I help improve %{name}?", name: "FaqCheck"), to: Routes.help_path(@conn, :index, @locale) <> "/#contributing" %>
+        <%= link gettext("How can I help improve %{name}?", name: "FaqCheck"), to: Routes.help_path(@conn, :contributing, @locale) %>
       </li>
     </ul>
   </article>

@@ -50,6 +50,20 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
           },
         ],
       },
+      %{
+        id: "Food finder",
+        display_name: "RRFB Food Finder",
+        session: Map.take(session, ["_csrf_token", "microsoft"]),
+        resource: :sites,
+        breadcrumb: [],
+        component: ImportMethods.SharepointComponent,
+        strategies: [
+          %{
+            id: 1,
+            name: "RRFB Client Resources spreadsheet",
+          },
+        ],
+      },
     ]
 
     {:ok,

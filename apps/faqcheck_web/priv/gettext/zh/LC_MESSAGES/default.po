@@ -17,17 +17,17 @@ msgid "Manage hosted documents"
 msgstr "官理主机的单据"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/manage/index.html.eex:16
+#: lib/faqcheck_web/templates/manage/index.html.eex:17
 msgid "Refer to a spreadsheet on the web"
 msgstr "参考网络上的电子表格"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/manage/index.html.eex:17
+#: lib/faqcheck_web/templates/manage/index.html.eex:18
 msgid "Refer to another %{name} instance"
 msgstr "参考另一个%{name}的实例"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/manage/index.html.eex:15
+#: lib/faqcheck_web/templates/manage/index.html.eex:16
 msgid "Upload a spreadsheet"
 msgstr "上传电子表格"
 
@@ -38,23 +38,17 @@ msgstr "欢迎来到%{name}!"
 
 #, elixir-format
 #: lib/faqcheck_web/templates/help/index.html.eex:3
-#: lib/faqcheck_web/templates/page/index.html.eex:19
 msgid "Help"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:40
+#: lib/faqcheck_web/templates/page/index.html.eex:43
 msgid "How can I help improve %{name}?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:34
+#: lib/faqcheck_web/templates/page/index.html.eex:37
 msgid "How can I set up my own %{name} server?"
-msgstr ""
-
-#, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:25
-msgid "How do I find documents?"
 msgstr ""
 
 #, elixir-format
@@ -64,32 +58,22 @@ msgid "How do I manage available documents?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/layout/app.html.eex:28
+#: lib/faqcheck_web/templates/layout/root.html.leex:43
 msgid "LANGUAGE_NAME"
 msgstr "中文"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:14
-msgid "Manage documents"
-msgstr "官理主机的单据"
-
-#, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:8
-msgid "Resources"
-msgstr ""
-
-#, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:37
+#: lib/faqcheck_web/templates/page/index.html.eex:40
 msgid "Where can I find technical information about %{name}?"
 msgstr ""
 
 #, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:17
 #: lib/faqcheck_web/templates/search/index.html.eex:3
 msgid "Search"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/user_settings/edit.html.eex:3
 #: lib/faqcheck_web/templates/user_settings/edit.html.eex:23
 msgid "Change email"
 msgstr "改变电子邮件"
@@ -118,12 +102,7 @@ msgid "Forgot your password?"
 msgstr "忘记了你的密码吗?"
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:3
-msgid "Free software for managing question-and-answer pages"
-msgstr ""
-
-#, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:31
+#: lib/faqcheck_web/templates/page/index.html.eex:34
 msgid "How can I use this data in a chatbot or other application?"
 msgstr ""
 
@@ -133,9 +112,10 @@ msgid "Keep me logged in for 60 days"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/user_confirmation/new.html.eex:14
-#: lib/faqcheck_web/templates/user_reset_password/edit.html.eex:25 lib/faqcheck_web/templates/user_reset_password/new.html.eex:14
-#: lib/faqcheck_web/templates/user_session/new.html.eex:1 lib/faqcheck_web/templates/user_session/new.html.eex:20
+#: lib/faqcheck_web/controllers/user_session_controller.ex:9
+#: lib/faqcheck_web/templates/user_confirmation/new.html.eex:14 lib/faqcheck_web/templates/user_reset_password/edit.html.eex:25
+#: lib/faqcheck_web/templates/user_reset_password/new.html.eex:14 lib/faqcheck_web/templates/user_session/new.html.eex:1
+#: lib/faqcheck_web/templates/user_session/new.html.eex:20
 msgid "Log in"
 msgstr ""
 
@@ -166,18 +146,8 @@ msgid "Reset password"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/page/index.html.eex:11
-msgid "Search documents"
-msgstr ""
-
-#, elixir-format
 #: lib/faqcheck_web/templates/user_reset_password/new.html.eex:8
 msgid "Send instructions to reset password"
-msgstr ""
-
-#, elixir-format
-#: lib/faqcheck_web/templates/user_settings/edit.html.eex:1
-msgid "Settings"
 msgstr ""
 
 #, elixir-format
@@ -192,13 +162,14 @@ msgid "What is this website?"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/user_reset_password/new.html.eex:4
-#: lib/faqcheck_web/templates/user_session/new.html.eex:10
+#: lib/faqcheck_web/live/facility_row_component.ex:91
+#: lib/faqcheck_web/live/facility_row_component.ex:205 lib/faqcheck_web/templates/feedback/new.html.eex:15
+#: lib/faqcheck_web/templates/user_reset_password/new.html.eex:4 lib/faqcheck_web/templates/user_session/new.html.eex:10
 msgid "Email"
 msgstr "电子邮件"
 
 #, elixir-format
-#: lib/faqcheck_web/controllers/user_session_controller.ex:23
+#: lib/faqcheck_web/controllers/user_session_controller.ex:30
 msgid "Logged out successfully."
 msgstr ""
 
@@ -208,28 +179,763 @@ msgid "Password"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/templates/layout/app.html.eex:35
+#: lib/faqcheck_web/templates/layout/root.html.leex:25
 msgid "%{name} home page"
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/controllers/user_confirmation_controller.ex:22
+#: lib/faqcheck_web/controllers/user_confirmation_controller.ex:28
 msgid "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/controllers/user_reset_password_controller.ex:39
-#: lib/faqcheck_web/controllers/user_reset_password_controller.ex:39
+#: lib/faqcheck_web/controllers/user_reset_password_controller.ex:46
 msgid "Password reset successfully."
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/controllers/user_confirmation_controller.ex:34
+#: lib/faqcheck_web/controllers/user_confirmation_controller.ex:40
 msgid "User confirmed successfully."
 msgstr ""
 
 #, elixir-format
-#: lib/faqcheck_web/controllers/user_registration_controller.ex:23
-#: lib/faqcheck_web/controllers/user_registration_controller.ex:23
+#: lib/faqcheck_web/controllers/user_registration_controller.ex:30
 msgid "User created successfully."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/index.html.eex:62
+msgid "%{page_size} items per page"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/index.html.eex:64
+msgid "%{total_items} results in total"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/layout/root.html.leex:28
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:1
+msgid "Account settings"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/index.html.eex:11
+#: lib/faqcheck_web/templates/feedback/new.html.eex:62
+msgid "Accurate"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/upload/upload_component.ex:14
+msgid "Actions"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/index.html.eex:21
+#: lib/faqcheck_web/templates/organization/index.html.eex:19
+msgid "Actions:"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/manage/index.html.eex:15
+msgid "Add a new organization"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:94
+msgid "Add contact info"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:126
+msgid "Add hours"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:68
+msgid "Add keywords"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/index.html.eex:1
+msgid "All facilities"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:44
+msgid "All feedback and contact information on this form is optional. You may optionally include your email address or phone number if you would like someone from %{operator_name} to contact you about this feedback."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/index.html.eex:1
+msgid "All organizations"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_import_live.ex:13
+msgid "An error occurred accessing the data source."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/index.html.eex:24
+#: lib/faqcheck_web/templates/organization/index.html.eex:22
+msgid "Are you sure?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/new.html.eex:5
+msgid "Back"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:19
+msgid "Browse %{name}'s documentation"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:14
+msgid "Browse common questions"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/facility_controller.ex:8
+#: lib/faqcheck_web/templates/page/index.html.eex:11
+msgid "Browse facilities"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:8
+msgid "Browse information stored in the database"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:58
+msgid "Cancel"
+msgstr ""
+
+#, elixir-format, fuzzy
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:3
+msgid "Change email address"
+msgstr "改变电子邮件"
+
+#, elixir-format, fuzzy
+#: lib/faqcheck_web/controllers/user_reset_password_controller.ex:11
+msgid "Change your password"
+msgstr "改变密码"
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:79
+msgid "City and state/province"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_import_live.ex:16
+msgid "Click here to try importing data again."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:123
+msgid "Closes"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/index.html.eex:13
+msgid "Comment"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/index.html.eex:9
+msgid "Comment left at %{timestamp}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/oidc_controller.ex:7
+msgid "Completing external sign-in"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/help_controller.ex:7
+msgid "Connecting %{name} with the Microsoft cloud"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:9
+msgid "Contact information for %{facility_name}:"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_confirmation_controller.ex:8
+msgid "Create a user account"
+msgstr ""
+
+#, elixir-format, fuzzy
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:18
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:46
+msgid "Current password"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:48
+#: lib/faqcheck_web/live/facility_row_component.ex:147 lib/faqcheck_web/live/upload/upload_component.ex:35
+#: lib/faqcheck_web/templates/facility/index.html.eex:24 lib/faqcheck_web/templates/organization/index.html.eex:22
+msgid "Delete"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/index.html.eex:9
+#: lib/faqcheck_web/templates/organization/form.html.eex:15 lib/faqcheck_web/templates/organization/form.html.eex:27
+#: lib/faqcheck_web/templates/organization/index.html.eex:9
+msgid "Description"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/show.html.eex:10
+#: lib/faqcheck_web/templates/organization/show.html.eex:10
+msgid "Description:"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:27
+#: lib/faqcheck_web/live/facility_import_live.ex:47
+msgid "Details"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/feedback_controller.ex:9
+msgid "Details about a piece of feedback"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:174
+#: lib/faqcheck_web/templates/facility/index.html.eex:23 lib/faqcheck_web/templates/organization/index.html.eex:21
+msgid "Edit"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/history/history.html.eex:2
+msgid "Edit history for %{name}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/history.html.eex:2
+msgid "Edit history for organization %{name}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/edit.html.eex:1
+msgid "Edit organization"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/show.html.eex:16
+msgid "Edit this organization"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_settings_controller.ex:11
+msgid "Edit your account information"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:70
+msgid "Email address"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:69
+msgid "Enter any other comments here."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_session_controller.ex:10
+msgid "Error logging in"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_registration_controller.ex:11
+msgid "Error registering account"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/form.html.eex:22
+msgid "Facility %{index}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:73
+msgid "Facility description"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/facility_controller.ex:9
+#: lib/faqcheck_web/templates/facility/show.html.eex:1
+msgid "Facility details"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/facility_controller.ex:10
+msgid "Facility edit history"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:28
+msgid "Facility name"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/index.html.eex:1
+msgid "Feedback about %{facility_name}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/feedback_controller.ex:11
+msgid "Feedback could not be posted"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/upload/upload_component.ex:13
+msgid "Filename"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:3
+msgid "Free software for referral management and question-and-answer systems"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:21
+msgid "Friday"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:196
+msgid "Get directions (Google Maps)"
+msgstr ""
+
+#, elixir-format, fuzzy
+#: lib/faqcheck_web/templates/feedback/index.html.eex:10
+#: lib/faqcheck_web/templates/feedback/new.html.eex:52
+msgid "Helpful"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:237
+#: lib/faqcheck_web/templates/facility/index.html.eex:47
+msgid "Hours"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:31
+msgid "How can I pull information from Microsoft Sharepoint or set up a Microsoft Teams chatbot?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/page/index.html.eex:25
+msgid "How can I search for information?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/microsoft/sharepoint_entry.ex:40
+msgid "Import"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:47
+#: lib/faqcheck_web/live/upload/upload_component.ex:24
+msgid "Import facilities"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:26
+#: lib/faqcheck_web/live/facility_import_live.ex:46
+msgid "Keywords"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/show.html.eex:2
+#: lib/faqcheck_web/templates/organization/show.html.eex:2
+msgid "Last edited %{date}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:28
+#: lib/faqcheck_web/templates/facility/index.html.eex:10 lib/faqcheck_web/templates/organization/index.html.eex:10
+msgid "Last updated"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/help_controller.ex:6
+msgid "Learn how to use %{name}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:177
+msgid "Leave feedback"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:1
+msgid "Leave feedback about %{facility_name}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/feedback_controller.ex:10
+msgid "Leave feedback about a facility"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/index.html.eex:3
+msgid "List facilities instead"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/organization_controller.ex:9
+msgid "List organizations"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/index.html.eex:3
+msgid "List organizations instead"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:45
+msgid "Load more"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/microsoft/sharepoint_component.ex:10
+msgid "Log in with Microsoft"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/layout/root.html.leex:29
+msgid "Log out"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/manage_controller.ex:6
+msgid "Manage your user account"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:17
+msgid "Monday"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:12
+#: lib/faqcheck_web/live/facilities_live.ex:25 lib/faqcheck_web/live/facility_import_live.ex:45
+#: lib/faqcheck_web/templates/facility/index.html.eex:8 lib/faqcheck_web/templates/organization/form.html.eex:11
+#: lib/faqcheck_web/templates/organization/form.html.eex:23 lib/faqcheck_web/templates/organization/index.html.eex:8
+msgid "Name"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/show.html.eex:6
+#: lib/faqcheck_web/templates/organization/show.html.eex:6
+msgid "Name:"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/index.html.eex:49
+msgid "New Organization"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/user_settings/edit.html.eex:14
+msgid "New email address"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/index.html.eex:67
+msgid "New facility"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:41
+msgid "No contact information is available for %{facility_name}."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:66
+msgid "Not accurate"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:56
+msgid "Not helpful"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:43
+msgid "One or more inputs for this facility aren't in the expected format."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:27
+msgid "Open any day"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:33
+msgid "Open on Fridays"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:29
+msgid "Open on Mondays"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:34
+msgid "Open on Saturdays"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:35
+msgid "Open on Sundays"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:32
+msgid "Open on Thursdays"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:30
+msgid "Open on Tuesdays"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:31
+msgid "Open on Wednesdays"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:28
+msgid "Open today"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:122
+msgid "Opens"
+msgstr ""
+
+#, elixir-format, fuzzy
+#: lib/faqcheck_web/controllers/organization_controller.ex:47
+msgid "Organization created successfully."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/organization_controller.ex:80
+msgid "Organization deleted successfully."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/form.html.eex:9
+#: lib/faqcheck_web/templates/organization/show.html.eex:1
+msgid "Organization details"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:25
+msgid "Organization name"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/organization_controller.ex:67
+msgid "Organization updated successfully."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:89
+#: lib/faqcheck_web/live/facility_row_component.ex:203 lib/faqcheck_web/templates/feedback/new.html.eex:13
+msgid "Phone"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:71
+msgid "Phone number"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/user_registration_controller.ex:10
+msgid "Register a user account"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:18
+msgid "Reset search filters"
+msgstr ""
+
+#, elixir-format, fuzzy
+#: lib/faqcheck_web/controllers/user_reset_password_controller.ex:10
+msgid "Reset your password"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:22
+msgid "Saturday"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:54
+#: lib/faqcheck_web/templates/organization/form.html.eex:40
+msgid "Save"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_import_live.ex:40
+#: lib/faqcheck_web/live/facility_import_live.ex:60
+msgid "Save all on this page"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:13
+msgid "Search by name or description"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/feedback_controller.ex:8
+msgid "Show feedback left about a facility"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/index.html.eex:60
+msgid "Showing page %{current_page} out of %{total_pages}"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/layout/root.html.leex:27
+msgid "Signed in as: "
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/layout/root.html.leex:66
+msgid "Software version information:"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:77
+#: lib/faqcheck_web/templates/organization/form.html.eex:32
+msgid "Street address"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/show.html.eex:14
+msgid "Street address:"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:73
+msgid "Submit"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:23
+msgid "Sunday"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/controllers/feedback_controller.ex:40
+msgid "Thank you for your feedback. If you included an email address you will receive an email confirmation shortly."
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:20
+msgid "Thursday"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:18
+msgid "Tuesday"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/upload/upload_component.ex:54
+msgid "Upload"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/facility/show.html.eex:20
+msgid "View all facilites"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/edit.html.eex:6
+#: lib/faqcheck_web/templates/organization/show.html.eex:17
+msgid "View all organizations"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/organization/edit.html.eex:5
+msgid "View details for this organization"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:171
+msgid "View feedback"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:59
+msgid "Was the information about this facility accurate?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:49
+msgid "Was the information about this facility helpful?"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:90
+#: lib/faqcheck_web/live/facility_row_component.ex:204 lib/faqcheck_web/templates/feedback/new.html.eex:14
+msgid "Website"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:19
+msgid "Wednesday"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:121
+#: lib/faqcheck_web/live/facility_row_component.ex:236 lib/faqcheck_web/templates/facility/index.html.eex:46
+msgid "Weekday"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:35
+msgid "You are editing an existing item, saving will replace all its fields with the values displayed here. Last edit: "
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/templates/feedback/new.html.eex:3
+msgid "Your feedback will only be visible to %{operator_name}, the operators of this %{app_name} site. It will not be shared with %{facility_name} directly. To contact %{facility_name} instead, use the following contact information, if available:"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facility_row_component.ex:81
+msgid "Zip/postal code"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/live/facilities_live.ex:16
+msgid "Zipcode"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:55
+msgid "no"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:53
+msgid "no answer"
+msgstr ""
+
+#, elixir-format
+#: lib/faqcheck_web/helpers/form_helpers.ex:54
+msgid "yes"
 msgstr ""
