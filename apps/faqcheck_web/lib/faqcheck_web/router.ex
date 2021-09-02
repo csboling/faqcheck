@@ -3,8 +3,6 @@ defmodule FaqcheckWeb.Router do
   use Pow.Phoenix.Router
   use PowAssent.Phoenix.Router
 
-  import FaqcheckWeb.UserAuth
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -81,13 +79,13 @@ defmodule FaqcheckWeb.Router do
   scope "/:locale" do
     pipe_through :browser
     pow_routes()
-    pow_assent_authorization_routes()
+    pow_assent_routes()
   end
 
   scope "/" do
     pipe_through :browser
     pow_routes()
-    pow_assent_authorization_routes()
+    pow_assent_routes()
   end
 
   scope "/" do
@@ -124,7 +122,7 @@ defmodule FaqcheckWeb.Router do
     end
 
     scope "/" do
-      pipe_through :require_authenticated_user
+      # pipe_through :require_authenticated_user
 
       get "/manage", ManageController, :index
 
