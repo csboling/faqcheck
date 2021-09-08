@@ -13,6 +13,9 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX do
   def description(), do: "Import uploaded .xlsx spreadsheet from nmcrg.net"
 
   @impl Sources.Strategy
+  def provider(), do: nil
+
+  @impl Sources.Strategy
   def prepare_feed(%{"upload_id" => upload_id}, _session) do
     upload = Sources.get_upload!(upload_id)
     %Sources.Feed{

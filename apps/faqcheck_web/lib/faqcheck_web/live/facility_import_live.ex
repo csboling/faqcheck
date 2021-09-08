@@ -74,7 +74,8 @@ defmodule FaqcheckWeb.FacilityImportLive do
     socket) do
     socket = assign_user(socket, session)
     strategy = Strategies.get!(strategy_id)
-    with {:ok, feed} <- Strategies.build_feed(strategy, data, Map.take(session, session_keys)) do
+
+    with {:ok, feed} <- Strategies.build_feed(strategy, data, build_session(strategy, socket, session)) do
       {page, changesets} = Strategies.build_changesets(strategy, feed, 0)
       {:ok,
        socket
@@ -129,6 +130,15 @@ defmodule FaqcheckWeb.FacilityImportLive do
       {:noreply,
        socket
        |> push_patch(to: FaqcheckWeb.Router.Helpers.live_path(socket, FaqcheckWeb.FacilitiesLive, socket.assigns.locale))}
+    end
+  end
+
+  defp build_session(strategy, socket, _session) do
+    provider = strategy.provider
+    if provider do
+      %{provider => find_token(socket, provider)}
+    else
+      %{}
     end
   end
 end

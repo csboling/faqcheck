@@ -1,5 +1,5 @@
 defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
-  use FaqcheckWeb, :live_cmp  
+  use FaqcheckWeb, :live_cmp
 
   alias FaqcheckWeb.ImportMethods.SharepointDataComponent
 
@@ -11,7 +11,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
     <li phx-click="toggle_open" phx-target="<%= @myself %>">
       <%= @entry.displayName %> - site
       <%=   if @open do %>
-      <%=     children @socket, @entry.id, :site_drives, @locale, @import_method %>
+      <%=     children @socket, @entry.id, :site_drives, @locale, @current_user, @import_method %>
       <%    end %>
     </li>
 
@@ -19,7 +19,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
     <li phx-click="toggle_open" phx-target="<%= @myself %>">
       <%= @entry.name %> - drive
       <%=   if @open do %>
-      <%=     children @socket, @entry.id, :drive, @locale, @import_method %>
+      <%=     children @socket, @entry.id, :drive, @locale, @current_user, @import_method %>
       <%    end %>
     </li>
 
@@ -29,7 +29,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
     <li phx-click="toggle_open" phx-target="<%= @myself %>">
       <%= @entry.name %> - folder with <%= @entry.folder["childCount"] %> children
       <%= if @open do %>
-      <%=   children @socket, @entry.id, :folder, @locale, @import_method %>
+      <%=   children @socket, @entry.id, :folder, @locale, @current_user, @import_method %>
       <%  end %>
     </li>
 
@@ -47,7 +47,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
                   token: @token,
                 },
                 session: ["microsoft"]) %>
-      <%  end %> 
+      <%  end %>
     </li>
     <%      end %>
 
@@ -59,7 +59,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
   end
 
   def mount(socket) do
-    {:ok, socket |> assign(open: false)}
+    {:ok, socket |> assign(open: false, current_user: nil)}
   end
 
   def update(assigns, socket) do
@@ -67,6 +67,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
      socket
      |> assign(
        locale: assigns.locale,
+       current_user: assigns.current_user,
        entry: assigns.entry,
        token: assigns.token,
        drive_id: Enum.at(assigns.import_method.breadcrumb, 2),
@@ -79,9 +80,9 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
      |> assign(open: !socket.assigns.open)}
   end
 
-  defp children(socket, id, type, locale, method) do
+  defp children(socket, id, type, locale, current_user, method) do
     live_component SharepointDataComponent,
-      id: id, locale: locale,
+      id: id, locale: locale, current_user: current_user,
       import_method: Map.put(method, :resource, type)
   end
 end

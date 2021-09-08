@@ -1,5 +1,5 @@
 defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
-  use FaqcheckWeb, :live_cmp  
+  use FaqcheckWeb, :live_cmp
 
   alias Faqcheck.Sources.Microsoft.API.Sharepoint
   alias FaqcheckWeb.ImportMethods.SharepointEntry
@@ -7,16 +7,16 @@ defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
   def render(assigns) do
     ~L"""
     <%= case @sharepoint_data do %>
-    
+
     <%    {:ok, entries} -> %>
     <ul>
     <%=     for entry <- entries do %>
     <%=       live_component @socket, SharepointEntry,
-                id: entry.id, locale: @locale,
+                id: entry.id, locale: @locale, current_user: @current_user,
                 entry: entry, import_method: @import_method, token: @token %>
     <%      end %>
     </ul>
-    
+
     <%    {:error, {_code, msg}} -> %>
     <p>Could not access SharePoint data: <%= msg %> This often means you need to log in to Microsoft again.</p>
 
@@ -32,23 +32,35 @@ defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
      socket
      |> assign(
        sharepoint_data: nil,
+       current_user: nil,
        locale: "en")}
   end
 
   def update(assigns, socket) do
     method = assigns.import_method
     breadcrumb = method.breadcrumb ++ [assigns.id]
-    token = method.session["microsoft"]
-    IO.inspect method, label: "call with method"
-    data = token && load(method.resource, assigns.id, token, breadcrumb)
-    IO.inspect data, label: "sharepoint response"
     {:ok,
      socket
      |> assign(
-       token: token,
        locale: assigns.locale,
-       import_method: Map.put(method, :breadcrumb, breadcrumb),
-       sharepoint_data: data)}
+       current_user: assigns.current_user,
+       import_method: Map.put(method, :breadcrumb, breadcrumb))
+     |> maybe_load(assigns, method, breadcrumb)}
+  end
+
+  def maybe_load(socket, assigns, method, breadcrumb) do
+    token = find_token(socket, "microsoft")
+    if token do
+      IO.inspect method, label: "call with method"
+      data = load(method.resource, assigns.id, token, breadcrumb)
+      IO.inspect data, label: "sharepoint response"
+      socket
+      |> assign(
+	token: token,
+        sharepoint_data: data)
+    else
+      socket
+    end
   end
 
   defp load(type, id, token, breadcrumb) do

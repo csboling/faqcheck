@@ -14,6 +14,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
       <%= live_component @socket, @import_method.component,
             id: @import_method.id,
             locale: @locale,
+	    current_user: @current_user,
             import_method: @import_method,
             uploads: @uploads %>
       """
