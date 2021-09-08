@@ -3,9 +3,18 @@ defmodule FaqcheckWeb.FacilityController do
 
   alias Faqcheck.Referrals
 
-  def index(conn, _params) do
-    page = Referrals.list_facilities(page: 1, page_size: 10)
-    render(conn, "index.html", facilities: page.entries, page: page)
+  def title(action) do
+    case action do
+      :index -> gettext "Browse facilities"
+      :show -> gettext "Facility details"
+      :history -> gettext "Facility edit history"
+    end
+  end
+
+  def index(conn, %{"locale" => locale}) do
+    conn
+    |> redirect(
+      to: FaqcheckWeb.Router.Helpers.live_path(conn, FaqcheckWeb.FacilitiesLive, locale))
   end
 
   def show(conn, %{"id" => id}) do

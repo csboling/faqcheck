@@ -53,6 +53,8 @@ defmodule FaqcheckWeb.MixProject do
       {:phoenix_markdown, "~> 1.0.3"},
       {:phx_gen_auth, "~> 0.7.0"},
       {:plug_cowboy, "~> 2.0"},
+      {:certifi, "~> 2.4"},
+      {:ssl_verify_fun, "~> 1.1"},
       {:set_locale, "~> 0.2.9"},
       {:sobelow, "~> 0.11.1", only: :dev},
       {:telemetry_metrics, "~> 0.4"},

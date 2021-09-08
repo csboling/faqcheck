@@ -12,12 +12,12 @@ defmodule FacilityRowComponent do
     ~L"""
       <%= if @editing do %>
 
-        <%= if false do %>
+        <%= if true do %>
         <details>
           <summary>changeset</summary>
           <pre><%= inspect @changeset, pretty: true %></pre>
         </details>
-	<%  end %>
+        <%  end %>
 
         <%= form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself], fn f -> %>
           <div class="table-body-cell">
@@ -36,27 +36,27 @@ defmodule FacilityRowComponent do
               <%= link format_timestamp(@changeset.data.updated_at, "MST7MDT"),
                     to: Routes.facility_history_path(@socket, :history, @locale, @changeset.data) %>
             </p>
+            <%  end %>
 
             <%= if !@changeset.valid? do %>
-	    <p class="alert alert-danger">
+            <p class="alert alert-danger">
               <%= gettext "One or more inputs for this facility aren't in the expected format." %>
             </p>
             <%  end %>
 
-	    <%=   if @allow_delete do %>
-	    <%= link gettext("Delete"), to: "#",
-	      phx_click: "delete", phx_value_id: @facility.id,
-	      data: [confirm: gettext("Do you want to delete this facility?")],
-	      class: "button" %>
-	    <%    end %>
+            <%= if @allow_delete do %>
+            <%= link gettext("Delete"), to: "#",
+              phx_click: "delete", phx_value_id: @facility.id,
+              onclick: "(function(){ if (!confirm('Are you sure?')) {event.stopImmediatePropagation();} }).call(event)",
+              class: "button" %>
             <%  end %>
 
             <%= submit gettext("Save"), phx_disable_with: "Saving...", disabled: !@changeset.valid? %>
             <button type="button"
-	      phx-click="cancel"
-	      phx-target="<%= @myself %>">
- 	      <%= gettext("Cancel") %>
-	    </button>
+              phx-click="cancel"
+              phx-target="<%= @myself %>">
+              <%= gettext("Cancel") %>
+            </button>
           </div>
 
           <div class="table-body-cell">
@@ -71,6 +71,7 @@ defmodule FacilityRowComponent do
 
           <div class="table-body-cell">
             <p><%= textarea f, :description, placeholder: gettext("Facility description") %></p>
+            <%= error_tag f, :description %>
             <p>
               <%= inputs_for f, :address, fn addr -> %>
                 <%= text_input addr, :street_address, placeholder: gettext("Street address") %>

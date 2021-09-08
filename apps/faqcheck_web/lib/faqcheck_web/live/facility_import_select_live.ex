@@ -7,13 +7,6 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
 
   def render(assigns) do
     ~L"""
-      <nav>
-        <%= for b <- @breadcrumb do %>
-          <%= live_patch b.title, to: b.path %>
-          &nbsp;&sol;&nbsp;
-        <%  end %>
-      </nav>
-
       <%= f = form_for :method_sel, "#", [phx_change: :sel_method, phx_submit: :import] %>
         <%= select f, :id, @method_names, selected: @import_method.id %>
       </form>
@@ -21,6 +14,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
       <%= live_component @socket, @import_method.component,
             id: @import_method.id,
             locale: @locale,
+	    current_user: @current_user,
             import_method: @import_method,
             uploads: @uploads %>
       """
@@ -46,6 +40,20 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
       %{
         id: "microsoft",
         display_name: "Microsoft Sharepoint",
+        session: Map.take(session, ["_csrf_token", "microsoft"]),
+        resource: :sites,
+        breadcrumb: [],
+        component: ImportMethods.SharepointComponent,
+        strategies: [
+          %{
+            id: 1,
+            name: "RRFB Client Resources spreadsheet",
+          },
+        ],
+      },
+      %{
+        id: "Food finder",
+        display_name: "RRFB Food Finder",
         session: Map.take(session, ["_csrf_token", "microsoft"]),
         resource: :sites,
         breadcrumb: [],

@@ -3,6 +3,15 @@ defmodule FaqcheckWeb.FeedbackController do
 
   alias Faqcheck.Referrals
 
+  def title(action) do
+    case action do
+      :index ->	gettext "Show feedback left about a facility"
+      :show -> gettext "Details about a piece of feedback"
+      :new -> gettext "Leave feedback about a facility"
+      :create -> gettext "Feedback could not be posted"
+    end
+  end
+
   def index(conn, %{"locale" => locale, "facility_id" => facility_id}) do
     facility = Referrals.get_facility_feedback(facility_id)
     render conn, "index.html",

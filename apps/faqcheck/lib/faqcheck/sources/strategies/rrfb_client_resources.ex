@@ -17,6 +17,9 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
   def description(), do: "Import Roadrunner Food Bank .xlsx Client Resources spreadsheet stored in SharePoint"
 
   @impl Sources.Strategy
+  def provider(), do: "microsoft"
+
+  @impl Sources.Strategy
   def prepare_feed(
     %{"drive_id" => drive_id, "entry_id" => entry_id},
     %{"microsoft" => token}) do

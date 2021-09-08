@@ -121,17 +121,62 @@ defmodule Faqcheck.Sources.StringHelpers do
            closes: ~T[17:00:00],
          },
       ]
+      iex> parse_hours("M-W 8AM-5PM")
+      [
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Monday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:00:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Tuesday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:00:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Wednesday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:00:00],
+        },
+      ]
+      iex> parse_hours("M-T 8am - 5:30pm ; F: 8am-12pm")
+      [
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Monday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:30:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.Tuesday,
+          opens: ~T[08:00:00],
+          closes: ~T[17:30:00],
+        },
+        %Faqcheck.Referrals.OperatingHours{
+          weekday: Faqcheck.Referrals.OperatingHours.Weekday.TuesdayFriday,
+          opens: ~T[08:00:00],
+          closes: ~T[12:00:00],
+        },
+      ]
   """
   def parse_hours(desc) do
-    String.split(desc, "&")
-    |> Enum.flat_map(fn g ->
-      [days_str, hours_str] = String.split(g, ":", parts: 2)
-      days = String.split(days_str, ",")
-      |> Enum.flat_map(&OperatingHours.parse_days/1)
-      hours = String.split(hours_str, ",")
-      |> Enum.map(&OperatingHours.parse_hours/1)
-      for d <- days, {opens, closes} <- hours, do: %OperatingHours{weekday: d, opens: opens, closes: closes}
-    end)
-    |> Enum.sort_by(fn h -> h.weekday.value end)
+    cond do
+      String.trim(desc) == "" ->
+	[]
+      # FIXME: need special handling for "always open"
+      # desc == "24/7" or desc == "24 hours" ->
+      #   OperatingHours.always_open
+      true ->
+      	String.split(desc, ~r/[;&]/)
+      	|> Enum.flat_map(fn g ->
+      	  [days_str, hours_str] = String.split(g, ~r/(:|\s+(?=\d))/, parts: 2)
+      	  days = String.split(days_str, ~r/(,|and)/)
+      	  |> Enum.flat_map(&OperatingHours.parse_days/1)
+      	  hours = String.split(hours_str, ~r/(,|and)/)
+      	  |> Enum.filter(fn h -> String.trim(h) != "" end)
+      	  |> Enum.map(&OperatingHours.parse_hours/1)
+      	  for d <- days, {opens, closes} <- hours, do: %OperatingHours{weekday: d, opens: opens, closes: closes}
+      	end)
+      	|> Enum.sort_by(fn h -> h.weekday.value end)
+    end
   end
 end

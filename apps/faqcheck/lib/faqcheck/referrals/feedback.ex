@@ -22,5 +22,18 @@ defmodule Faqcheck.Referrals.Feedback do
   def changeset(feedback, attrs) do
     feedback
     |> cast(attrs, [:client_comments, :client_email, :client_phone])
+    |> cast(process_booleans(attrs), [:helpful, :accurate])
+  end
+
+  defp process_booleans(attrs) do
+    attrs
+    |> Map.take(["helpful", "accurate"])
+    |> Enum.map(fn {k, v} ->
+      case v do
+	"yes" -> {k, true}
+	"no" -> {k, false}
+      end
+    end)
+    |> Enum.into(%{})
   end
 end

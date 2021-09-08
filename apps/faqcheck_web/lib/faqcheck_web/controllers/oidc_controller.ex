@@ -3,6 +3,10 @@ defmodule FaqcheckWeb.OidcController do
 
   alias FaqcheckWeb.Oidc
 
+  def title(action) do
+    gettext "Completing external sign-in"
+  end
+
   def microsoft_callback(conn, params) do
     callback(:microsoft, conn, params, Faqcheck.Sources.Microsoft.ApiAuth)
   end
