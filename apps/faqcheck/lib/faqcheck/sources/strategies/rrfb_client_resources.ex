@@ -94,7 +94,9 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
       result = processor.(data)
       Ecto.Changeset.put_change(changeset, key, result)
     rescue
-      e -> Ecto.Changeset.add_error(changeset, key, Exception.message(e), data: data)
+      e -> Ecto.Changeset.add_error(
+        changeset, key, Exception.message(e),
+	data: data, error: e, stacktrace: __STACKTRACE__)
     end
   end
 end

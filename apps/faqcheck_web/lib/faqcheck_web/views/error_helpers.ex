@@ -4,6 +4,7 @@ defmodule FaqcheckWeb.ErrorHelpers do
   """
 
   use Phoenix.HTML
+  require FaqcheckWeb.Gettext
 
   @doc """
   Generates tag for inlined form input errors.
@@ -12,40 +13,16 @@ defmodule FaqcheckWeb.ErrorHelpers do
     name = input_name(form, field)
     form.errors
     |> Keyword.get_values(field)
-    |> Enum.map(fn error ->
-      content_tag(:span,
-	name <> ": " <> translate_error(error),
-        class: "invalid-feedback",
-        phx_feedback_for: name,
-        data: [phx_error_for: field])
+    |> Enum.map(fn {msg, opts} ->
+      data = Keyword.get(opts, :data)
+      error = Keyword.get(opts, :error)
+      stacktrace = Keyword.get(opts, :stacktrace)
+      ~E"""
+      <details class="invalid-feedback" phx-error-for="<%= field %>">
+        <summary><%= name <> ": " <> FaqcheckWeb.Gettext.dgettext "errors", "input was not understood: %{input}", input: data %></summary>
+	<pre><%= Exception.format(:error, error, stacktrace) %></pre>
+      </details>
+      """
     end)
-  end
-
-  @doc """
-  Translates an error message using gettext.
-  """
-  def translate_error({msg, opts}) do
-    # When using gettext, we typically pass the strings we want
-    # to translate as a static argument:
-    #
-    #     # Translate "is invalid" in the "errors" domain
-    #     dgettext("errors", "is invalid")
-    #
-    #     # Translate the number of files with plural rules
-    #     dngettext("errors", "1 file", "%{count} files", count)
-    #
-    # Because the error messages we show in our forms and APIs
-    # are defined inside Ecto, we need to translate them dynamically.
-    # This requires us to call the Gettext module passing our gettext
-    # backend as first argument.
-    #
-    # Note we use the "errors" domain, which means translations
-    # should be written to the errors.po file. The :count option is
-    # set by Ecto and indicates we should also apply plural rules.
-    if count = opts[:count] do
-      Gettext.dngettext(FaqcheckWeb.Gettext, "errors", msg, msg, count, opts)
-    else
-      Gettext.dgettext(FaqcheckWeb.Gettext, "errors", msg, opts)
-    end
   end
 end
