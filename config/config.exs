@@ -51,7 +51,8 @@ config :faqcheck, :openid_connect_providers,
 
 config :faqcheck_web, :pow,
   user: Faqcheck.Users.User,
-  repo: Faqcheck.Repo
+  repo: Faqcheck.Repo,
+  controller_callbacks: FaqcheckWeb.Pow.ControllerCallbacks
   # web_module: FaqcheckWeb
 
 # Import environment specific config. This must remain at the bottom

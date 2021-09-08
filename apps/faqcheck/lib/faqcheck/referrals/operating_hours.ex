@@ -269,6 +269,6 @@ defmodule Faqcheck.Referrals.OperatingHours do
        end)
        |> Enum.join(", ")}
     end)
-    |> Enum.sort_by(fn {d, h} -> d.value end)
+    |> Enum.sort_by(fn {d, _h} -> d.value end)
   end
 end
