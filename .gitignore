@@ -25,3 +25,5 @@ VERSION.txt
 
 config/dev.secret.exs
 config/test.secret.exs
+
+*.secret
