@@ -31,14 +31,14 @@ defmodule FaqcheckWeb.ImportMethods.SharepointComponent do
      |> assign(
        locale: assigns.locale,
        import_method: assigns.import_method,
-       current_user: assigns.current_user,
-       login_uri: Oidc.login_link(
-         assigns.import_method.session["_csrf_token"],
-         :microsoft,
-         FaqcheckWeb.Router.Helpers.live_path(
-           socket,
-           FaqcheckWeb.FacilityImportSelectLive,
-           assigns.locale,
-           method: assigns.import_method.id)))}
+       current_user: assigns.current_user)}
+       # login_uri: Oidc.login_link(
+       #   assigns.import_method.session["_csrf_token"],
+       #   :microsoft,
+       #   FaqcheckWeb.Router.Helpers.live_path(
+       #     socket,
+       #     FaqcheckWeb.FacilityImportSelectLive,
+       #     assigns.locale,
+       #     method: assigns.import_method.id)))}
   end
 end

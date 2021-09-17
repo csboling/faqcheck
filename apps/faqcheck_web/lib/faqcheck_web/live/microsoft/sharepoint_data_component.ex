@@ -51,9 +51,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
   def maybe_load(socket, assigns, method, breadcrumb) do
     token = find_token(socket, "microsoft")
     if token do
-      IO.inspect method, label: "call with method"
       data = load(method.resource, assigns.id, token, breadcrumb)
-      IO.inspect data, label: "sharepoint response"
       socket
       |> assign(
 	token: token,
@@ -64,7 +62,6 @@ defmodule FaqcheckWeb.ImportMethods.SharepointDataComponent do
   end
 
   defp load(type, id, token, breadcrumb) do
-    IO.inspect breadcrumb, label: "breadcrumb"
     case type do
       :sites -> Sharepoint.list_sites(token)
       :site_drives -> Sharepoint.list_site_drives(token, id)

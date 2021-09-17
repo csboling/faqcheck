@@ -19,7 +19,7 @@ if config_env() == :prod do
 
   config :faqcheck_web, FaqcheckWeb.Endpoint,
     server: true,
-    url: [host: "#{app_name}.fly.dev", port: 80],
+    url: [scheme: "https", host: "#{app_name}.fly.dev", port: 443],
     http: [
       port: String.to_integer(System.get_env("PORT") || "4000"),
       # IMPORTANT: support IPv6 addresses
