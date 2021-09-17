@@ -54,7 +54,6 @@ defmodule FaqcheckWeb.LinkHelpers do
     |> Stream.scan(fn s, p -> "#{p}/#{s}" end)
     |> Stream.map(fn p ->
       path = "/#{locale}/#{p}"
-      IO.inspect path, label: "breadcrumb path"
       info = Phoenix.Router.route_info FaqcheckWeb.Router,
         "GET", path, ""
       cond do

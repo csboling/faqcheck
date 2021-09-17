@@ -8,13 +8,29 @@ defmodule Faqcheck.Umbrella.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       aliases: aliases(),
+      releases: [
+	faqcheck_umbrella: [
+	  applications: [
+	    faqcheck: :permanent,
+	    faqcheck_web: :permanent,
+	  ],
+	],
+      ],
     ]
   end
 
   # thanks to https://fiqus.coop/en/2019/07/15/add-git-commit-info-to-your-elixir-phoenix-app/
   defp update_version(_) do
-    contents = write_version()
+    contents = maybe_write_version()
     Mix.shell().info("updated app version: #{inspect(contents)}")
+  end
+
+  defp maybe_write_version() do
+    try do
+      write_version()
+    rescue
+      _ -> File.read("VERSION.txt")
+    end
   end
 
   defp get_commit_sha() do

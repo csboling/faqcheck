@@ -55,10 +55,7 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
       timestamps()
     end
 
-    execute("CREATE EXTENSION IF NOT EXISTS postgis")
     create table(:addresses) do
-      add :coordinates,     :point
-
       add :street_address,  :string
       add :locality,        :string
       add :postcode,        :string
@@ -71,7 +68,6 @@ defmodule Faqcheck.Repo.Migrations.Initialize do
 
       timestamps()
     end
-    execute("CREATE INDEX address_location ON addresses USING GIST(coordinates)")
   end
 
   def down do

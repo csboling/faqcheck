@@ -1,0 +1,7 @@
+deps/
+apps/faqcheck_web/assets/node_modules/
+.elixir_ls/
+_build/
+.git/
+
+config/dev.secret.exs
