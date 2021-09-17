@@ -3,7 +3,7 @@ defmodule FaqcheckWeb.SignInController do
 
   def title(action), do: "log in"
 
-  def index(conn, _params) do
-    render(conn, "index.html")
+  def index(conn, params) do
+    render(conn, "index.html", request_path: params["request_path"] || "/")
   end
 end

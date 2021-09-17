@@ -5,12 +5,12 @@ defmodule FaqcheckWeb.LiveUserHelpers do
   alias Faqcheck.Accounts
   alias FaqcheckWeb.Pow.Routes
 
-  def require_user(socket, session) do
-    socket = assign_user(socket, session)
+  def require_user(socket, locale \\ "en") do
+    # socket = assign_user(socket, session)
     if socket.assigns.current_user do
       socket
     else
-      redirect(socket, to: Routes.after_sign_out_path(%Plug.Conn{}))
+      redirect(socket, to: Routes.sign_in_path(%Plug.Conn{}, locale, socket.assigns.uri.path))
     end
   end
 

@@ -79,6 +79,8 @@ defmodule FaqcheckWeb.LinkHelpers do
 
   def assign_breadcrumb(socket, url) do
     socket
-    |> assign(breadcrumb: breadcrumb(url))
+    |> assign(
+      uri: URI.parse(url),
+      breadcrumb: breadcrumb(url))
   end
 end
