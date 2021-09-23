@@ -69,7 +69,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
 
     {:ok,
      socket
-     |> require_user(session)
+     |> assign_user(session)
      |> assign(
        locale: locale,
        breadcrumb: [],
@@ -88,6 +88,7 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
     {:noreply,
      socket
      |> assign_breadcrumb(url)
+     |> require_user()
      |> assign(
        import_method: find_method(socket.assigns.import_methods, method),
        params: params)}
