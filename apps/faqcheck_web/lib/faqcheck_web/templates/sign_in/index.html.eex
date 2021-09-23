@@ -1,4 +1,4 @@
-<h1><%= gettext "Log in" %></h1>
+<h1><%= gettext "User authentication" %></h1>
 
-<%= for link <- PowAssent.Phoenix.ViewHelpers.provider_links(@conn, request_path: @request_path),
+<%= for link <- FaqcheckWeb.Pow.ViewHelpers.provider_links(@conn, request_path: @request_path),
   do: content_tag(:span, link) %>
