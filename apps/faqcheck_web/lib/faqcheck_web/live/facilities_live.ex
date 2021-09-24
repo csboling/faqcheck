@@ -12,12 +12,20 @@ defmodule FaqcheckWeb.FacilitiesLive do
         <%= label f, :name, gettext("Name") %>
         <%= text_input f, :name, placeholder: gettext("Search by name or description"), value: @params["search"]["name"] %>
         <div class="flex-row">
-          <%= weekday_filter_select f, :weekday %>
+          <%= weekday_filter_select f, :weekday, value: @params["search"]["weekday"] %>
           <%= text_input :search, :zipcode, placeholder: gettext("Zipcode"), value: @params["search"]["zipcode"] %>
           <button type="submit"><%= gettext "Search" %></button>
           <button type="button" phx-click="clear_search"><%= gettext "Reset search filters" %></button>
         </div>
       </form>
+
+      <hr />
+
+      <div>
+        <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
+      </div>
+
+      <hr />
 
       <div class="table">
         <div class="table-head">
