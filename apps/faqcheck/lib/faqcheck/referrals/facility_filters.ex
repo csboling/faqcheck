@@ -26,10 +26,12 @@ defmodule Faqcheck.Referrals.FacilityFilters do
         query
         |> join(:inner, [f], h in assoc(f, :hours))
         |> where([f, h], h.weekday == ^day)
+	|> distinct([f], f.id)
       _ ->
         query
         |> join(:inner, [f], h in assoc(f, :hours))
         |> where([f, h], h.weekday == ^value)
+	|> distinct([f], f.id)
     end
   end
 

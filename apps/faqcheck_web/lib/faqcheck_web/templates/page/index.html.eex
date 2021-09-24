@@ -25,16 +25,10 @@
         <%= link gettext("How can I search for information?"), to: Routes.help_path(@conn, :index, @locale) <> "/#searching" %>
       </li>
       <li>
-        <%= link gettext("How do I manage available documents?"), to: Routes.help_path(@conn, :index, @locale) <> "/#managing" %>
+        <%= link gettext("How do I manage the set of available information?"), to: Routes.help_path(@conn, :index, @locale) <> "/#managing" %>
       </li>
       <li>
 	<%= link gettext("How can I pull information from Microsoft Sharepoint or set up a Microsoft Teams chatbot?"), to: Routes.help_path(@conn, :microsoft, @locale) %>
-      </li>
-      <li>
-        <%= link gettext("How can I use this data in a chatbot or other application?"), to: Routes.help_path(@conn, :index, @locale) <> "/#integrating" %>
-      </li>
-      <li>
-        <%= link gettext("How can I set up my own %{name} server?", name: "FaqCheck"), to: Routes.help_path(@conn, :index, @locale) <> "/#hosting" %>
       </li>
       <li>
         <%= link gettext("Where can I find technical information about %{name}?", name: "FaqCheck"), to: Routes.help_path(@conn, :index, @locale) <> "/#technical" %>
