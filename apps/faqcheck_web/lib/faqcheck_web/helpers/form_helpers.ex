@@ -21,6 +21,8 @@ defmodule FaqcheckWeb.FormHelpers do
     {gettext("Friday"), Integer.to_string(Weekday.Friday.value)},
     {gettext("Saturday"), Integer.to_string(Weekday.Saturday.value)},
     {gettext("Sunday"), Integer.to_string(Weekday.Sunday.value)},
+    {gettext("Today"), Integer.to_string(Weekday.Today.value)},
+    {gettext("Any day"), Integer.to_string(Weekday.Any.value)},
   ]
 
   @weekday_filters [

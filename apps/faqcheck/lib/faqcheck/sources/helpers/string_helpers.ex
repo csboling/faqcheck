@@ -159,12 +159,12 @@ defmodule Faqcheck.Sources.StringHelpers do
       ]
   """
   def parse_hours(desc) do
+    desc = String.trim(desc)
     cond do
-      String.trim(desc) == "" ->
+      desc == "" ->
 	[]
-      # FIXME: need special handling for "always open"
-      # desc == "24/7" or desc == "24 hours" ->
-      #   OperatingHours.always_open
+      desc == "24/7" or desc == "24 hours" ->
+        [OperatingHours.always_open]
       true ->
       	String.split(desc, ~r/[;&]/)
       	|> Enum.flat_map(fn g ->

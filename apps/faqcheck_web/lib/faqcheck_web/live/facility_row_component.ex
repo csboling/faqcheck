@@ -134,13 +134,27 @@ defmodule FacilityRowComponent do
                 <%= inputs_for f, :hours, fn h -> %>
                 <div class="table-row">
                   <div class="table-body-cell">
-                   <%= weekday_select h, :weekday, value: h.data.weekday.value %>
+		    <%= if h.data.always_open do %>
+                    <%=   gettext "Any day" %>
+		    <%=   hidden_input h, :weekday, value: h.data.weekday.value %>
+		    <%=   hidden_input h, :always_open, value: true %>
+                    <%  else %>
+                    <%=   weekday_select h, :weekday, value: h.data.weekday.value %>
+                    <%  end %>
                   </div>
                   <div class="table-body-cell">
-                    <%= hour_select h, :opens %>
+                    <%= if h.data.always_open do %>
+                    <%=   gettext "24 hours" %>
+		    <%=   hidden_input h, :opens, value: h.data.opens %>
+                    <%  else %>
+                    <%=   hour_select h, :opens %>
+                    <%  end %>
                   </div>
                   <div class="table-body-cell">
-                    <%= hour_select h, :closes %>
+                    <%= if !h.data.always_open do %>
+                    <%=   hour_select h, :closes %>
+		    <%=   hidden_input h, :closes, value: h.data.closes %>
+                    <%  end %>
                   </div>
                   <div class="table-body-cell">
                     <button type="button" phx-click="delete_hours" phx-target="<%= @myself %>" phx-value-index="<%= h.index %>">

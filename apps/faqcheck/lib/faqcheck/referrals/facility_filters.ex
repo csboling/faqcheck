@@ -8,12 +8,14 @@ defmodule Faqcheck.Referrals.FacilityFilters do
   filter name(query, value) do
     query
     |> join(:left, [f], k in assoc(f, :keywords))
+    |> join(:left, [f], a in assoc(f, :address))
     |> where(
-      [f, k],
+      [f, k, a],
       ilike(f.name, ^"%#{value}%")
       or ilike(f.description, ^"%#{value}%")
-      or ilike(k.keyword, ^"%#{value}%"))
-    |> distinct(true)
+      or ilike(k.keyword, ^"%#{value}%")
+      or ilike(a.street_address, ^"%#{value}%"))
+    |> distinct([f], f.id)
   end
 
   @options cast: :integer
@@ -25,12 +27,12 @@ defmodule Faqcheck.Referrals.FacilityFilters do
         day = Date.day_of_week(Date.utc_today) - 1
         query
         |> join(:inner, [f], h in assoc(f, :hours))
-        |> where([f, h], h.weekday == ^day)
+        |> where([f, h], h.always_open or h.weekday == ^day)
 	|> distinct([f], f.id)
       _ ->
         query
         |> join(:inner, [f], h in assoc(f, :hours))
-        |> where([f, h], h.weekday == ^value)
+        |> where([f, h], h.always_open or h.weekday == ^value)
 	|> distinct([f], f.id)
     end
   end
