@@ -28,6 +28,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
     field :closes, :time, default: Time.new!(17, 0, 0)
     field :valid_from, :utc_datetime
     field :valid_to, :utc_datetime
+    field :always_open, :boolean
 
     timestamps()
 
@@ -38,7 +39,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
 
   def changeset(hours, attrs) do
     hours
-    |> cast(attrs, [:weekday, :opens, :closes, :valid_from, :valid_to])
+    |> cast(attrs, [:weekday, :opens, :closes, :valid_from, :valid_to, :always_open])
     |> Weekday.validate(:weekday)
     |> validate_required([:weekday, :opens, :closes])
     |> Faqcheck.Repo.versions()
@@ -75,20 +76,12 @@ defmodule Faqcheck.Referrals.OperatingHours do
   end
 
   def always_open do
-    [
-      Faqcheck.Referrals.OperatingHours.Weekday.Monday,
-      Faqcheck.Referrals.OperatingHours.Weekday.Tuesday,
-      Faqcheck.Referrals.OperatingHours.Weekday.Wednesday,
-      Faqcheck.Referrals.OperatingHours.Weekday.Thursday,
-      Faqcheck.Referrals.OperatingHours.Weekday.Friday,
-    ]
-    |> Enum.map(fn d ->
-      %Faqcheck.Referrals.OperatingHours{
-        weekday: d,
-        opens: ~T[00:00:00],
-        closes: ~T[23:59:59],
-      }
-    end)
+    %Faqcheck.Referrals.OperatingHours{
+      weekday: Faqcheck.Referrals.OperatingHours.Weekday.Any,
+      opens: ~T[00:00:00],
+      closes: ~T[23:59:59],
+      always_open: true,
+    }
   end
 
   @doc """
@@ -265,7 +258,11 @@ defmodule Faqcheck.Referrals.OperatingHours do
       {day,
        hs
        |> Enum.map(fn h ->
-	 "#{hours_str h.opens} - #{hours_str h.closes}"
+         if h.always_open do
+           "24 hours"
+         else
+           "#{hours_str h.opens} - #{hours_str h.closes}"
+         end
        end)
        |> Enum.join(", ")}
     end)
