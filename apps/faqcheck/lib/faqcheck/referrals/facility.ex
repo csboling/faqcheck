@@ -119,10 +119,16 @@ defmodule Faqcheck.Referrals.Facility do
     # |> changeset(%{hours: Enum.map(new_hours, &Map.from_struct/1)})
   end
 
+  def set_always_open(fac) do
+    fac
+    |> changeset(%{
+      hours: [Map.from_struct(OperatingHours.always_open)]
+    })
+  end
+
   def remove_hours(cs, index) do
     existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
     hours = existing ++ (get_change(cs, :hours) || [])
-    IO.inspect hours, label: "hours to delete from"
     put_assoc(
       cs,
       :hours,

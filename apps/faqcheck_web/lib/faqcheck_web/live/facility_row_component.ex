@@ -2,6 +2,7 @@ defmodule FacilityRowComponent do
   use FaqcheckWeb, :live_cmp
 
   alias Ecto
+  import Ecto.Changeset
   require Logger
 
   alias Faqcheck.Referrals
@@ -125,6 +126,9 @@ defmodule FacilityRowComponent do
                     <button type="button" phx-click="add_hours" phx-target="<%= @myself %>">
                       <%= gettext("Add hours") %>
                     </button>
+                    <button type="button" phx-click="set_always_open" phx-target="<%= @myself %>">
+                      <%= gettext("Always open") %>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -134,16 +138,16 @@ defmodule FacilityRowComponent do
                 <%= inputs_for f, :hours, fn h -> %>
                 <div class="table-row">
                   <div class="table-body-cell">
-		    <%= if h.data.always_open do %>
+		    <%= if get_field(h.source, :always_open) do %>
                     <%=   gettext "Any day" %>
-		    <%=   hidden_input h, :weekday, value: h.data.weekday.value %>
+		    <%=   hidden_input h, :weekday, value: OperatingHours.Weekday.Any.value %>
 		    <%=   hidden_input h, :always_open, value: true %>
                     <%  else %>
                     <%=   weekday_select h, :weekday, value: h.data.weekday.value %>
                     <%  end %>
                   </div>
                   <div class="table-body-cell">
-                    <%= if h.data.always_open do %>
+                    <%= if get_field(h.source, :always_open) do %>
                     <%=   gettext "24 hours" %>
 		    <%=   hidden_input h, :opens, value: h.data.opens %>
                     <%  else %>
@@ -151,7 +155,7 @@ defmodule FacilityRowComponent do
                     <%  end %>
                   </div>
                   <div class="table-body-cell">
-                    <%= if !h.data.always_open do %>
+                    <%= if !get_field(h.source, :always_open) do %>
                     <%=   hour_select h, :closes %>
 		    <%=   hidden_input h, :closes, value: h.data.closes %>
                     <%  end %>
@@ -288,6 +292,12 @@ defmodule FacilityRowComponent do
   def handle_event("add_hours", _params, socket) do
     changeset = socket.assigns.changeset
     |> Facility.add_hours()
+    {:noreply, socket |> assign(changeset: changeset)}
+  end
+
+  def handle_event("set_always_open", _params, socket) do
+    changeset = socket.assigns.changeset
+    |> Facility.set_always_open()
     {:noreply, socket |> assign(changeset: changeset)}
   end
 
