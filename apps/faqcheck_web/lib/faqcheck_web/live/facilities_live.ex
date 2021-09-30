@@ -59,7 +59,6 @@ defmodule FaqcheckWeb.FacilitiesLive do
   end
 
   def mount(%{"locale" => locale} = params, session, socket) do
-    IO.inspect params, label: "facilities params"
     {:ok,
      socket
      |> assign_user(session)
