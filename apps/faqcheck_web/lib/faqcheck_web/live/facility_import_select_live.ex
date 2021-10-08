@@ -57,11 +57,11 @@ defmodule FaqcheckWeb.FacilityImportSelectLive do
         session: Map.take(session, ["_csrf_token", "microsoft"]),
         resource: :sites,
         breadcrumb: [],
-        component: ImportMethods.SharepointComponent,
+        component: ImportMethods.FoodFinderComponent,
         strategies: [
           %{
-            id: 1,
-            name: "RRFB Client Resources spreadsheet",
+            id: 3,
+            name: "RRFB Food Finder",
           },
         ],
       },

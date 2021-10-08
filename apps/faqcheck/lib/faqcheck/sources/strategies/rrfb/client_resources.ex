@@ -1,4 +1,4 @@
-defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
+defmodule Faqcheck.Sources.Strategies.RRFB.ClientResources do
   @behaviour Faqcheck.Sources.Strategy
 
   alias Faqcheck.Referrals

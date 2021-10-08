@@ -1,7 +1,8 @@
 defmodule Faqcheck.Sources.Strategies do
   @strategy_list [
     Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX,
-    Faqcheck.Sources.Strategies.RRFBClientResources,
+    Faqcheck.Sources.Strategies.RRFB.ClientResources,
+    Faqcheck.Sources.Strategies.RRFB.FoodFinder,
   ]
 
   @strategy_map Enum.map(@strategy_list, fn s -> {s.id, s} end) |> Enum.into(%{})
