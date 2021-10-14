@@ -45,4 +45,18 @@ defmodule Faqcheck.Sources do
   def get_upload!(id) do
     Repo.get!(Upload, id)
   end
+
+  def try_process(changeset, key, data),
+    do: try_process(changeset, key, data, &Function.identity/1)
+
+  def try_process(changeset, key, data, processor) do
+    try do
+      result = processor.(data)
+      Ecto.Changeset.put_change(changeset, key, result)
+    rescue
+      e -> Ecto.Changeset.add_error(
+        changeset, key, Exception.message(e),
+	data: data, error: e, stacktrace: __STACKTRACE__)
+    end
+  end
 end
