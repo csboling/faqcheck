@@ -44,11 +44,14 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
     case API.Excel.used_range token,
       drive_id, entry_id, worksheet_id do
       {:ok, %{"values" => values}} when is_nil(values) ->
-        []
+        {:ok, []}
       {:ok, %{"values" => values}} ->
-        values
-        |> filter_rows()
-        |> Enum.map(&row_to_changeset/1)
+        {:ok,
+	 values
+         |> filter_rows()
+         |> Enum.map(&row_to_changeset/1)}
+      {:error, {type, message}} ->
+	{:error, "couldn't load sheet '#{category}' from the Microsoft API: #{message} (#{type})"}
     end
   end
 

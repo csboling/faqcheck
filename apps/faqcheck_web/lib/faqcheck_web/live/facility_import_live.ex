@@ -75,8 +75,8 @@ defmodule FaqcheckWeb.FacilityImportLive do
     socket = assign_user(socket, session)
     strategy = Strategies.get!(strategy_id)
 
-    with {:ok, feed} <- Strategies.build_feed(strategy, data, build_session(strategy, socket, session)) do
-      {page, changesets} = Strategies.build_changesets(strategy, feed, 0)
+    with {:ok, feed} <- Strategies.build_feed(strategy, data, build_session(strategy, socket, session)),
+      {:ok, {page, changesets}} <- Strategies.build_changesets(strategy, feed, 0) do
       {:ok,
        socket
        |> assign(
