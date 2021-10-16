@@ -28,7 +28,7 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX do
   def to_changesets(
     _feed,
     %Sources.Upload{storage_path: storage_path}) do
-    XlsxHelpers.map_xlsx(storage_path, &row_changeset/1)
+    {:ok, XlsxHelpers.map_xlsx(storage_path, &row_changeset/1)}
   end
 
   defp row_changeset(row) do

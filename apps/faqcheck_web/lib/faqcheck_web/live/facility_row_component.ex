@@ -143,13 +143,13 @@ defmodule FacilityRowComponent do
 		    <%=   hidden_input h, :weekday, value: OperatingHours.Weekday.Any.value %>
 		    <%=   hidden_input h, :always_open, value: true %>
                     <%  else %>
-                    <%=   weekday_select h, :weekday, value: h.data.weekday.value %>
+                    <%=   weekday_select h, :weekday, value: get_field(h.source, :weekday).value %>
                     <%  end %>
                   </div>
                   <div class="table-body-cell">
                     <%= if get_field(h.source, :always_open) do %>
                     <%=   gettext "24 hours" %>
-		    <%=   hidden_input h, :opens, value: h.data.opens %>
+		    <%=   hidden_input h, :opens, value: get_field(h.source, :data) %>
                     <%  else %>
                     <%=   hour_select h, :opens %>
                     <%  end %>
@@ -157,7 +157,8 @@ defmodule FacilityRowComponent do
                   <div class="table-body-cell">
                     <%= if !get_field(h.source, :always_open) do %>
                     <%=   hour_select h, :closes %>
-		    <%=   hidden_input h, :closes, value: h.data.closes %>
+		    <%= else %>
+		    <%=   hidden_input h, :closes, value: get_field(h.source, :closes) %>
                     <%  end %>
                   </div>
                   <div class="table-body-cell">
