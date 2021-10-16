@@ -126,13 +126,33 @@ defmodule Faqcheck.Referrals.Facility do
     })
   end
 
+  @doc """
+  Removes the hours entry from a changeset at a particular
+  index, returning the modified changeset.
+
+  ## Examples
+
+      iex> %Faqcheck.Referrals.Facility{}
+      ...> |> Faqcheck.Referrals.Facility.changeset(%{})
+      ...> |> remove_hours(0)
+      ...> |> remove_hours(0)
+      #Ecto.Changeset<action: nil, changes: %{hours: []}, errors: [], data: #Faqcheck.Referrals.Facility<>, valid?: true>
+  """
   def remove_hours(cs, index) do
-    existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
-    hours = existing ++ (get_change(cs, :hours) || [])
-    put_assoc(
-      cs,
-      :hours,
-      List.delete_at(hours, index))
+    hours = get_field(cs, :hours)
+    cs
+    |> changeset(%{
+      hours: List.delete_at(Enum.map(hours, &Map.from_struct/1), index)
+    })
+    # change = get_change(cs, :hours)
+    # IO.inspect change, label: "remove_hours change"
+    # IO.inspect cs.data.hours, label: "remove_hours data"
+    # existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
+    # hours = existing ++ (get_change(cs, :hours) || [])
+    # IO.inspect hours, label: "hours to modify"
+    # new = List.delete_at(hours, index)
+    # IO.inspect new, label: "new hours after removing #{index}"
+    # put_assoc(cs, :hours, new)
   end
 
   # defp parse_address(params) do
