@@ -100,15 +100,21 @@ defmodule FaqcheckWeb.FacilityImportLive do
   end
 
   def handle_event("sel_page", %{"index" => index}, socket) do
-    {page, changesets} = Strategies.build_changesets(
+    case Strategies.build_changesets(
       socket.assigns.strategy,
       socket.assigns.feed,
-      String.to_integer(index))
-    {:noreply,
-     socket
-     |> assign(
-       page: page,
-       changesets: changesets)}
+      String.to_integer(index)) do
+      {:ok, {page, changesets}} ->
+	{:noreply,
+	 socket
+	 |> assign(
+	   page: page,
+	   changesets: changesets)}
+      {:error, error} ->
+	{:noreply,
+	 socket
+	 |> assign(error, error)}
+    end
   end
 
   def handle_event("save_all", _params, socket) do
