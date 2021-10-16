@@ -28,7 +28,7 @@
     	      <li><%= gettext("Signed in as: ") <> @current_user.email %></li>
     	      <li><%= link "Log out", to: Routes.sign_in_path(@conn, :index, @locale) %></li>
     	    <% else %>
-    	      <li><%= link "Log in", to: Routes.sign_in_path(@conn, :index, @locale) %></li>
+    	      <li><%= link "Log in", to: Routes.sign_in_path(@conn, :index, @locale, request_path: @conn.request_path) %></li>
     	    <% end %>
     	  </ul>
 
