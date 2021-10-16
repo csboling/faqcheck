@@ -157,6 +157,7 @@ defmodule FacilityRowComponent do
                   <div class="table-body-cell">
                     <%= if !get_field(h.source, :always_open) do %>
                     <%=   hour_select h, :closes %>
+		    <%= else %>
 		    <%=   hidden_input h, :closes, value: get_field(h.source, :closes) %>
                     <%  end %>
                   </div>
