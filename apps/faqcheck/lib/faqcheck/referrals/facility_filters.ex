@@ -24,10 +24,19 @@ defmodule Faqcheck.Referrals.FacilityFilters do
       Weekday.Any ->
         query
       Weekday.Today ->
-        day = Date.day_of_week(Date.utc_today) - 1
+	today = Date.utc_today
+        weekday = Date.day_of_week(today) - 1
+	day = today.day
         query
         |> join(:inner, [f], h in assoc(f, :hours))
-        |> where([f, h], h.always_open or h.weekday == ^day)
+        |> where(
+	  [f, h],
+	  h.always_open
+	  or (
+	    h.weekday == ^weekday
+	    and (
+	      is_nil(h.week_regularity)
+	      or h.week_regularity == fragment("ceiling(? / 7.0)", ^day))))
 	|> distinct([f], f.id)
       _ ->
         query

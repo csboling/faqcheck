@@ -37,6 +37,15 @@ defmodule FaqcheckWeb.FormHelpers do
     {gettext("Open on Sundays"), Weekday.Sunday.value},
   ]
 
+  @week_regularities [
+    {gettext("Every week"), nil},
+    {gettext("1st week of the month"), "1"},
+    {gettext("2nd week of the month"), "2"},
+    {gettext("3rd week of the month"), "3"},
+    {gettext("4th week of the month"), "4"},
+    {gettext("5th week of the month"), "5"},
+  ]
+
   def weekday_name(w) do
     {name, _} = Enum.at(@weekday_names, w.value)
     name
@@ -44,6 +53,19 @@ defmodule FaqcheckWeb.FormHelpers do
 
   def weekday_select(form, field, opts \\ []) do
     select form, field, @weekday_names, opts
+  end
+
+  def week_regularity_name(r) do
+    if is_nil(r) do
+      gettext "Every week"
+    else
+      {name, _} = Enum.at(@week_regularities, r)
+      name
+    end
+  end
+
+  def week_regularity_select(form, field, opts \\ []) do
+    select form, field, @week_regularities, opts
   end
 
   def weekday_filter_select(form, field, opts \\ []) do

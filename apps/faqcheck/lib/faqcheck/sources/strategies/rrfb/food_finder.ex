@@ -4,6 +4,7 @@ defmodule Faqcheck.Sources.Strategies.RRFB.FoodFinder do
   alias Faqcheck.Referrals
   alias Faqcheck.Referrals.Contact
   alias Faqcheck.Referrals.Facility
+  alias Faqcheck.Referrals.OperatingHours
 
   alias Faqcheck.Sources
   alias Faqcheck.Sources.StringHelpers
@@ -26,11 +27,9 @@ defmodule Faqcheck.Sources.Strategies.RRFB.FoodFinder do
          {:ok, %{"results" => results}} <- Poison.decode(body) do
       pages = results["tags"]
       |> Stream.map(fn tag ->
-	IO.inspect tag, label: "county tag"
 	get_in(tag, ["options", "label"]) || String.capitalize(tag["tag"])
       end)
       |> Enum.map(fn county ->
-	IO.inspect county, label: "extracted county"
 	%FoodFinderCounty{
 	  name: county <> " County",
 	  locations: results["locations"]
@@ -47,10 +46,21 @@ defmodule Faqcheck.Sources.Strategies.RRFB.FoodFinder do
   end
 
   @impl Sources.Strategy
-  def to_changesets(_feed, %FoodFinderCounty{name: county, locations: locations}) do
-    locations
-    |> Enum.map(&location_to_changeset/1)
+  def to_changesets(_feed, %FoodFinderCounty{locations: locations}) do
+    {:ok,
+     locations
+     |> Enum.map(&location_to_changeset/1)}
   end
+
+  @weekday_keys [
+    {"monday", OperatingHours.Weekday.Monday},
+    {"tuesday", OperatingHours.Weekday.Tuesday},
+    {"wednesday", OperatingHours.Weekday.Wednesday},
+    {"thursday", OperatingHours.Weekday.Thursday},
+    {"friday", OperatingHours.Weekday.Friday},
+    {"saturday", OperatingHours.Weekday.Saturday},
+    {"sunday", OperatingHours.Weekday.Sunday},
+  ]
 
   def location_to_changeset(location) do
     name = location["name"]
@@ -64,6 +74,18 @@ defmodule Faqcheck.Sources.Strategies.RRFB.FoodFinder do
 	Contact.split(location["website"], :website),
       ])
     )
+    |> Sources.try_process(:hours, location, fn l ->
+      @weekday_keys
+      |> Enum.map(fn {key, weekday} ->
+	if location[key] && location[key] != "" do
+	  hours = StringHelpers.extract_irregular_hours(weekday, location[key])
+	  hours
+	else
+	  nil
+	end
+      end)
+      |> Enum.filter(fn h -> !is_nil(h) end)
+    end)
     |> Sources.try_process(:address, %{street_address: location["streetaddress"]})
     |> Sources.try_process(:description, location["description"])
     |> Facility.changeset(%{})

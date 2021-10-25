@@ -19,7 +19,7 @@ defmodule FaqcheckWeb.ErrorHelpers do
       stacktrace = Keyword.get(opts, :stacktrace)
       ~E"""
       <details class="invalid-feedback" phx-error-for="<%= field %>">
-        <summary><%= name <> ": " <> FaqcheckWeb.Gettext.dgettext "errors", "input was not understood: %{input}", input: data %></summary>
+        <summary><%= name <> ": " <> FaqcheckWeb.Gettext.dgettext "errors", "input was not understood: %{input}", input: inspect(data) %></summary>
 	<pre><%= Exception.format(:error, error, stacktrace) %></pre>
       </details>
       """
