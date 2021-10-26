@@ -1,20 +1,96 @@
-<h1><%= gettext "Facility details" %></h1>
+<h1><%= gettext "Facility details for '%{name}'", name: @facility.name %></h1>
 <h5><%= gettext("Last edited %{date}", date: safe_to_string(link(format_timestamp(@facility.updated_at, "MST7MDT"), to: Routes.facility_history_path(@conn, :history, @locale, @facility)))) |> raw() %></h5>
 
-<ul>
-  <li>
-    <strong><%= gettext "Name" <> ":" %></strong>
-    <%= @facility.name %>
-  </li>
-  <li>
-    <strong><%= gettext "Description" <> ":" %></strong>
-    <%= @facility.description %>
-  </li>
-  <li>
-    <strong><%= gettext "Street address" <> ":" %></strong>
-    <%= @facility.address.street_address %>
-  </li>
-</ul>
+<div class="table">
+  <div class="table-head">
+    <div class="table-row">
+      <div class="table-head-cell"><%= gettext "Name" %></div>
+      <div class="table-head-cell"><%= gettext "Keywords" %></div>
+      <div class="table-head-cell"><%= gettext "Details" %></div>
+    </div>
+  </div>
+
+  <div class="table-row">
+    <div class="table-body-cell">
+    <span><%= @facility.name %></span>
+      <br />
+      <%= if !is_nil(@current_user) do %>
+      <%= link gettext("View feedback"),
+            to: Routes.facility_feedback_path(@conn, :index, @locale, @facility) %>
+      <%  end %>
+    </div class="table-body-cell">
+
+    <div class="table-body-cell">
+      <%= for kw <- @facility.keywords do %>
+        <%= kw.keyword %>;&nbsp;
+      <%  end %>
+    </div>
+
+    <div class="table-body-cell">
+      <p><%= @facility.description %></p>
+      <p>
+        <%= @facility.address.street_address %>
+        <br />
+        <%= @facility.address.locality %>
+        <%= @facility.address.postcode %>
+        <br />
+        <%= link gettext("Get directions (Google Maps)"), to: "https://www.google.com/maps/dir/?api=1&destination=" <> URI.encode_www_form(@facility.address.street_address) %>
+      </p>
+
+      <%= if !Enum.empty?(@facility.contacts) do %>
+      <table>
+        <thead>
+          <tr>
+            <th><%= gettext("Phone") %></th>
+            <th><%= gettext("Website") %></th>
+            <th><%= gettext("Email") %></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for c <- @facility.contacts do %>
+          <tr>
+            <td>
+              <%= if c.phone do %>
+              <%= link c.phone, to: "tel:#{c.phone}" %>
+              <%  end %>
+            </td>
+            <td>
+              <%= if c.website do %>
+              <%= link c.website, to: c.website %>
+              <%  end %>
+            </td>
+            <td>
+              <%= if c.email do %>
+              <%= link c.email, to: "mailto:#{c.email}" %>
+              <%  end %>
+            </td>
+          </tr>
+          <%  end %>
+        </tbody>
+      </table>
+      <% end %>
+
+      <%= if !Enum.empty?(@facility.hours) do %>
+      <table>
+        <thead>
+          <tr>
+            <th><%= gettext("Regularity") %></th>
+            <th><%= gettext("Weekday") %></th>
+            <th><%= gettext("Hours") %></th>
+          </tr>
+          <%= for {day, regularity, hours} <- Faqcheck.Referrals.OperatingHours.format_hours(@facility.hours) do %>
+          <tr>
+            <td><%= week_regularity_name regularity %></td>
+            <td><%= weekday_name day %></td>
+            <td><%= hours %></td>
+          </tr>
+          <% end %>
+        </thead>
+      </table>
+      <% end %>
+    </div>
+  </div>
+</div>
 
 <nav>
   <span><%= link gettext("View all facilites"), to: Routes.facility_path(@conn, :index, @locale) %></span>
