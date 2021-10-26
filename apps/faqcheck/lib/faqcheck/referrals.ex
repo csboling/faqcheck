@@ -175,7 +175,8 @@ defmodule Faqcheck.Referrals do
 
   def get_keywords(facility, params) do
     case params["keywords"] do
-      nil -> Repo.all(from t in Tag, where: t.facility_id == ^facility.id)
+      nil ->
+	[]
       kws ->
         requested = kws
         |> Enum.map(fn {_, v} -> v["keyword"] end)

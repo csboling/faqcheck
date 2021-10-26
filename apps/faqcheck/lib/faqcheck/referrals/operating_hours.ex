@@ -25,7 +25,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
   schema "operating_hours" do
     field :weekday, Weekday, default: Weekday.default
     field :opens, :time, default: Time.new!(8, 0, 0)
-    field :closes, :time, default: Time.new!(17, 0, 0)
+    field :closes, :time
     field :valid_from, :utc_datetime
     field :valid_to, :utc_datetime
     field :always_open, :boolean
@@ -183,7 +183,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
       |> String.trim_trailing("noon")
       |> String.trim()
       |> parse_hour()
-      if String.ends_with?(s, "pm") or String.ends_with?(s, "PM") do
+      if (String.ends_with?(s, "pm") or String.ends_with?(s, "PM")) and !String.starts_with?(s, "12") do
         plus_12h hour
       else
         hour
@@ -254,8 +254,13 @@ defmodule Faqcheck.Referrals.OperatingHours do
     end
   end
 
-  def hours_str(t),
-    do: Calendar.strftime(t, "%I:%M %p")
+  def hours_str(t) do
+    if is_nil(t) do
+      ""
+    else
+      Calendar.strftime(t, "%I:%M %p")
+    end
+  end
 
   def format_hours(hours) do
     hours

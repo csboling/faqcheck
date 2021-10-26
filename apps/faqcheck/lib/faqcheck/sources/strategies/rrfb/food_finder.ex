@@ -78,13 +78,15 @@ defmodule Faqcheck.Sources.Strategies.RRFB.FoodFinder do
       @weekday_keys
       |> Enum.map(fn {key, weekday} ->
 	if location[key] && location[key] != "" do
-	  hours = StringHelpers.extract_irregular_hours(weekday, location[key])
-	  hours
+	  location[key]
+	  |> String.split(";")
+	  |> Enum.map(fn hours -> StringHelpers.extract_irregular_hours(weekday, hours) end)
 	else
 	  nil
 	end
       end)
       |> Enum.filter(fn h -> !is_nil(h) end)
+      |> Enum.concat()
     end)
     |> Sources.try_process(:address, %{street_address: location["streetaddress"]})
     |> Sources.try_process(:description, location["description"])

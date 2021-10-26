@@ -8,9 +8,9 @@ defmodule FaqcheckWeb.FormHelpers do
 
   def hour_select(form, field, from \\ 6, to \\ 20, minute_step \\ 15) do
     select form, field,
-      options: Enum.map(
+      options: [{"-", nil} | Enum.map(
 	hour_range(from, to, minute_step),
-	&{OperatingHours.hours_str(&1), Time.to_iso8601(&1)})
+	&{OperatingHours.hours_str(&1), Time.to_iso8601(&1)})]
   end
 
   @weekday_names [
