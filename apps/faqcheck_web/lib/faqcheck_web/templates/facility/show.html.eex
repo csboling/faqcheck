@@ -13,6 +13,11 @@
   <div class="table-row">
     <div class="table-body-cell">
     <span><%= @facility.name %></span>
+      <br />
+      <%= if !is_nil(@current_user) do %>
+      <%= link gettext("View feedback"),
+            to: Routes.facility_feedback_path(@conn, :index, @locale, @facility) %>
+      <%  end %>
     </div class="table-body-cell">
 
     <div class="table-body-cell">
