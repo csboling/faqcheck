@@ -25,10 +25,11 @@ defmodule Faqcheck.Referrals.OperatingHours do
   schema "operating_hours" do
     field :weekday, Weekday, default: Weekday.default
     field :opens, :time, default: Time.new!(8, 0, 0)
-    field :closes, :time, default: Time.new!(17, 0, 0)
+    field :closes, :time
     field :valid_from, :utc_datetime
     field :valid_to, :utc_datetime
     field :always_open, :boolean
+    field :week_regularity, :integer
 
     timestamps()
 
@@ -39,9 +40,9 @@ defmodule Faqcheck.Referrals.OperatingHours do
 
   def changeset(hours, attrs) do
     hours
-    |> cast(attrs, [:weekday, :opens, :closes, :valid_from, :valid_to, :always_open])
+    |> cast(attrs, [:weekday, :opens, :closes, :valid_from, :valid_to, :always_open, :week_regularity])
     |> Weekday.validate(:weekday)
-    |> validate_required([:weekday, :opens, :closes])
+    |> validate_required([:weekday, :opens])
     |> Faqcheck.Repo.versions()
   end
 
@@ -155,6 +156,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
     end
   end
 
+
   @doc """
   Parse opening and closing hours from a string description.
 
@@ -170,7 +172,7 @@ defmodule Faqcheck.Referrals.OperatingHours do
       {~T[08:00:00], ~T[17:00:00]}
   """
   def parse_hours(str) do
-    [opens, closes] = String.split(str, "-", parts: 2)
+    hours = String.split(str, "-", parts: 2)
     |> Enum.map(fn s ->
       s = s |> String.trim()
       hour = s
@@ -181,13 +183,17 @@ defmodule Faqcheck.Referrals.OperatingHours do
       |> String.trim_trailing("noon")
       |> String.trim()
       |> parse_hour()
-      if String.ends_with?(s, "pm") or String.ends_with?(s, "PM") do
+      if (String.ends_with?(s, "pm") or String.ends_with?(s, "PM")) and !String.starts_with?(s, "12") do
         plus_12h hour
       else
         hour
       end
     end)
-    order_hours(opens, closes)
+    case hours do
+      [opens, closes] -> order_hours(opens, closes)
+      [opens] -> {opens, nil}
+      _ -> raise "hours could not be parsed: #{str}"
+    end
   end
 
   def order_hours(opens, closes) do
@@ -248,14 +254,20 @@ defmodule Faqcheck.Referrals.OperatingHours do
     end
   end
 
-  def hours_str(t),
-    do: Calendar.strftime(t, "%I:%M %p")
+  def hours_str(t) do
+    if is_nil(t) do
+      ""
+    else
+      Calendar.strftime(t, "%I:%M %p")
+    end
+  end
 
   def format_hours(hours) do
     hours
-    |> Enum.group_by(fn h -> h.weekday end)
-    |> Enum.map(fn {day, hs} ->
+    |> Enum.group_by(fn h -> {h.weekday, h.week_regularity} end)
+    |> Enum.map(fn {{day, regularity}, hs} ->
       {day,
+       regularity,
        hs
        |> Enum.map(fn h ->
          if h.always_open do
@@ -266,6 +278,6 @@ defmodule Faqcheck.Referrals.OperatingHours do
        end)
        |> Enum.join(", ")}
     end)
-    |> Enum.sort_by(fn {d, _h} -> d.value end)
+    |> Enum.sort_by(fn {d, _r, _h} -> d.value end)
   end
 end

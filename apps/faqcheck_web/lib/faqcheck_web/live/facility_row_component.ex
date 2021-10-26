@@ -119,6 +119,7 @@ defmodule FacilityRowComponent do
             <div class="table">
               <div class="table-head">
                 <div class="table-row">
+                  <div class="table-head-cell"><%= gettext("Regularity") %></div>
                   <div class="table-head-cell"><%= gettext("Weekday") %></div>
                   <div class="table-head-cell"><%= gettext("Opens") %></div>
                   <div class="table-head-cell"><%= gettext("Closes") %></div>
@@ -137,6 +138,9 @@ defmodule FacilityRowComponent do
               <div class="table-body">
                 <%= inputs_for f, :hours, fn h -> %>
                 <div class="table-row">
+                  <div class="table-body-cell">
+		    <%= week_regularity_select h, :week_regularity, value: get_field(h.source, :week_regularity) %>
+		  </div>
                   <div class="table-body-cell">
 		    <%= if get_field(h.source, :always_open) do %>
                     <%=   gettext "Any day" %>
@@ -252,11 +256,13 @@ defmodule FacilityRowComponent do
             <table>
               <thead>
                 <tr>
+                  <th><%= gettext("Regularity") %></th>
                   <th><%= gettext("Weekday") %></th>
                   <th><%= gettext("Hours") %></th>
                 </tr>
-                <%= for {day, hours} <- OperatingHours.format_hours(@facility.hours) do %>
+                <%= for {day, regularity, hours} <- OperatingHours.format_hours(@facility.hours) do %>
                 <tr>
+                  <td><%= week_regularity_name regularity %></td>
                   <td><%= weekday_name day %></td>
                   <td><%= hours %></td>
                 </tr>
@@ -334,7 +340,9 @@ defmodule FacilityRowComponent do
       [],
       fn hours ->
         Enum.map(hours, fn {_k, h} ->
-          Map.update(h, "weekday", nil, &String.to_integer/1)
+	  h
+	  # |> Map.update("week_regularity", nil, fn r -> if r == "", do: nil, else: String.to_integer(r) end)
+          |> Map.update("weekday", nil, &String.to_integer/1)
         end)
       end)
   end

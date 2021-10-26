@@ -144,15 +144,6 @@ defmodule Faqcheck.Referrals.Facility do
     |> changeset(%{
       hours: List.delete_at(Enum.map(hours, &Map.from_struct/1), index)
     })
-    # change = get_change(cs, :hours)
-    # IO.inspect change, label: "remove_hours change"
-    # IO.inspect cs.data.hours, label: "remove_hours data"
-    # existing = Ecto.assoc_loaded?(cs.data.hours) && cs.data.hours || []
-    # hours = existing ++ (get_change(cs, :hours) || [])
-    # IO.inspect hours, label: "hours to modify"
-    # new = List.delete_at(hours, index)
-    # IO.inspect new, label: "new hours after removing #{index}"
-    # put_assoc(cs, :hours, new)
   end
 
   # defp parse_address(params) do

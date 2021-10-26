@@ -40,7 +40,7 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
         <%= live_patch gettext("Import"), class: "button",
               to: Routes.live_path(
                 @socket, FaqcheckWeb.FacilityImportLive, @locale,
-                strategy: Faqcheck.Sources.Strategies.RRFBClientResources.id,
+                strategy: Faqcheck.Sources.Strategies.RRFB.ClientResources.id,
                 data: %{
                   drive_id: @drive_id,
                   entry_id: @entry.id,

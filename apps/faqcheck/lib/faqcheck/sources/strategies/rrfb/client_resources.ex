@@ -1,4 +1,4 @@
-defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
+defmodule Faqcheck.Sources.Strategies.RRFB.ClientResources do
   @behaviour Faqcheck.Sources.Strategy
 
   alias Faqcheck.Referrals
@@ -67,9 +67,9 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
     name = Enum.at(row, 1)
     Referrals.get_or_create_facility(name)
     |> Facility.changeset(%{})
-    |> try_process(:name, name)
-    |> try_process(:keywords, Enum.at(row, 2), &Tag.split/1)
-    |> try_process(
+    |> Sources.try_process(:name, name)
+    |> Sources.try_process(:keywords, Enum.at(row, 2), &Tag.split/1)
+    |> Sources.try_process(
       :contacts,
       [
         Enum.at(row, 3),
@@ -83,23 +83,9 @@ defmodule Faqcheck.Sources.Strategies.RRFBClientResources do
           Contact.split(website, :website),
         ])
       end)
-    |> try_process(:hours, Enum.at(row, 6), &StringHelpers.parse_hours/1)
-    |> try_process(:address, %{street_address: Enum.at(row, 7)})
-    |> try_process(:description, Enum.at(row, 8))
+    |> Sources.try_process(:hours, Enum.at(row, 6), &StringHelpers.parse_hours/1)
+    |> Sources.try_process(:address, %{street_address: Enum.at(row, 7)})
+    |> Sources.try_process(:description, Enum.at(row, 8))
     |> Facility.changeset(%{})
-  end
-
-  def try_process(changeset, key, data),
-    do: try_process(changeset, key, data, &Function.identity/1)
-
-  def try_process(changeset, key, data, processor) do
-    try do
-      result = processor.(data)
-      Ecto.Changeset.put_change(changeset, key, result)
-    rescue
-      e -> Ecto.Changeset.add_error(
-        changeset, key, Exception.message(e),
-	data: data, error: e, stacktrace: __STACKTRACE__)
-    end
   end
 end

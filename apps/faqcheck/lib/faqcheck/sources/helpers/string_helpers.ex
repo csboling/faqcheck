@@ -1,8 +1,6 @@
 defmodule Faqcheck.Sources.StringHelpers do
   alias Faqcheck.Referrals.OperatingHours
 
-  @extract_hours_regex ~r/(?P<start_day>M(o|on|onday)?|T(u|ue|ues|uesday)?|W(ed|eds|ednesday)?|T(H|h|hu|hursday)?|F(r|ri|riday)?|S(a|at|aturday)?|S(u|un|unday)?)\s*(-\s*(?P<end_day>M(o|on|onday)?|T(u|ue|ues|uesday)?|W(ed|eds|ednesday)?|T(H|h|hu|hursday)?|F(r|ri|riday)?|S(a|at|aturday)?|S(u|un|unday)?))?\s+(?P<opens>(?<=\s)(?:(?:2[0-3])|(?:[01]?[0-9]))(?:\:[0-5][0-9])?)\s*(am)?\s*-\s*(?P<closes>(?:(?:2[0-3])|(?:[01]?[0-9]))(?:\:[0-5][0-9])?)/
-
   @doc """
   Try to extract business hours from a description string.
 
@@ -63,6 +61,28 @@ defmodule Faqcheck.Sources.StringHelpers do
       end)
   end
 
+  def extract_irregular_hours(weekday, desc) do
+    captures = capture_irregular_hours(desc)
+    {opens, closes} = OperatingHours.parse_hours(captures["hours"])
+    %OperatingHours{
+      weekday: weekday,
+      opens: opens,
+      closes: closes,
+      week_regularity: extract_week_regularity(captures["regularity"]),
+    }
+  end
+
+  def extract_week_regularity(r) do
+    if r == "" do
+      nil
+    else
+      String.to_integer(r)
+    end
+  end
+
+
+  @extract_hours_regex ~r/(?P<start_day>M(o|on|onday)?|T(u|ue|ues|uesday)?|W(ed|eds|ednesday)?|T(H|h|hu|hursday)?|F(r|ri|riday)?|S(a|at|aturday)?|S(u|un|unday)?)\s*(-\s*(?P<end_day>M(o|on|onday)?|T(u|ue|ues|uesday)?|W(ed|eds|ednesday)?|T(H|h|hu|hursday)?|F(r|ri|riday)?|S(a|at|aturday)?|S(u|un|unday)?))?\s+(?P<opens>(?<=\s)(?:(?:2[0-3])|(?:[01]?[0-9]))(?:\:[0-5][0-9])?)\s*(am)?\s*-\s*(?P<closes>(?:(?:2[0-3])|(?:[01]?[0-9]))(?:\:[0-5][0-9])?)/
+
   @doc """
   Capture business hours fields using a regex search.
 
@@ -73,6 +93,22 @@ defmodule Faqcheck.Sources.StringHelpers do
   """
   def capture_hours(desc) do
     Regex.named_captures(@extract_hours_regex, desc)
+  end
+
+  @extract_irregular_hours_regex ~r/((?P<regularity>\d)(st|nd|rd|th)[^\(]*\(?)?(?P<hours>(?:(?:2[0-3])|(?:[01]?[0-9]))(?:\:[0-5][0-9])?\s*(am|pm)?(\s*-\s*(?:(?:2[0-3])|(?:[01]?[0-9]))(?:\:[0-5][0-9])?\s*(am|pm)?)?)/
+
+  @doc """
+  Capture operating hours, including 1st/2nd/3rd of the month, using a regex search.
+
+  ## Examples
+
+      iex> capture_irregular_hours("3rd Thursday (9:45 am)")
+      %{"regularity" => "3", "hours" => "9:45 am"}
+      iex> capture_irregular_hours("1st Thursday (10:00 am - 2:00)")
+      %{"regularity" => "1", "hours" => "10:00 am - 2:00"}
+  """
+  def capture_irregular_hours(hours) do
+    Regex.named_captures(@extract_irregular_hours_regex, hours)
   end
 
   @doc """
