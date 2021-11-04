@@ -29,12 +29,30 @@ defmodule Faqcheck.Sources.Strategies.RRFB.FoodFinder do
       |> Stream.map(fn tag ->
 	get_in(tag, ["options", "label"]) || String.capitalize(tag["tag"])
       end)
-      |> Enum.map(fn county ->
-	%FoodFinderCounty{
-	  name: county <> " County",
-	  locations: results["locations"]
-	  |> Enum.filter(fn location -> location["tags"] == county end)
-	}
+      |> Enum.flat_map(fn county ->
+	location_pages = results["locations"]
+	|> Stream.filter(fn location -> location["tags"] == county end)
+	|> Enum.chunk_every(25)
+	case length(location_pages) do
+	  0 ->
+            []
+	  1 ->
+            [
+              %FoodFinderCounty{
+                name: "#{county} County",
+                locations: Enum.at(location_pages, 0),
+              }
+            ]
+	  _ ->
+	    location_pages
+            |> Stream.with_index()
+            |> Enum.map(fn {locations, index} ->
+              %FoodFinderCounty{
+                name: "#{county} County (page #{index + 1})",
+                locations: locations
+              }
+            end)
+	end
       end)
       {:ok, %Sources.Feed{
         name: "Food Finder",
