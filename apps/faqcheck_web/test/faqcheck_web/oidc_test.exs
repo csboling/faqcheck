@@ -1,4 +1,4 @@
-defmodule FaqcheckWeb.UserAuthTest do
+defmodule FaqcheckWeb.OidcTest do
   use FaqcheckWeb.ConnCase, async: true
   alias FaqcheckWeb.Oidc
 

@@ -119,7 +119,7 @@ defmodule Faqcheck.Referrals do
       q = from f in query,
         order_by: [asc: f.id],
         preload: [:address, :contacts, :hours, :keywords, :organization]
-      Repo.paginate(q, opts)
+      Repo.paginate(q |> distinct([f], f.id), opts)
     end
   end
 

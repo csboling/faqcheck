@@ -231,13 +231,15 @@ defmodule Faqcheck.Referrals.OperatingHours do
   """
   def parse_day(str) do
     case str do
-      s when s in ["M", "Mo", "Mon", "Monday"] -> Weekday.Monday
-      s when s in ["T", "Tu", "Tue", "Tues", "Tuesday"] -> Weekday.Tuesday
-      s when s in ["W", "Wed", "Weds", "Wednesday"] -> Weekday.Wednesday
-      s when s in ["R", "Th", "TH", "Thu", "Thurs", "Thursday"] -> Weekday.Thursday
-      s when s in ["F", "Fr", "Fri", "Friday"] -> Weekday.Friday
-      s when s in ["S", "Sat", "Saturday"] -> Weekday.Saturday
-      s when s in ["Su", "Sun", "Sunday"] -> Weekday.Sunday
+      s when s in ["Today", "today"] -> Weekday.Today
+      s when s in ["Su", "Sun", "sun", "Sunday", "sunday"] -> Weekday.Sunday
+      s when s in ["M", "Mo", "Mon", "mon", "Monday", "monday"] -> Weekday.Monday
+      s when s in ["T", "Tu", "Tue", "tue", "Tues", "tues", "Tuesday", "tuesday"] -> Weekday.Tuesday
+      s when s in ["W", "Wed", "wed", "Weds", "weds", "Wednesday", "wednesday"] -> Weekday.Wednesday
+      s when s in ["R", "Th", "TH", "Thu", "thu", "Thurs", "thurs", "Thursday", "thursday"] -> Weekday.Thursday
+      s when s in ["F", "Fr", "Fri", "fri", "Friday", "friday"] -> Weekday.Friday
+      s when s in ["S", "Sat", "sat", "Saturday", "saturday"] -> Weekday.Saturday
+      s when s in ["Su", "Sun", "sun", "Sunday", "sunday"] -> Weekday.Sunday
       _ -> raise "unknown weekday format: #{str}"
     end
   end
