@@ -115,11 +115,14 @@ defmodule Faqcheck.Referrals do
   end
 
   def list_facilities(search \\ %{}, opts \\ []) do
-    with {:ok, query, _values} <- Filterable.apply_filters(Facility, search, FacilityFilters, opts) do
+    filters = search || %{}
+    |> Enum.reject(fn {_, v} -> v == "" end)
+    |> Map.new
+    with {:ok, query, _values} <- Filterable.apply_filters(Facility, filters, FacilityFilters, opts) do
       q = from f in query,
         order_by: [asc: f.id],
         preload: [:address, :contacts, :hours, :keywords, :organization]
-      Repo.paginate(q, opts)
+      Repo.paginate(q |> distinct([f], f.id), opts)
     end
   end
 

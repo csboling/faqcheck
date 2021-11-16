@@ -11,7 +11,7 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
       facilities = Referrals.list_facilities(
 	%{ "name" => activity.text },
 	limit: 10)
-      message = "I found these facilities:"
+      message = "I found these facilities. You can include filters like 'open:today' / 'open:monday' or 'in:87111' to narrow down your search."
 
       [locale | _] = String.split(params["locale"], "-")
       origin = FaqcheckWeb.Router.Helpers.url(conn)
@@ -95,5 +95,50 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
         end)
       ]
     }
+  end
+
+  @doc """
+  Parse search filters from a chat message.
+
+  ## Examples
+
+    iex> parse_message("example with no directives")
+    %{"name" => "example with no directives"}
+
+    iex> parse_message("something open:today")
+    %{"name" => "something", "weekday" => Faqcheck.Referrals.OperatingHours.Weekday.Today.value}
+
+    iex> parse_message("something else open:sun in:12345")
+    %{
+      "name" => "something else",
+      "weekday" => Faqcheck.Referrals.OperatingHours.Weekday.Sunday.value,
+      "zipcode" => "12345"
+    }
+  """
+  def parse_message(text) do
+    {directives, words} = text
+    |> String.split()
+    |> Enum.split_with(fn word -> String.contains?(word, ":") end)
+
+    directives
+    |> Enum.reduce(
+      %{"name" => Enum.join(words, " ")},
+      fn directive, acc ->
+        [dir, arg] = String.split(directive, ":", parts: 2)
+    	case dir do
+    	  "open" ->
+    	    Map.put(
+    	      acc,
+    	      "weekday",
+    	      Faqcheck.Referrals.OperatingHours.parse_day(arg).value)
+    	  "in" ->
+            Map.put(
+    	      acc,
+    	      "zipcode",
+    	      arg)
+    	  _ ->
+    	    acc
+    	end
+      end)
   end
 end
