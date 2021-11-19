@@ -62,4 +62,5 @@ div.table-head-cell {
 div.table-body-cell {
   display: table-cell;
   padding: 1.2rem 1.5rem;
+  border: 1px solid #cccccc;
 }

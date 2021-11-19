@@ -59,4 +59,31 @@ defmodule Faqcheck.Sources do
 	data: data, error: e, stacktrace: __STACKTRACE__)
     end
   end
+
+  @doc """
+  Process collection items, using the existing stored value if it has
+  "value equality" on all the `fields`.
+  """
+  def try_process_collection(changeset, key, data, processor, fields) do
+    try_process(changeset, key, data, fn data ->
+      processor.(data)
+      |> Enum.map(fn new ->
+	field = Map.get(changeset.data, key)
+	case field do
+	  %Ecto.Association.NotLoaded{} ->
+	    new
+	  _ ->
+	    Enum.find(
+	      field,
+	      new,
+	      fn old ->
+		fields
+		|> Enum.all?(fn field ->
+		  Map.get(new, field) == Map.get(old, field)
+		end)
+	      end)
+	end
+      end)
+    end)
+  end
 end

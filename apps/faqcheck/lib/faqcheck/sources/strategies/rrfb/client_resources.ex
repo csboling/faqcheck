@@ -68,8 +68,12 @@ defmodule Faqcheck.Sources.Strategies.RRFB.ClientResources do
     Referrals.get_or_create_facility(name)
     |> Facility.changeset(%{})
     |> Sources.try_process(:name, name)
-    |> Sources.try_process(:keywords, Enum.at(row, 2), &Tag.split/1)
-    |> Sources.try_process(
+    |> Sources.try_process_collection(
+      :keywords,
+      Enum.at(row, 2),
+      &Tag.split/1,
+      [:keyword])
+    |> Sources.try_process_collection(
       :contacts,
       [
         Enum.at(row, 3),
@@ -82,8 +86,13 @@ defmodule Faqcheck.Sources.Strategies.RRFB.ClientResources do
           Contact.split(email, :email),
           Contact.split(website, :website),
         ])
-      end)
-    |> Sources.try_process(:hours, Enum.at(row, 6), &StringHelpers.parse_hours/1)
+      end,
+      [:name, :phone, :email, :website])
+    |> Sources.try_process_collection(
+      :hours,
+      Enum.at(row, 6),
+      &StringHelpers.parse_hours/1,
+      [:weekday, :opens, :closes, :always_open, :week_regularity])
     |> Sources.try_process(:address, %{street_address: Enum.at(row, 7)})
     |> Sources.try_process(:description, Enum.at(row, 8))
     |> Facility.changeset(%{})
