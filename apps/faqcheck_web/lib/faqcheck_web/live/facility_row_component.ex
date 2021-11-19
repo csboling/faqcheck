@@ -143,6 +143,7 @@ defmodule FacilityRowComponent do
                 </div>
               </div>
 
+              <%= change_warning f, :hours %>
               <%= error_tag f, :hours %>
               <div class="table-body">
                 <%= inputs_for f, :hours, fn h -> %>

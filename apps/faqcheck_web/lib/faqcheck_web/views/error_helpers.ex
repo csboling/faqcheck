@@ -34,7 +34,7 @@ defmodule FaqcheckWeb.ErrorHelpers do
 	  if !is_nil(change) do
             ~E"""
 	    <span class="alert-warning" phx-error-for="<%= field %>">
-	      <%= FaqcheckWeb.Gettext.gettext "%{field} has changed", field: Atom.to_string(field) %>
+	      <%= FaqcheckWeb.Gettext.gettext "'%{field}' has changed", field: Atom.to_string(field) %>
 	    </span>
 	    """
 	  else
