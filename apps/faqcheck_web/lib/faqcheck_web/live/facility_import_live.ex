@@ -19,6 +19,21 @@ defmodule FaqcheckWeb.FacilityImportLive do
       <h2>Importing: <%= @feed.name %></h2>
       <h3>Import strategy: <%= @strategy.description %></h3>
 
+      <div class="import_controls">
+        <label>
+          <%= content_tag :input, "", type: "checkbox", checked: @filters.new, phx_click: "toggle_filter", phx_value_filter: "new" %>
+	  <%= gettext "Include new items" %>
+	</label>
+        <label>
+          <%= content_tag :input, "", type: "checkbox", checked: @filters.changed, phx_click: "toggle_filter", phx_value_filter: "changed" %>
+	  <%= gettext "Include changed items" %>
+	</label>
+        <label>
+          <%= content_tag :input, "", type: "checkbox", checked: @filters.unchanged, phx_click: "toggle_filter", phx_value_filter: "unchanged" %>
+	  <%= gettext "Include unchanged items" %>
+	</label>
+      </div>
+
       Current page: <%= @page.name %>
       <details>
         <summary>Pages</summary>
@@ -37,8 +52,6 @@ defmodule FaqcheckWeb.FacilityImportLive do
         </ul>
       </details>
 
-      <!-- <button phx-click="save_all"><%= gettext "Save all on this page" %></button> -->
-
       <div class="table">
         <div class="table-head">
           <div class="table-row">
@@ -49,10 +62,13 @@ defmodule FaqcheckWeb.FacilityImportLive do
         </div>
         <div class="table-body">
           <%= for {changeset, i} <- @changesets do %>
-            <%= live_component @socket, FacilityRowComponent,
-                  id: i, locale: @locale, current_user: @current_user,
-		  allow_delete: false,
-                  facility: changeset.data, changeset: changeset, editing: true %>
+            <% meta = Ecto.get_meta(changeset.data, :state) %>
+            <%= if (meta == :built && @filters.new) || (meta == :loaded && (changeset.changes != %{} && @filters.changed) || (changeset.changes == %{} && @filters.unchanged)) do %>
+              <%= live_component @socket, FacilityRowComponent,
+                    id: i, locale: @locale, current_user: @current_user,
+                    allow_delete: false,
+                    facility: changeset.data, changeset: changeset, editing: true %>
+            <% end %>
           <% end %>
         </div>
       </div>
@@ -86,6 +102,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
          feed: feed,
          page: page,
          changesets: changesets,
+         filters: %{new: true, changed: true, unchanged: false},
          error: nil)}
     else
       {:error, error} -> {:ok, socket |> assign(locale: locale, error: error)}
@@ -114,6 +131,31 @@ defmodule FaqcheckWeb.FacilityImportLive do
 	{:noreply,
 	 socket
 	 |> assign(error, error)}
+    end
+  end
+
+  def handle_event("toggle_filter", %{"filter" => filter}, socket) do
+    as_atom = case filter do
+      "new" -> :new
+      "changed" -> :changed
+      "unchanged" -> :unchanged
+      _ -> nil
+    end
+
+    IO.inspect filter, label: "toggled filter"
+    IO.inspect as_atom, label: "toggled filter as atom"
+    filters = Map.put(
+      socket.assigns.filters,
+      as_atom,
+      !Map.get(socket.assigns.filters, as_atom))
+    IO.inspect filters, label: "new filters"
+
+    if is_nil(as_atom) do
+      {:noreply, socket}
+    else
+      newsock = assign(socket, :filters, filters)
+      IO.inspect newsock.assigns.filters, label: "newly assigned filters"
+      {:noreply, newsock}
     end
   end
 

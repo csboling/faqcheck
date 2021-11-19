@@ -23,9 +23,11 @@ defmodule FacilityRowComponent do
         <%= form_for @changeset, "#", [class: "table-row", phx_change: :validate, phx_submit: :save, phx_target: @myself], fn f -> %>
           <div class="table-body-cell">
             <%= inputs_for f, :organization, fn org -> %>
+              <%= change_warning org, :name %>
               <%= text_input org, :name, placeholder: gettext("Organization name") %>
               <%= error_tag org, :name %>
             <%  end %>
+            <%= change_warning f, :name %>
             <%= text_input f, :name, placeholder: gettext("Facility name") %>
             <%= error_tag f, :name %>
 
@@ -62,6 +64,7 @@ defmodule FacilityRowComponent do
 
           <div class="table-body-cell">
             <%= inputs_for f, :keywords, fn kw -> %>
+              <%= change_warning kw, :keyword %>
               <%= text_input kw, :keyword, style: "width: 100px;" %>
               <%= error_tag kw, :keyword %>
             <%  end %>
@@ -71,14 +74,20 @@ defmodule FacilityRowComponent do
           </div>
 
           <div class="table-body-cell">
+            <%= change_warning f, :description %>
             <p><%= textarea f, :description, placeholder: gettext("Facility description") %></p>
             <%= error_tag f, :description %>
             <p>
               <%= inputs_for f, :address, fn addr -> %>
+                <%= change_warning addr, :street_address %>
                 <%= text_input addr, :street_address, placeholder: gettext("Street address") %>
                 <%= error_tag addr, :street_address %>
+
+                <%= change_warning addr, :locality %>
                 <%= text_input addr, :locality, placeholder: gettext("City and state/province") %>
                 <%= error_tag addr, :locality %>
+
+                <%= change_warning addr, :postcode %>
                 <%= text_input addr, :postcode, placeholder: gettext("Zip/postal code") %>
                 <%= error_tag addr, :postcode %>
               <% end %>
