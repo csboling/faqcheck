@@ -50,7 +50,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
 
       <div>
         <button phx-disable-with="loading..." phx-click="load_more">
-          <%= gettext "Load more" %>
+          <%= gettext "Next page" %>
         </button>
         <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
       </div>
@@ -63,6 +63,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
      socket
      |> assign_user(session)
      |> assign(
+       after: nil,
        page_size: 10,
        params: %{},
        locale: locale,
@@ -77,7 +78,8 @@ defmodule FaqcheckWeb.FacilitiesLive do
   } = socket) do
     facilities = Referrals.list_facilities(
       params["search"],
-      limit: page_size)
+      limit: page_size,
+      after: socket.assigns.after)
     socket
     |> assign(
       facilities: facilities.entries,
@@ -88,7 +90,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
     {:noreply,
      socket
      |> assign_breadcrumb(url)
-     |> assign(params: params)
+     |> assign(params: params, after: nil)
      |> fetch()}
   end
 
@@ -110,7 +112,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
   end
 
   def handle_event("load_more", _, %{assigns: assigns} = socket) do
-    {:noreply, socket |> assign(page: assigns.page + 1) |> fetch()}
+    {:noreply, socket |> fetch()}
   end
 
   def handle_event("delete", %{"id" => id}, socket) do
