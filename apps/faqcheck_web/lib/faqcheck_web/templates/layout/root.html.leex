@@ -21,22 +21,6 @@
 
     <header>
       <section class="container">
-        <nav role="navigation">
-    	  <ul>
-    	    <li><%= link gettext("%{name} home page", name: "Faqcheck"), to: lang_link([]) %></li>
-    	    <%= if @current_user do %>
-    	      <li><%= gettext("Signed in as: ") <> @current_user.email %></li>
-    	      <li><%= link "Log out", to: Routes.sign_in_path(@conn, :index, @locale) %></li>
-    	    <% else %>
-    	      <li><%= link "Log in", to: Routes.sign_in_path(@conn, :index, @locale, request_path: @conn.request_path) %></li>
-    	    <% end %>
-    	  </ul>
-
-	  <details>
-	    <summary>assigns</summary>
-	    <%= inspect @conn.assigns %>
-          </details>
-        </nav>
         <nav>
           <ul>
             <%= for lang <- Gettext.known_locales(FaqcheckWeb.Gettext) do %>
@@ -49,6 +33,23 @@
               </li>
             <% end %>
           </ul>
+        </nav>
+
+        <nav role="navigation" style="text-align: left;">
+    	  <ul>
+    	    <li><%= link gettext("%{name} home page", name: "Faqcheck"), to: lang_link([]) %></li>
+    	    <%= if @current_user do %>
+    	      <li><%= gettext("Signed in as: ") <> @current_user.email %></li>
+    	      <li><%= link "Log out", to: Routes.sign_in_path(@conn, :index, @locale) %></li>
+    	    <% else %>
+    	      <li><%= link "Log in", to: Routes.sign_in_path(@conn, :index, @locale, request_path: @conn.request_path) %></li>
+    	    <% end %>
+    	  </ul>
+
+	  <!-- <details>
+	    <summary>assigns</summary>
+	    <%= inspect @conn.assigns %>
+          </details> -->
         </nav>
       </section>
     </header>

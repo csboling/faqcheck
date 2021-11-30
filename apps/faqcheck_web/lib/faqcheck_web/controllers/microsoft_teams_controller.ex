@@ -9,7 +9,7 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
   def message(conn, params) do
     with {:ok, activity} <- Activity.parse(params) do
       facilities = Referrals.list_facilities(
-	%{ "name" => activity.text },
+	parse_message(activity.text),
 	limit: 10)
       message = "I found these facilities. You can include filters like 'open:today' / 'open:monday' or 'in:87111' to narrow down your search."
 

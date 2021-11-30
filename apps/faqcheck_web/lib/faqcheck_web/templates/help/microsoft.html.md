@@ -1,7 +1,3 @@
----
-title: Connecting FaqCheck with Microsoft SharePoint and Teams
----
-
 # Connecting FaqCheck with Microsoft SharePoint and Teams
 
 You can allow FaqCheck to connect with your Microsoft cloud services. Depending on what you enable, FaqCheck can then read files from SharePoint (like importing data from an Excel spreadsheet) and send and receive messages with Teams (like answering questions or posting reminders in a particular channel).
