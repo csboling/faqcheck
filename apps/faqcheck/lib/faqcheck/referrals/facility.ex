@@ -42,6 +42,15 @@ defmodule Faqcheck.Referrals.Facility do
     |> Faqcheck.Repo.versions()
   end
 
+  def add_keyword(fac) do
+    cs = changeset(fac, %{})
+    keywords = get_field(cs, :keywords)
+    cs
+    |> changeset(%{
+      keywords: Enum.map(keywords, &Map.from_struct/1) ++ [%{}]
+    })
+  end
+
   @doc """
   Appends to the hours in the facility or facility changeset
   with the next value for operating hours.
@@ -114,9 +123,6 @@ defmodule Faqcheck.Referrals.Facility do
     |> changeset(%{
       hours: Enum.map(hours, &Map.from_struct/1) ++ [next_hours]
     })
-    # new_hours = with_changes ++ [OperatingHours.next(with_changes)]
-    # cs
-    # |> changeset(%{hours: Enum.map(new_hours, &Map.from_struct/1)})
   end
 
   def set_always_open(fac) do
