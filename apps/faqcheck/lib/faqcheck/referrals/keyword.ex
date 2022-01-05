@@ -14,7 +14,7 @@ defmodule Faqcheck.Referrals.Keyword do
 
   def split(kws) do
     kws
-    |> String.split(";")
+    |> String.split(";", trim: true)
     |> Enum.map(fn word -> %{keyword: String.trim(word)} end)
   end
 end

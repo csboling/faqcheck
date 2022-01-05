@@ -68,7 +68,9 @@ defmodule FacilityRowComponent do
               <%= text_input kw, :keyword, style: "width: 100px;" %>
               <%= error_tag kw, :keyword %>
             <%  end %>
-            <button type="button">
+            <button type="button"
+	      phx-click="add_keyword"
+              phx-target="<%= @myself %>">
               <%= gettext("Add keywords") %>
             </button>
           </div>
@@ -306,6 +308,12 @@ defmodule FacilityRowComponent do
        changeset: changeset)}
   end
 
+  def handle_event("add_keyword", _params, socket) do
+    changeset = socket.assigns.changeset
+    |> Facility.add_keyword()
+    {:noreply, socket |> assign(changeset: changeset)}
+  end
+
   def handle_event("add_hours", _params, socket) do
     changeset = socket.assigns.changeset
     |> Facility.add_hours()
@@ -325,7 +333,7 @@ defmodule FacilityRowComponent do
   end
 
   def handle_event("validate", %{"facility" => params}, socket) do
-    params = validate_params(params)
+    params = validate_params(params, false)
     changeset = socket.assigns.facility
     |> Facility.changeset(params)
     {:noreply, socket |> assign(changeset: %{changeset | action: :validate})}
@@ -338,13 +346,14 @@ defmodule FacilityRowComponent do
   def handle_event("save", %{"facility" => params}, socket) do
     inserted = Referrals.upsert_facility(
       socket.assigns.facility,
-      validate_params(params))
+      validate_params(params, true))
     facility = Referrals.get_facility!(inserted.id)
     {:noreply, socket |> assign(editing: false, facility: facility)}
   end
 
-  def validate_params(params) do
-    params
+  def validate_params(params, for_save) do
+    IO.inspect params, label: "validate_params"
+    reshaped_hours = params
     |> Map.update(
       "hours",
       [],
@@ -355,5 +364,17 @@ defmodule FacilityRowComponent do
           |> Map.update("weekday", nil, &String.to_integer/1)
         end)
       end)
+    if for_save do
+      reshaped_hours
+      |> Map.update(
+	"keywords",
+        [],
+        fn keywords ->
+	  Enum.filter(keywords, fn {ix, kw} -> String.trim(kw["keyword"]) != "" end)
+          |> Enum.into(%{})
+        end)
+    else
+      reshaped_hours
+    end
   end
 end
