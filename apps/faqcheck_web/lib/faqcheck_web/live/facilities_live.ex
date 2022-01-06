@@ -49,6 +49,14 @@ defmodule FaqcheckWeb.FacilitiesLive do
       <hr />
 
       <div>
+        <p>
+          <%= gettext "Showing %{start} - %{end} of %{total} total results", start: @start + 1, end: @start + Enum.count(@facilities), total: @total %>
+	</p>
+	<form phx-change="pagination">
+          <%= select :pagination, :page_size,
+	    Enum.map([5, 10, 25, 50], fn n -> {gettext("%{page_size} per page", page_size: n), n} end),
+            value: @page_size %>
+        </form>
         <button phx-disable-with="loading..." phx-click="load_more">
           <%= gettext "Next page" %>
         </button>
@@ -65,12 +73,13 @@ defmodule FaqcheckWeb.FacilitiesLive do
      |> assign(
        after: nil,
        page_size: 10,
+       start: 0,
        params: %{},
        locale: locale,
        breadcrumb: [],
        loading: false)
      |> fetch(),
-     temporary_assigns: [facilities: []]}
+     temporary_assigns: [facilities: [], total: 0]}
   end
 
   defp fetch(%{
@@ -79,10 +88,13 @@ defmodule FaqcheckWeb.FacilitiesLive do
     facilities = Referrals.list_facilities(
       params["search"],
       limit: page_size,
-      after: socket.assigns.after)
+      after: socket.assigns.after,
+      include_total_count: true)
     socket
     |> assign(
       facilities: facilities.entries,
+      start: (facilities.metadata.before && (socket.assigns.start + page_size)) || 0,
+      total: facilities.metadata.total_count,
       after: facilities.metadata.after)
   end
 
@@ -113,6 +125,16 @@ defmodule FaqcheckWeb.FacilitiesLive do
 
   def handle_event("load_more", _, %{assigns: assigns} = socket) do
     {:noreply, socket |> fetch()}
+  end
+
+  def handle_event("pagination", %{"pagination" => %{"page_size" => page_size}}, socket) do
+    {:noreply,
+     socket
+     |> assign(
+       start: 0,
+       after: nil,
+       page_size: String.to_integer(page_size))
+     |> fetch()}
   end
 
   def handle_event("delete", %{"id" => id}, socket) do

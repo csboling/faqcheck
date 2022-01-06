@@ -352,7 +352,6 @@ defmodule FacilityRowComponent do
   end
 
   def validate_params(params, for_save) do
-    IO.inspect params, label: "validate_params"
     reshaped_hours = params
     |> Map.update(
       "hours",
