@@ -121,7 +121,7 @@ defmodule Faqcheck.Referrals do
     with {:ok, query, _values} <- Filterable.apply_filters(Facility, filters, FacilityFilters, opts) do
       q = from f in query,
         order_by: [asc: f.id],
-        preload: [:address, :contacts, :hours, :keywords, :organization]
+        preload: [:address, :contacts, :hours, :keywords, :organization, :feedback]
       Repo.paginate(q |> distinct([f], f.id), opts)
     end
   end
@@ -129,7 +129,7 @@ defmodule Faqcheck.Referrals do
   def get_facility!(id) do
     Repo.one! from fac in Facility,
       where: fac.id == ^id,
-      preload: [:address, :contacts, :hours, :keywords, :organization]
+      preload: [:address, :contacts, :hours, :keywords, :organization, :feedback]
   end
 
   def get_or_create_facility(name) do

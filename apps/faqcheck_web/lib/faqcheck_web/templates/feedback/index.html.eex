@@ -1,15 +1,38 @@
 <h3><%= gettext "Feedback about %{facility_name}", facility_name: @facility.name %></h3>
 
-<%= for f <- @facility.feedback do %>
-  <hr />
-  <details>
-    <summary>data</summary>
-    <pre><%= inspect @facility.feedback, pretty: true %></pre>
-  </details>
-  <%= gettext "Comment left at %{timestamp}", timestamp: f.inserted_at %>
-  <p><%= format_bool gettext("Helpful"), f.helpful %></p>
-  <p><%= format_bool gettext("Accurate"), f.accurate %></p>
-  <%= if f.client_comments do %>
-  <p><%= gettext("Comment") <> ": " <> f.client_comments %></p>
-  <%  end %>
-<%  end %>
+<div class="table">
+  <div class="table-head">
+    <div class="table-row">
+      <div class="table-head-cell"><%= gettext "Left at" %></div>
+      <div class="table-head-cell"><%= gettext "Description accurate?" %></div>
+      <div class="table-head-cell"><%= gettext "Address accurate?" %></div>
+      <div class="table-head-cell"><%= gettext "Phone accurate?" %></div>
+      <div class="table-head-cell"><%= gettext "Hours accurate?" %></div>
+      <div class="table-head-cell"><%= gettext "Acknowledged?" %></div>
+    </div>
+  </div>
+  <div class="table-body">
+    <%= for f <- @facility.feedback do %>
+      <div class="table-row">
+	<div class="table-body-cell">
+	  <%= f.inserted_at %>
+	</div>
+	<div class="table-body-cell">
+	  <%= format_bool f.description_accurate %>
+	</div>
+	<div class="table-body-cell">
+	  <%= format_bool f.address_correct %>
+	</div>
+	<div class="table-body-cell">
+	  <%= format_bool f.phone_correct %>
+	</div>
+	<div class="table-body-cell">
+	  <%= format_bool f.hours_correct %>
+	</div>
+	<div class="table-body-cell">
+	  <%= format_bool f.acknowledged %>
+	</div>
+      </div>
+    <% end %>
+  </div>
+</div>
