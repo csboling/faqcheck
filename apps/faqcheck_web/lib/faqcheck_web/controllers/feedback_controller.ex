@@ -2,6 +2,7 @@ defmodule FaqcheckWeb.FeedbackController do
   use FaqcheckWeb, :controller
 
   alias Faqcheck.Referrals
+  alias Faqcheck.Repo
 
   def title(action) do
     case action do
@@ -42,5 +43,11 @@ defmodule FaqcheckWeb.FeedbackController do
       {:error, %Ecto.Changeset{} = changeset} ->
 	render(conn, "feedback.html", changeset: changeset)
     end
+  end
+
+  def update(conn, %{"facility_id" => facility_id, "id" => feedback_id, "feedback" => attrs, "locale" => locale}) do
+    feedback = Repo.get!(Referrals.Feedback, String.to_integer(feedback_id))
+    Repo.update!(feedback |> Referrals.Feedback.changeset(attrs))
+    redirect conn, to: FaqcheckWeb.Router.Helpers.facility_feedback_path(conn, :index, locale, facility_id)
   end
 end

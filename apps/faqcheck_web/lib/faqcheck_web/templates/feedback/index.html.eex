@@ -9,11 +9,15 @@
       <div class="table-head-cell"><%= gettext "Phone accurate?" %></div>
       <div class="table-head-cell"><%= gettext "Hours accurate?" %></div>
       <div class="table-head-cell"><%= gettext "Acknowledged?" %></div>
+      <div class="table-head-cell"></div>
     </div>
   </div>
   <div class="table-body">
     <%= for f <- @facility.feedback do %>
-      <div class="table-row">
+      <%= form_for Faqcheck.Referrals.Feedback.changeset(f, %{}),
+	    Routes.facility_feedback_path(@conn, :update, @locale, @facility.id, f.id),
+	    [class: "table-row"],
+	    fn fac_form -> %>
 	<div class="table-body-cell">
 	  <%= f.inserted_at %>
 	</div>
@@ -31,8 +35,13 @@
 	</div>
 	<div class="table-body-cell">
 	  <%= format_bool f.acknowledged %>
+          &nbsp;&nbsp;
+          <%= checkbox fac_form, :acknowledged %>
 	</div>
-      </div>
+	<div class="table-body-cell">
+          <%= submit gettext("Save") %>
+	</div>
+      <% end %>
     <% end %>
   </div>
 </div>

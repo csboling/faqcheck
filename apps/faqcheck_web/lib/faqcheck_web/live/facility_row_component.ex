@@ -223,7 +223,7 @@ defmodule FacilityRowComponent do
           <div class="table-body-cell">
             <p>
 	      <%= if !is_nil(@current_user) do %>
-	      	<% description_feedback = @facility.feedback |> Enum.filter(fn f -> !f.description_accurate end) |> Enum.count %>
+	      	<% description_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.description_accurate end) |> Enum.count %>
 	      	<%= if description_feedback > 0 do %>
 	      	<span class="alert-warning tooltip">
 	      	  &#x26A0; <%= description_feedback %>
@@ -238,7 +238,7 @@ defmodule FacilityRowComponent do
 	    </p>
             <p>
 	      <%= if !is_nil(@current_user) do %>
-	      	<% address_feedback = @facility.feedback |> Enum.filter(fn f -> !f.address_correct end) |> Enum.count %>
+	      	<% address_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.address_correct end) |> Enum.count %>
 	      	<%= if address_feedback > 0 do %>
 	      	<span class="alert-warning tooltip">
 	      	  &#x26A0; <%= address_feedback %>
@@ -275,7 +275,7 @@ defmodule FacilityRowComponent do
                       <%= link c.phone, to: "tel:#{c.phone}" %>
 
                       <%= if !is_nil(@current_user) do %>
-                        <% phone_feedback = @facility.feedback |> Enum.filter(fn f -> !f.phone_correct end) |> Enum.count %>
+                        <% phone_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.phone_correct end) |> Enum.count %>
                         <%= if phone_feedback > 0 do %>
                           <span class="alert-warning tooltip">
                             &#x26A0; <%= phone_feedback %>
@@ -313,7 +313,7 @@ defmodule FacilityRowComponent do
                   <th>
                     <%= gettext("Hours") %>
                     <%= if !is_nil(@current_user) do %>
-                      <% hours_feedback = @facility.feedback |> Enum.filter(fn f -> !f.hours_correct end) |> Enum.count %>
+                      <% hours_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.hours_correct end) |> Enum.count %>
                       <%= if hours_feedback > 0 do %>
                         <span class="alert-warning tooltip">
                           &#x26A0; <%= hours_feedback %>

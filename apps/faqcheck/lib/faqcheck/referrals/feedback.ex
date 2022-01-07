@@ -23,7 +23,7 @@ defmodule Faqcheck.Referrals.Feedback do
 
   def changeset(feedback, attrs) do
     feedback
-    |> cast(attrs, [:client_comments, :client_email, :client_phone])
+    |> cast(attrs, [:client_comments, :client_email, :client_phone, :acknowledged])
     |> cast(process_booleans(attrs), [:address_correct, :phone_correct, :hours_correct, :description_accurate])
   end
 
