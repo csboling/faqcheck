@@ -221,12 +221,39 @@ defmodule FacilityRowComponent do
           </div>
 
           <div class="table-body-cell">
-            <p><%= @facility.description %></p>
             <p>
+	      <%= if !is_nil(@current_user) do %>
+	      	<% description_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.description_accurate end) |> Enum.count %>
+	      	<%= if description_feedback > 0 do %>
+	      	<span class="alert-warning tooltip">
+	      	  &#x26A0; <%= description_feedback %>
+	      		<span class="tooltiptext">
+              	    <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: description_feedback %>
+              	  </span>
+              	</span>
+	      	&nbsp;&nbsp;
+	      	<% end %>
+              <% end %>
+	      <%= @facility.description %>
+	    </p>
+            <p>
+	      <%= if !is_nil(@current_user) do %>
+	      	<% address_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.address_correct end) |> Enum.count %>
+	      	<%= if address_feedback > 0 do %>
+	      	<span class="alert-warning tooltip">
+	      	  &#x26A0; <%= address_feedback %>
+	      		<span class="tooltiptext">
+              	    <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: address_feedback %>
+              	  </span>
+              	</span>
+	      	&nbsp;&nbsp;
+	      	<% end %>
+              <% end %>
               <%= @facility.address.street_address %>
               <br />
               <%= @facility.address.locality %>
               <%= @facility.address.postcode %>
+
               <br />
               <%= link gettext("Get directions (Google Maps)"), to: "https://www.google.com/maps/dir/?api=1&destination=" <> URI.encode_www_form(@facility.address.street_address) %>
             </p>
@@ -245,7 +272,20 @@ defmodule FacilityRowComponent do
                 <tr>
                   <td>
                     <%= if c.phone do %>
-                    <%= link c.phone, to: "tel:#{c.phone}" %>
+                      <%= link c.phone, to: "tel:#{c.phone}" %>
+
+                      <%= if !is_nil(@current_user) do %>
+                        <% phone_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.phone_correct end) |> Enum.count %>
+                        <%= if phone_feedback > 0 do %>
+                          <span class="alert-warning tooltip">
+                            &#x26A0; <%= phone_feedback %>
+                            <span class="tooltiptext">
+                                  <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: phone_feedback %>
+                                </span>
+                              </span>
+                          &nbsp;&nbsp;
+                        <% end %>
+                      <% end %>
                     <%  end %>
                   </td>
                   <td>
@@ -270,7 +310,21 @@ defmodule FacilityRowComponent do
                 <tr>
                   <th><%= gettext("Regularity") %></th>
                   <th><%= gettext("Weekday") %></th>
-                  <th><%= gettext("Hours") %></th>
+                  <th>
+                    <%= gettext("Hours") %>
+                    <%= if !is_nil(@current_user) do %>
+                      <% hours_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.hours_correct end) |> Enum.count %>
+                      <%= if hours_feedback > 0 do %>
+                        <span class="alert-warning tooltip">
+                          &#x26A0; <%= hours_feedback %>
+                          <span class="tooltiptext">
+                                <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: hours_feedback %>
+                              </span>
+                            </span>
+                        &nbsp;&nbsp;
+                      <% end %>
+                    <% end %>
+                  </th>
                 </tr>
                 <%= for {day, regularity, hours} <- OperatingHours.format_hours(@facility.hours) do %>
                 <tr>

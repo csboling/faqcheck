@@ -9,10 +9,12 @@ defmodule Faqcheck.Referrals.Feedback do
     field :accurate, :boolean
     field :address_correct, :boolean
     field :phone_correct, :boolean
+    field :hours_correct, :boolean
     field :description_accurate, :boolean
     field :client_comments, :string
     field :client_email, :string
     field :client_phone, :string
+    field :acknowledged, :boolean
 
     timestamps()
 
@@ -21,13 +23,13 @@ defmodule Faqcheck.Referrals.Feedback do
 
   def changeset(feedback, attrs) do
     feedback
-    |> cast(attrs, [:client_comments, :client_email, :client_phone])
-    |> cast(process_booleans(attrs), [:helpful, :accurate])
+    |> cast(attrs, [:client_comments, :client_email, :client_phone, :acknowledged])
+    |> cast(process_booleans(attrs), [:address_correct, :phone_correct, :hours_correct, :description_accurate])
   end
 
   defp process_booleans(attrs) do
     attrs
-    |> Map.take(["helpful", "accurate"])
+    |> Map.take(["address_correct", "phone_correct", "hours_correct", "description_accurate"])
     |> Enum.map(fn {k, v} ->
       case v do
 	"yes" -> {k, true}

@@ -36,7 +36,7 @@
         </tr>
         <%  end %>
   </tbody>
-</table>            
+</table>
 <%  else %>
 <p><%= gettext "No contact information is available for %{facility_name}.", facility_name: @facility.name %></p>
 <%  end %>
@@ -46,29 +46,51 @@
 
 <%= form_for @changeset, Routes.facility_feedback_path(@conn, :create, @locale, @facility), fn f -> %>
 
-  <%= label f, :helpful, gettext "Was the information about this facility helpful?" %>
+  <%= label f, :helpful, gettext "Was the street address correct?" %>
   <%= label do %>
-  <%=   radio_button f, :helpful, "yes" %>
-  <%=   gettext "Helpful" %>
+  <%=   radio_button f, :address_correct, "yes" %>
+  <%=   gettext "It was correct" %>
   <%  end %>
   <%= label do %>
-  <%=   radio_button f, :helpful, "no" %>
-  <%=   gettext "Not helpful" %>
-  <%  end %>
-
-  <%= label f, :accurate, gettext "Was the information about this facility accurate?" %>
-  <%= label do %>
-  <%=   radio_button f, :accurate, "yes" %>
-  <%=   gettext "Accurate" %>
-  <%  end %>
-  <%= label do %>
-  <%=   radio_button f, :accurate, "no" %>
-  <%=   gettext "Not accurate" %>
+  <%=   radio_button f, :address_correct, "no" %>
+  <%=   gettext "It was incorrect" %>
   <%  end %>
 
+  <%= label f, :accurate, gettext "Was the phone number correct?" %>
+  <%= label do %>
+  <%=   radio_button f, :phone_correct, "yes" %>
+  <%=   gettext "It was correct" %>
+  <%  end %>
+  <%= label do %>
+  <%=   radio_button f, :phone_correct, "no" %>
+  <%=   gettext "It was incorrect" %>
+  <%  end %>
+
+  <%= label f, :accurate, gettext "Was the description accurate?" %>
+  <%= label do %>
+  <%=   radio_button f, :description_accurate, "yes" %>
+  <%=   gettext "It was accurate" %>
+  <%  end %>
+  <%= label do %>
+  <%=   radio_button f, :description_accurate, "no" %>
+  <%=   gettext "It was inaccurate" %>
+  <%  end %>
+
+  <%= label f, :accurate, gettext "Were the correct operating hours listed?" %>
+  <%= label do %>
+  <%=   radio_button f, :hours_correct, "yes" %>
+  <%=   gettext "They were correct" %>
+  <%  end %>
+  <%= label do %>
+  <%=   radio_button f, :hours_correct, "no" %>
+  <%=   gettext "They were incorrect" %>
+  <%  end %>
+
+  <!--
   <%= textarea f, :client_comments, placeholder: gettext("Enter any other comments here.")  %>
   <%= text_input f, :client_email, placeholder: gettext("Email address") %>
   <%= telephone_input f, :client_phone, placeholder: gettext("Phone number") %>
+  -->
 
   <button type="submit"><%= gettext "Submit" %></button>
 

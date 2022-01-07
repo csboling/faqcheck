@@ -73,10 +73,14 @@ defmodule FaqcheckWeb.FormHelpers do
   end
 
   def format_bool(caption, value) do
+    caption <> ": " <> format_bool(value)
+  end
+
+  def format_bool(value) do
     case value do
-      nil -> caption <> ": " <> gettext("no answer")
-      true -> caption <> ": " <> gettext("yes")
-      false -> caption <> ": " <> gettext("no")
+      nil -> gettext("no answer")
+      true -> gettext("yes")
+      false -> gettext("no")
     end
   end
 end
