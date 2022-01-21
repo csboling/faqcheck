@@ -44,7 +44,6 @@ defmodule FaqcheckWeb.ImportMethods.SharepointEntry do
                 data: %{
                   drive_id: @drive_id,
                   entry_id: @entry.id,
-                  token: @token,
                 },
                 session: ["microsoft"]) %>
       <%  end %>

@@ -21,6 +21,17 @@ defmodule Faqcheck.Sources.Strategies.RRFB.FoodFinder do
   @impl Sources.Strategy
   def provider(), do: nil
 
+
+  @impl Sources.Strategy
+  def build_scrape_params(schedule) do
+    %{}
+  end
+
+  @impl Sources.Strategy
+  def build_scrape_session() do
+    {:ok, %{}}
+  end
+
   @impl Sources.Strategy
   def prepare_feed(_params, _session) do
     with {:ok, %HTTPoison.Response{body: body}} <- Http.get("locations", []),

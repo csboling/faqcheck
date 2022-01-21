@@ -12,12 +12,26 @@ defmodule Faqcheck.Repo do
   def versions(changeset, options \\ []) do
     changeset
     |> prepare_changes(fn cs ->
+      IO.inspect cs, label: "prepare changes for changeset"
       case cs.action do
         :insert -> attach_versions(cs, options)
+	:replace -> replace_versions(cs, options)
         :update -> update_versions(cs, options)
         _ -> changeset
       end
     end)
+  end
+
+  defp replace_versions(changeset, options) do
+    require IEx; IEx.pry
+    version_id = get_sequence_id("versions") + 1
+    initial_version = make_version_struct %{event: "replace"},
+      %{}, options
+    changeset.repo.insert(initial_version, options)
+    changeset |> change(%{
+      first_version_id: version_id,
+      current_version_id: version_id
+    })
   end
 
   defp attach_versions(changeset, options) do

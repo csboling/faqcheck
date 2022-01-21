@@ -1,4 +1,6 @@
 defmodule Faqcheck.Sources.Strategies do
+  alias Faqcheck.Repo
+
   @strategy_list [
     Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX,
     Faqcheck.Sources.Strategies.RRFB.ClientResources,
@@ -33,4 +35,38 @@ defmodule Faqcheck.Sources.Strategies do
 	{:error, error}
     end
   end
+
+  def scrape() do
+    Repo.all(Faqcheck.Sources.Schedule)
+    |> Enum.map(fn schedule ->
+      strategy = String.to_existing_atom(schedule.strategy)
+      scrape(strategy, schedule)
+    end)
+  end
+
+  def scrape(strategy, schedule) do
+    params = strategy.build_scrape_params(schedule)
+    with {:ok, session} <- strategy.build_scrape_session(),
+	 {:ok, feed} <- build_feed(strategy, params, session) do
+      feed.pages
+      |> Enum.map(fn {page, ix} ->
+	with {:ok, {page, changesets}} <- build_changesets(strategy, feed, ix) do
+          for {cs, cs_ix} <- changesets do
+	    state = Ecto.get_meta(cs.data, :state)
+	    if state == :loaded && cs.valid? && cs.changes != %{} do
+	      IO.inspect cs, label: "scraped changeset"
+	      Repo.update!(%{cs | action: :update})
+	    end
+	  end
+        else
+	  e -> raise e
+	end
+	Repo.update!(schedule |> Schedule.changeset(%{"last_import" => DateTime.utc_now}))
+      end)
+    else
+      # {:error, e} -> {:error, "couldn't complete strategy #{strategy.id}: #{e}"}
+      e -> raise e # {:error, "couldn't complete strategy #{strategy.id}"}
+    end
+  end
+
 end

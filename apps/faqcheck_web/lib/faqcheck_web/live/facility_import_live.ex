@@ -3,6 +3,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
 
   alias Faqcheck.Referrals
   alias Faqcheck.Referrals.Facility
+  alias Faqcheck.Sources
   alias Faqcheck.Sources.Strategies
 
   def title, do: "Confirm facilities to import"
@@ -31,6 +32,10 @@ defmodule FaqcheckWeb.FacilityImportLive do
         <label>
           <%= content_tag :input, "", type: "checkbox", checked: @filters.unchanged, phx_click: "toggle_filter", phx_value_filter: "unchanged" %>
 	  <%= gettext "Include unchanged items" %>
+	</label>
+	<label>
+	  <%= content_tag :input, "", type: "checkbox", checked: !is_nil(@schedule), phx_click: "toggle_schedule" %>
+	  <%= gettext "Run this import weekly" %>
 	</label>
       </div>
 
@@ -83,7 +88,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
     %{
       "locale" => locale,
       "strategy" => strategy_id,
-      "data" => data,
+      "data" => params,
       "session" => session_keys,
     },
     session,
@@ -91,7 +96,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
     socket = assign_user(socket, session)
     strategy = Strategies.get!(strategy_id)
 
-    with {:ok, feed} <- Strategies.build_feed(strategy, data, build_session(strategy, socket, session)),
+    with {:ok, feed} <- Strategies.build_feed(strategy, params, build_session(strategy, socket, session)),
       {:ok, {page, changesets}} <- Strategies.build_changesets(strategy, feed, 0) do
       {:ok,
        socket
@@ -99,6 +104,8 @@ defmodule FaqcheckWeb.FacilityImportLive do
          locale: locale,
          breadcrumb: [],
          strategy: strategy,
+         strategy_params: params,
+         schedule: Sources.get_schedule(strategy, params),
          feed: feed,
          page: page,
          changesets: changesets,
@@ -142,13 +149,10 @@ defmodule FaqcheckWeb.FacilityImportLive do
       _ -> nil
     end
 
-    IO.inspect filter, label: "toggled filter"
-    IO.inspect as_atom, label: "toggled filter as atom"
     filters = Map.put(
       socket.assigns.filters,
       as_atom,
       !Map.get(socket.assigns.filters, as_atom))
-    IO.inspect filters, label: "new filters"
 
     if is_nil(as_atom) do
       {:noreply, socket}
@@ -156,6 +160,17 @@ defmodule FaqcheckWeb.FacilityImportLive do
       newsock = assign(socket, :filters, filters)
       IO.inspect newsock.assigns.filters, label: "newly assigned filters"
       {:noreply, newsock}
+    end
+  end
+
+  def handle_event("toggle_schedule", params, socket) do
+    if !is_nil(params["value"]) do
+      {:noreply,
+       socket
+       |> assign(schedule: Sources.add_schedule(socket.assigns.strategy, socket.assigns.strategy_params))}
+    else
+      Faqcheck.Repo.delete!(socket.assigns.schedule)
+      {:noreply, socket |> assign(schedule: nil)}
     end
   end
 
