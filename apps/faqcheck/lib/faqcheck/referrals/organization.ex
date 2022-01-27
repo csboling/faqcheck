@@ -21,6 +21,5 @@ defmodule Faqcheck.Referrals.Organization do
     org
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:facilities)
-    |> Faqcheck.Repo.versions()
   end
 end

@@ -12,7 +12,6 @@ defmodule Faqcheck.Repo do
   def versions(changeset, options \\ []) do
     changeset
     |> prepare_changes(fn cs ->
-      IO.inspect cs, label: "prepare changes for changeset"
       case cs.action do
         :insert -> attach_versions(cs, options)
 	:replace -> replace_versions(cs, options)

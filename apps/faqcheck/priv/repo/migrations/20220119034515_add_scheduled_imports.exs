@@ -11,5 +11,19 @@ defmodule Faqcheck.Repo.Migrations.AddScheduledImports do
     end
 
     unique_index(:import_schedules, [:strategy, :params])
+
+    versioned_tables = [
+      :addresses,
+      :contacts,
+      :facilities,
+      :operating_hours,
+      :organizations,
+    ]
+    for t <- versioned_tables do
+      alter table(t) do
+        remove :first_version_id
+        remove :current_version_id
+      end
+    end
   end
 end

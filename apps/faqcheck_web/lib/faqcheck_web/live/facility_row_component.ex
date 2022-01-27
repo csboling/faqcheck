@@ -368,6 +368,12 @@ defmodule FacilityRowComponent do
     {:noreply, socket |> assign(changeset: changeset)}
   end
 
+  def handle_event("add_contact", _params, socket) do
+    changeset = socket.assigns.changeset
+    |> Facility.add_contact()
+    {:noreply, socket |> assign(changeset: changeset)}
+  end
+
   def handle_event("add_hours", _params, socket) do
     changeset = socket.assigns.changeset
     |> Facility.add_hours()

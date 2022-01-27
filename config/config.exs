@@ -43,7 +43,7 @@ config :phoenix, :json_library, Jason
 config :phoenix, :template_engines,
   md: PhoenixMarkdown.Engine
 
-config :paper_trail, repo: Faqcheck.Repo, strict_mode: true,
+config :paper_trail, repo: Faqcheck.Repo,
   originator: [name: :user, model: Faqcheck.Accounts.User]
 
 config :faqcheck, :openid_connect_providers,

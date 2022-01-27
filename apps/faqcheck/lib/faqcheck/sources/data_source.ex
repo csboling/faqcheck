@@ -37,6 +37,5 @@ defmodule Faqcheck.Sources.DataSource do
     source
     |> cast(attrs, [:name, :source_type, :referral_type])
     |> validate_required([:source_type, :referral_type])
-    |> Faqcheck.Repo.versions()
   end
 end

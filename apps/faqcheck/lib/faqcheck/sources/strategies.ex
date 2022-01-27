@@ -54,14 +54,13 @@ defmodule Faqcheck.Sources.Strategies do
           for {cs, cs_ix} <- changesets do
 	    state = Ecto.get_meta(cs.data, :state)
 	    if state == :loaded && cs.valid? && cs.changes != %{} do
-	      IO.inspect cs, label: "scraped changeset"
-	      Repo.update!(%{cs | action: :update})
+	      PaperTrail.update!(%{cs | action: :update})
 	    end
 	  end
         else
 	  e -> raise e
 	end
-	Repo.update!(schedule |> Schedule.changeset(%{"last_import" => DateTime.utc_now}))
+	Repo.update!(schedule |> Faqcheck.Sources.Schedule.changeset(%{"last_import" => DateTime.utc_now}))
       end)
     else
       # {:error, e} -> {:error, "couldn't complete strategy #{strategy.id}: #{e}"}

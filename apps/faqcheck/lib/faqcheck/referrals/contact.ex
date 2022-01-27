@@ -20,7 +20,6 @@ defmodule Faqcheck.Referrals.Contact do
   def changeset(contact, attrs) do
     contact
     |> cast(attrs, [:name, :phone, :email, :website])
-    |> Faqcheck.Repo.versions()
   end
 
   def split(str, field) do
