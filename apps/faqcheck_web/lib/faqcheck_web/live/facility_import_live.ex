@@ -18,7 +18,25 @@ defmodule FaqcheckWeb.FacilityImportLive do
       </p>
       <% else %>
       <h2>Importing: <%= @feed.name %></h2>
-      <h3>Import strategy: <%= @strategy.description %></h3>
+      <h3>
+        Import strategy: <%= @strategy.description %>
+	<span class="tooltip" phx-click="toggle_config">
+          &#128295;
+          <span class="tooltiptext"><%= gettext "Click to show/hide more import options" %></span>
+        </span>
+      </h3>
+      <%= if @show_config do %>
+        <div class="import_controls">
+	  <label>
+	    <%= content_tag :input, "", type: "checkbox", checked: !is_nil(@schedule), phx_click: "toggle_schedule" %>
+	    <%= gettext "Run this import weekly" %>
+	    <%= if !is_nil(@schedule) && !is_nil(@schedule.last_import) do %>
+	      <%= gettext "(last imported at %{time})", time: @schedule.last_import %>
+	    <%  end %>
+	    <button phx-click="import_now"><%= gettext "Auto-import now" %></button>
+	  </label>
+        </div>
+      <% end %>
 
       <div class="import_controls">
         <label>
@@ -32,10 +50,6 @@ defmodule FaqcheckWeb.FacilityImportLive do
         <label>
           <%= content_tag :input, "", type: "checkbox", checked: @filters.unchanged, phx_click: "toggle_filter", phx_value_filter: "unchanged" %>
 	  <%= gettext "Include unchanged items" %>
-	</label>
-	<label>
-	  <%= content_tag :input, "", type: "checkbox", checked: !is_nil(@schedule), phx_click: "toggle_schedule" %>
-	  <%= gettext "Run this import weekly" %>
 	</label>
       </div>
 
@@ -103,6 +117,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
        |> assign(
          locale: locale,
          breadcrumb: [],
+         show_config: false,
          strategy: strategy,
          strategy_params: params,
          schedule: Sources.get_schedule(strategy, params),
@@ -141,6 +156,10 @@ defmodule FaqcheckWeb.FacilityImportLive do
     end
   end
 
+  def handle_event("toggle_config", params, socket) do
+    {:noreply, socket |> assign(show_config: !socket.assigns.show_config)}
+  end
+
   def handle_event("toggle_filter", %{"filter" => filter}, socket) do
     as_atom = case filter do
       "new" -> :new
@@ -172,6 +191,11 @@ defmodule FaqcheckWeb.FacilityImportLive do
       Faqcheck.Repo.delete!(socket.assigns.schedule)
       {:noreply, socket |> assign(schedule: nil)}
     end
+  end
+
+  def handle_event("import_now", _params, socket) do
+    Strategies.scrape(socket.assigns.strategy, socket.assigns.schedule)
+    {:noreply, socket}
   end
 
   def handle_event("save_all", _params, socket) do
