@@ -38,6 +38,7 @@ defmodule Faqcheck.Sources.Strategies do
 
   def scrape() do
     Repo.all(Faqcheck.Sources.Schedule)
+    |> Stream.filter(fn schedule -> schedule.enabled end)
     |> Enum.map(fn schedule ->
       strategy = String.to_existing_atom(schedule.strategy)
       scrape(strategy, schedule)
@@ -53,8 +54,11 @@ defmodule Faqcheck.Sources.Strategies do
 	with {:ok, {page, changesets}} <- build_changesets(strategy, feed, ix) do
           for {cs, cs_ix} <- changesets do
 	    state = Ecto.get_meta(cs.data, :state)
-	    if state == :loaded && cs.valid? && cs.changes != %{} do
-	      PaperTrail.update!(%{cs | action: :update})
+	    if cs.valid? && cs.changes != %{} do
+	      case state do
+		:loaded -> PaperTrail.update!(%{cs | action: :update})
+                :built -> PaperTrail.insert!(%{cs | action: :insert})
+	      end
 	    end
 	  end
         else

@@ -94,7 +94,13 @@ defmodule Faqcheck.Sources.Strategies.RRFB.FoodFinder do
   def location_to_changeset(location) do
     name = location["name"]
     Referrals.get_or_create_facility(name)
-    |> Facility.changeset(%{})
+    |> Facility.changeset(%{
+      "keywords" => [
+        %{"keyword" => "food"},
+        %{"keyword" => "food box"},
+        %{"keyword" => "food pantry"},
+      ]
+    })
     |> Sources.try_process(:name, name)
     |> Sources.try_process(
       :contacts,

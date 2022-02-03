@@ -99,6 +99,7 @@ defmodule Faqcheck.Sources do
   def add_schedule(strategy, params) do
     Repo.insert!(%Schedule{
       strategy: Atom.to_string(strategy),
+      enabled: true,
       params: params,
     })
   end

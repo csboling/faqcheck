@@ -6,6 +6,7 @@ defmodule Faqcheck.Sources.Schedule do
 
   schema "import_schedules" do
     field :strategy, :string
+    field :enabled, :boolean
     field :params, :map
     field :last_import, :utc_datetime
 
@@ -14,6 +15,6 @@ defmodule Faqcheck.Sources.Schedule do
 
   def changeset(schedule, attrs) do
     schedule
-    |> cast(attrs, [:strategy, :params, :last_import])
+    |> cast(attrs, [:strategy, :enabled, :params, :last_import])
   end
 end

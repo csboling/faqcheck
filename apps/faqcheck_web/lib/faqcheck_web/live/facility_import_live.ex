@@ -4,6 +4,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
   alias Faqcheck.Referrals
   alias Faqcheck.Referrals.Facility
   alias Faqcheck.Sources
+  alias Faqcheck.Sources.Schedule
   alias Faqcheck.Sources.Strategies
 
   def title, do: "Confirm facilities to import"
@@ -28,9 +29,9 @@ defmodule FaqcheckWeb.FacilityImportLive do
       <%= if @show_config do %>
         <div class="import_controls">
 	  <label>
-	    <%= content_tag :input, "", type: "checkbox", checked: !is_nil(@schedule), phx_click: "toggle_schedule" %>
+	    <%= content_tag :input, "", type: "checkbox", checked: @schedule.enabled, phx_click: "toggle_schedule" %>
 	    <%= gettext "Run this import weekly" %>
-	    <%= if !is_nil(@schedule) && !is_nil(@schedule.last_import) do %>
+	    <%= if !is_nil(@schedule.last_import) do %>
 	      <%= gettext "(last imported at %{time})", time: @schedule.last_import %>
 	    <%  end %>
 	    <button phx-click="import_now"><%= gettext "Auto-import now" %></button>
@@ -120,7 +121,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
          show_config: false,
          strategy: strategy,
          strategy_params: params,
-         schedule: Sources.get_schedule(strategy, params),
+         schedule: Sources.get_schedule(strategy, params) || Sources.add_schedule(strategy, params),
          feed: feed,
          page: page,
          changesets: changesets,
@@ -184,12 +185,15 @@ defmodule FaqcheckWeb.FacilityImportLive do
 
   def handle_event("toggle_schedule", params, socket) do
     if !is_nil(params["value"]) do
-      {:noreply,
-       socket
-       |> assign(schedule: Sources.add_schedule(socket.assigns.strategy, socket.assigns.strategy_params))}
+      schedule = socket.assigns.schedule
+      |> Schedule.changeset(%{"enabled" => true})
+      |> Faqcheck.Repo.update!()
+      {:noreply, socket |> assign(schedule: schedule)}
     else
-      Faqcheck.Repo.delete!(socket.assigns.schedule)
-      {:noreply, socket |> assign(schedule: nil)}
+      schedule = socket.assigns.schedule
+      |> Schedule.changeset(%{"enabled" => false})
+      |> Faqcheck.Repo.update!()
+      {:noreply, socket |> assign(schedule: schedule)}
     end
   end
 
