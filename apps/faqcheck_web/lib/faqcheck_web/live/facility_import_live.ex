@@ -34,7 +34,11 @@ defmodule FaqcheckWeb.FacilityImportLive do
 	    <%= if !is_nil(@schedule.last_import) do %>
 	      <%= gettext "(last imported at %{time})", time: @schedule.last_import %>
 	    <%  end %>
-	    <button phx-click="import_now"><%= gettext "Auto-import now" %></button>
+	    <%= if @import_started do %>
+	      <%= gettext "Currently auto-importing" %>
+            <%= else %>
+              <button phx-click="import_now"><%= gettext "Auto-import now" %></button>
+            <% end %>
 	  </label>
         </div>
       <% end %>
@@ -122,6 +126,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
          strategy: strategy,
          strategy_params: params,
          schedule: Sources.get_schedule(strategy, params) || Sources.add_schedule(strategy, params),
+         import_started: false,
          feed: feed,
          page: page,
          changesets: changesets,
@@ -198,8 +203,17 @@ defmodule FaqcheckWeb.FacilityImportLive do
   end
 
   def handle_event("import_now", _params, socket) do
-    Strategies.scrape(socket.assigns.strategy, socket.assigns.schedule)
-    {:noreply, socket}
+    pid = self()
+    Task.async(fn ->
+      Strategies.scrape(socket.assigns.strategy, socket.assigns.schedule)
+      :import_complete
+    end)
+    {:noreply, socket |> assign(import_started: true)}
+  end
+
+  # TODO: this is not very specific about the sender, but it's the Task.async above
+  def handle_info(_, socket) do
+    {:noreply, socket |> assign(import_started: false)}
   end
 
   def handle_event("save_all", _params, socket) do
