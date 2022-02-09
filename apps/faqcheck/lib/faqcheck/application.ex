@@ -14,6 +14,7 @@ defmodule Faqcheck.Application do
       # Start a worker by calling: Faqcheck.Worker.start_link(arg)
       # {Faqcheck.Worker, arg}
       {OpenIDConnect.Worker, Application.get_env(:faqcheck, :openid_connect_providers)},
+      Faqcheck.Scheduler,
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: Faqcheck.Supervisor)

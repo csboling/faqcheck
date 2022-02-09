@@ -13,6 +13,10 @@ defmodule Faqcheck.Repo.Migrations.AddScheduledImports do
 
     unique_index(:import_schedules, [:strategy, :params])
 
+    alter_table(:facility) do
+      modify :name, :text
+    end
+
     versioned_tables = [
       :addresses,
       :contacts,

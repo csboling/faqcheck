@@ -13,6 +13,11 @@ use Mix.Config
 config :faqcheck,
   ecto_repos: [Faqcheck.Repo]
 
+config :faqcheck, Faqcheck.Scheduler,
+  jobs: [
+    {"*/10 * * * *", {Faqcheck.Sources.Strategies, :scrape, []}},
+  ]
+
 config :faqcheck_web,
   ecto_repos: [Faqcheck.Repo],
   generators: [context_app: :faqcheck]

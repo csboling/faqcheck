@@ -36,8 +36,20 @@ defmodule Faqcheck.Referrals.Facility do
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:address)
     |> cast_assoc(:hours)
-    |> cast_assoc(:keywords)
+    |> put_assoc(:keywords, parse_keywords(attrs))
+    # |> cast_assoc(:keywords)
     |> cast_assoc(:contacts)
+  end
+
+  def parse_keywords(params) do
+    (params["keywords"] || [])
+    |> Enum.map(fn kw -> kw["keyword"] end)
+    |> Enum.map(&get_or_insert_keyword/1)
+  end
+
+  def get_or_insert_keyword(name) do
+    Faqcheck.Repo.get_by(Faqcheck.Referrals.Keyword, keyword: name) ||
+      Faqcheck.Repo.insert!(%Faqcheck.Referrals.Keyword{keyword: name})
   end
 
   def add_keyword(fac) do

@@ -53,13 +53,13 @@ defmodule Faqcheck.Sources.Strategies do
       |> Enum.map(fn {page, ix} ->
 	with {:ok, {page, changesets}} <- build_changesets(strategy, feed, ix) do
           for {cs, cs_ix} <- changesets do
-	    state = Ecto.get_meta(cs.data, :state)
-	    if cs.valid? && cs.changes != %{} do
-	      case state do
-		:loaded -> PaperTrail.update!(%{cs | action: :update})
-                :built -> PaperTrail.insert!(%{cs | action: :insert})
-	      end
-	    end
+            if cs.valid? && cs.changes != %{} do
+	      with {:ok, inserted} <- upsert(cs) do
+                record_inserted(cs)
+	      else
+	        e -> record_error(cs, e)
+              end
+            end
 	  end
         else
 	  e -> raise e
@@ -70,6 +70,21 @@ defmodule Faqcheck.Sources.Strategies do
       # {:error, e} -> {:error, "couldn't complete strategy #{strategy.id}: #{e}"}
       e -> raise e # {:error, "couldn't complete strategy #{strategy.id}"}
     end
+  end
+
+  defp upsert(cs) do
+   state = Ecto.get_meta(cs.data, :state)
+   case state do
+      :loaded -> PaperTrail.update(%{cs | action: :update})
+      :built -> PaperTrail.insert(%{cs | action: :insert})
+    end
+  end
+
+  defp record_inserted(_cs) do
+  end
+
+  defp record_error(_cs, e) do
+    IO.inspect e, label: "error during upsert"
   end
 
 end
