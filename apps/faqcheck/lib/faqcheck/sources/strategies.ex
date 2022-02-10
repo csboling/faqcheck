@@ -1,5 +1,8 @@
 defmodule Faqcheck.Sources.Strategies do
+  require Logger
+
   alias Faqcheck.Repo
+  alias Faqcheck.Sources.Microsoft.API.Sharepoint
 
   @strategy_list [
     Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX,
@@ -49,26 +52,39 @@ defmodule Faqcheck.Sources.Strategies do
     params = strategy.build_scrape_params(schedule)
     with {:ok, session} <- strategy.build_scrape_session(),
 	 {:ok, feed} <- build_feed(strategy, params, session) do
-      feed.pages
-      |> Enum.map(fn {page, ix} ->
+      header = "facility_id,facility_name,action,status,error"
+      report_rows = feed.pages
+      |> Enum.flat_map(fn {page, ix} ->
 	with {:ok, {page, changesets}} <- build_changesets(strategy, feed, ix) do
-          for {cs, cs_ix} <- changesets do
-            if cs.valid? && cs.changes != %{} do
-	      with {:ok, inserted} <- upsert(cs) do
-                record_inserted(cs)
-	      else
-	        e -> record_error(cs, e)
+	  changesets
+	  |> Stream.filter(fn {cs, cs_ix} -> cs.valid? && cs.changes != %{} end)
+	  |> Enum.map(fn {cs, cs_ix} ->
+	    try do
+              with {:ok, inserted} <- upsert(cs) do
+                format_inserted(cs)
+              else
+                e -> format_error(cs, e)
               end
+            rescue
+              e -> format_error(cs, e)
             end
-	  end
+	  end)
         else
 	  e -> raise e
 	end
-	Repo.update!(schedule |> Faqcheck.Sources.Schedule.changeset(%{"last_import" => DateTime.utc_now}))
       end)
+      now = DateTime.utc_now()
+      now_str = Calendar.strftime(DateTime.utc_now, "%Y-%m-%d_%H%M%SUTC")
+      Repo.update!(schedule |> Faqcheck.Sources.Schedule.changeset(%{"last_import" => now}))
+      report = Enum.reduce(report_rows, header, fn row, acc -> acc <> "\n" <> row end)
+      filename = "#{now_str}_#{strategy.id}"
+      if Enum.empty?(report_rows) do
+	filename = filename <> "_no_changes"
+      end
+      filename = filename <> ".csv"
+      save_report(report, filename)
     else
-      # {:error, e} -> {:error, "couldn't complete strategy #{strategy.id}: #{e}"}
-      e -> raise e # {:error, "couldn't complete strategy #{strategy.id}"}
+      e -> raise e
     end
   end
 
@@ -80,11 +96,50 @@ defmodule Faqcheck.Sources.Strategies do
     end
   end
 
-  defp record_inserted(_cs) do
+  defp format_inserted(cs) do
+    [
+      cs.data.id,
+      cs.data.name,
+      action_name(cs),
+      "OK",
+      ""
+    ]
+    |> Stream.map(fn s -> "\"#{s}\"" end)
+    |> Enum.join(",")
   end
 
-  defp record_error(_cs, e) do
-    IO.inspect e, label: "error during upsert"
+  defp format_error(cs, e) do
+    [
+      Ecto.Changeset.get_field(cs, :id),
+      Ecto.Changeset.get_field(cs, :name),
+      action_name(cs),
+      "ERROR",
+      inspect(e),
+    ]
+    |> Stream.map(fn s -> "\"#{s}\"" end)
+    |> Enum.join(",")
   end
 
+  defp action_name(cs) do
+    case Ecto.get_meta(cs.data, :state) do
+      :loaded -> "update"
+      :built -> "create"
+    end
+  end
+
+  defp save_report(report, filename) do
+    Logger.info "saving import report: #{filename}"
+    token_params = %{
+      grant_type: "client_credentials",
+      scope: "https://graph.microsoft.com/.default"
+    }
+    with {:ok, %{"access_token" => token}} <- OpenIDConnect.fetch_tokens(:microsoft, token_params) do
+      config = Application.get_env(:faqcheck, :import_report_target)
+      drive_id = Keyword.get(config, :drive_id)
+      folder_id = Keyword.get(config, :folder_id)
+      response = Sharepoint.create_file(token, drive_id, folder_id, filename, "text/csv", report)
+    else
+      error -> raise error
+    end
+  end
 end
