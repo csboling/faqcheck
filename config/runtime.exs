@@ -29,7 +29,7 @@ if config_env() == :prod do
 
   report_drive_id = ProdHelpers.load_var "SHAREPOINT_REPORTS_DRIVE",
     "This is the Sharepoint drive ID where reports will be saved"
-  report_folder_id = ProdHelpers.load_var "SHAREPOINT_REPORTS_FOLDER"
+  report_folder_id = ProdHelpers.load_var "SHAREPOINT_REPORTS_FOLDER",
     "This is the Sharepoint folder ID where reports will be saved"
   config :faqcheck, :import_report_target,
     [
