@@ -290,7 +290,7 @@ defmodule FacilityRowComponent do
                   </td>
                   <td>
                     <%= if c.website do %>
-                    <%= link c.website, to: c.website %>
+                    <a href="<%= c.website %>"><%= c.website %></a>
                     <%  end %>
                   </td>
                   <td>

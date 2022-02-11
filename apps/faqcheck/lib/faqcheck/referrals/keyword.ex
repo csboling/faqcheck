@@ -17,13 +17,6 @@ defmodule Faqcheck.Referrals.Keyword do
   def split(kws) do
     kws
     |> String.split(";", trim: true)
-    # |> Enum.map(&find/1)
+    |> Enum.map(fn word -> %{keyword: String.trim(word)} end)
   end
-
-  # def find(word) do
-  #   case Faqcheck.Repo.one(from t in Faqcheck.Referrals.Keyword, where: t.keyword == ^word) do
-  #     nil -> %{keyword: word}
-  #     kw -> %{id: kw.id, keyword: word}
-  #   end
-  # end
 end

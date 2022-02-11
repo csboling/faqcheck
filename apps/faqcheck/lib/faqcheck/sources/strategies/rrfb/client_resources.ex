@@ -88,11 +88,6 @@ defmodule Faqcheck.Sources.Strategies.RRFB.ClientResources do
     |> Facility.changeset(%{})
     |> Sources.try_process(:name, name)
     |> Sources.try_process_collection(
-      :keywords,
-      Enum.at(row, 2),
-      &Tag.split/1,
-      [:keyword])
-    |> Sources.try_process_collection(
       :contacts,
       [
         Enum.at(row, 3),
@@ -115,5 +110,8 @@ defmodule Faqcheck.Sources.Strategies.RRFB.ClientResources do
     |> Sources.try_process(:address, %{street_address: Enum.at(row, 7)})
     |> Sources.try_process(:description, Enum.at(row, 8))
     |> Facility.changeset(%{})
+    |> Ecto.Changeset.put_assoc(
+       :keywords,
+       Facility.parse_keywords(%{keywords: Tag.split(Enum.at(row, 2))}))
   end
 end

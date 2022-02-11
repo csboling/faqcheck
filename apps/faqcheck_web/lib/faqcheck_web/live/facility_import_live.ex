@@ -30,7 +30,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
         <div class="import_controls">
 	  <label>
 	    <%= content_tag :input, "", type: "checkbox", checked: @schedule.enabled, phx_click: "toggle_schedule" %>
-	    <%= gettext "Run this import weekly" %>
+	    <%= gettext "Run this import every two weeks" %>
 	    <%= if !is_nil(@schedule.last_import) do %>
 	      <%= gettext "(last imported at %{time})", time: @schedule.last_import %>
 	    <%  end %>

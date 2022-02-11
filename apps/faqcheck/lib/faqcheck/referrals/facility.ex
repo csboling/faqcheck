@@ -36,14 +36,13 @@ defmodule Faqcheck.Referrals.Facility do
     |> cast(attrs, [:name, :description])
     |> cast_assoc(:address)
     |> cast_assoc(:hours)
-    |> put_assoc(:keywords, parse_keywords(attrs))
-    # |> cast_assoc(:keywords)
+    |> cast_assoc(:keywords)
     |> cast_assoc(:contacts)
   end
 
   def parse_keywords(params) do
-    (params["keywords"] || [])
-    |> Enum.map(fn kw -> kw["keyword"] end)
+    (Map.get(params, "keywords") || Map.get(params, :keywords) || [])
+    |> Enum.map(fn kw -> Map.get(kw, "keyword") || Map.get(kw, :keyword) end)
     |> Enum.map(&get_or_insert_keyword/1)
   end
 

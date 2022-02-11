@@ -52,7 +52,7 @@ defmodule Faqcheck.Sources.Strategies do
     params = strategy.build_scrape_params(schedule)
     with {:ok, session} <- strategy.build_scrape_session(),
 	 {:ok, feed} <- build_feed(strategy, params, session) do
-      header = "facility_id,facility_name,action,status,error"
+      header = "facility_id,facility_name,action,status,error,changeset"
       report_rows = feed.pages
       |> Enum.flat_map(fn {page, ix} ->
 	with {:ok, {page, changesets}} <- build_changesets(strategy, feed, ix) do
@@ -96,13 +96,18 @@ defmodule Faqcheck.Sources.Strategies do
     end
   end
 
+  defp format_object(object) do
+    String.replace(inspect(object), "\"", "\"\"")
+  end
+
   defp format_inserted(cs) do
     [
       cs.data.id,
       cs.data.name,
       action_name(cs),
       "OK",
-      ""
+      "",
+      format_object(cs),
     ]
     |> Stream.map(fn s -> "\"#{s}\"" end)
     |> Enum.join(",")
@@ -114,7 +119,7 @@ defmodule Faqcheck.Sources.Strategies do
       Ecto.Changeset.get_field(cs, :name),
       action_name(cs),
       "ERROR",
-      inspect(e),
+      format_object(e),
     ]
     |> Stream.map(fn s -> "\"#{s}\"" end)
     |> Enum.join(",")

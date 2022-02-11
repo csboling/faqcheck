@@ -15,7 +15,8 @@ config :faqcheck,
 
 config :faqcheck, Faqcheck.Scheduler,
   jobs: [
-    {"*/10 * * * *", {Faqcheck.Sources.Strategies, :scrape, []}},
+    # run at midnight on the 1st and the 15th of every month
+    {"0 0 1,15 * *", {Faqcheck.Sources.Strategies, :scrape, []}},
   ]
 
 config :faqcheck_web,

@@ -13,7 +13,7 @@ defmodule Faqcheck.Repo.Migrations.AddScheduledImports do
 
     unique_index(:import_schedules, [:strategy, :params])
 
-    alter_table(:facility) do
+    alter table(:facilities) do
       modify :name, :text
     end
 
