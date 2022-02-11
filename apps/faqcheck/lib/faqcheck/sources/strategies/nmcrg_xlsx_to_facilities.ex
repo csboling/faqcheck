@@ -15,6 +15,17 @@ defmodule Faqcheck.Sources.Strategies.NMCommunityResourceGuideXLSX do
   @impl Sources.Strategy
   def provider(), do: nil
 
+
+  @impl Sources.Strategy
+  def build_scrape_params(schedule) do
+    %{}
+  end
+
+  @impl Sources.Strategy
+  def build_scrape_session() do
+    {:ok, %{}}
+  end
+
   @impl Sources.Strategy
   def prepare_feed(%{"upload_id" => upload_id}, _session) do
     upload = Sources.get_upload!(upload_id)

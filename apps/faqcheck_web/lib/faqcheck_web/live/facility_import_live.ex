@@ -3,6 +3,8 @@ defmodule FaqcheckWeb.FacilityImportLive do
 
   alias Faqcheck.Referrals
   alias Faqcheck.Referrals.Facility
+  alias Faqcheck.Sources
+  alias Faqcheck.Sources.Schedule
   alias Faqcheck.Sources.Strategies
 
   def title, do: "Confirm facilities to import"
@@ -17,7 +19,29 @@ defmodule FaqcheckWeb.FacilityImportLive do
       </p>
       <% else %>
       <h2>Importing: <%= @feed.name %></h2>
-      <h3>Import strategy: <%= @strategy.description %></h3>
+      <h3>
+        Import strategy: <%= @strategy.description %>
+	<span class="tooltip" phx-click="toggle_config">
+          &#128295;
+          <span class="tooltiptext"><%= gettext "Click to show/hide more import options" %></span>
+        </span>
+      </h3>
+      <%= if @show_config do %>
+        <div class="import_controls">
+	  <label>
+	    <%= content_tag :input, "", type: "checkbox", checked: @schedule.enabled, phx_click: "toggle_schedule" %>
+	    <%= gettext "Run this import every two weeks" %>
+	    <%= if !is_nil(@schedule.last_import) do %>
+	      <%= gettext "(last imported at %{time})", time: @schedule.last_import %>
+	    <%  end %>
+	    <%= if @import_started do %>
+	      <%= gettext "Currently auto-importing" %>
+            <%= else %>
+              <button phx-click="import_now"><%= gettext "Auto-import now" %></button>
+            <% end %>
+	  </label>
+        </div>
+      <% end %>
 
       <div class="import_controls">
         <label>
@@ -83,7 +107,7 @@ defmodule FaqcheckWeb.FacilityImportLive do
     %{
       "locale" => locale,
       "strategy" => strategy_id,
-      "data" => data,
+      "data" => params,
       "session" => session_keys,
     },
     session,
@@ -91,14 +115,18 @@ defmodule FaqcheckWeb.FacilityImportLive do
     socket = assign_user(socket, session)
     strategy = Strategies.get!(strategy_id)
 
-    with {:ok, feed} <- Strategies.build_feed(strategy, data, build_session(strategy, socket, session)),
+    with {:ok, feed} <- Strategies.build_feed(strategy, params, build_session(strategy, socket, session)),
       {:ok, {page, changesets}} <- Strategies.build_changesets(strategy, feed, 0) do
       {:ok,
        socket
        |> assign(
          locale: locale,
          breadcrumb: [],
+         show_config: false,
          strategy: strategy,
+         strategy_params: params,
+         schedule: Sources.get_schedule(strategy, params) || Sources.add_schedule(strategy, params),
+         import_started: false,
          feed: feed,
          page: page,
          changesets: changesets,
@@ -134,6 +162,10 @@ defmodule FaqcheckWeb.FacilityImportLive do
     end
   end
 
+  def handle_event("toggle_config", params, socket) do
+    {:noreply, socket |> assign(show_config: !socket.assigns.show_config)}
+  end
+
   def handle_event("toggle_filter", %{"filter" => filter}, socket) do
     as_atom = case filter do
       "new" -> :new
@@ -142,13 +174,10 @@ defmodule FaqcheckWeb.FacilityImportLive do
       _ -> nil
     end
 
-    IO.inspect filter, label: "toggled filter"
-    IO.inspect as_atom, label: "toggled filter as atom"
     filters = Map.put(
       socket.assigns.filters,
       as_atom,
       !Map.get(socket.assigns.filters, as_atom))
-    IO.inspect filters, label: "new filters"
 
     if is_nil(as_atom) do
       {:noreply, socket}
@@ -157,6 +186,34 @@ defmodule FaqcheckWeb.FacilityImportLive do
       IO.inspect newsock.assigns.filters, label: "newly assigned filters"
       {:noreply, newsock}
     end
+  end
+
+  def handle_event("toggle_schedule", params, socket) do
+    if !is_nil(params["value"]) do
+      schedule = socket.assigns.schedule
+      |> Schedule.changeset(%{"enabled" => true})
+      |> Faqcheck.Repo.update!()
+      {:noreply, socket |> assign(schedule: schedule)}
+    else
+      schedule = socket.assigns.schedule
+      |> Schedule.changeset(%{"enabled" => false})
+      |> Faqcheck.Repo.update!()
+      {:noreply, socket |> assign(schedule: schedule)}
+    end
+  end
+
+  def handle_event("import_now", _params, socket) do
+    pid = self()
+    Task.async(fn ->
+      Strategies.scrape(socket.assigns.strategy, socket.assigns.schedule)
+      :import_complete
+    end)
+    {:noreply, socket |> assign(import_started: true)}
+  end
+
+  # TODO: this is not very specific about the sender, but it's the Task.async above
+  def handle_info(_, socket) do
+    {:noreply, socket |> assign(import_started: false)}
   end
 
   def handle_event("save_all", _params, socket) do

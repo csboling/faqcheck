@@ -13,6 +13,12 @@ use Mix.Config
 config :faqcheck,
   ecto_repos: [Faqcheck.Repo]
 
+config :faqcheck, Faqcheck.Scheduler,
+  jobs: [
+    # run at midnight on the 1st and the 15th of every month
+    {"0 0 1,15 * *", {Faqcheck.Sources.Strategies, :scrape, []}},
+  ]
+
 config :faqcheck_web,
   ecto_repos: [Faqcheck.Repo],
   generators: [context_app: :faqcheck]
@@ -43,7 +49,7 @@ config :phoenix, :json_library, Jason
 config :phoenix, :template_engines,
   md: PhoenixMarkdown.Engine
 
-config :paper_trail, repo: Faqcheck.Repo, strict_mode: true,
+config :paper_trail, repo: Faqcheck.Repo,
   originator: [name: :user, model: Faqcheck.Accounts.User]
 
 config :faqcheck, :openid_connect_providers,

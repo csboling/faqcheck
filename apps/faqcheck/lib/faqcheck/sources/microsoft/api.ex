@@ -25,9 +25,9 @@ defmodule Faqcheck.Sources.Microsoft.API do
       {:ok, value} -> {:ok, value}
     end
   end
-  
+
   def call(token, url, shape) do
-    Logger.info "call Microsoft Graph: #{url}"
+    Logger.info "call Microsoft Graph: GET #{url}"
     case Http.get(url, [token]) do
       {:ok, %HTTPoison.Response{body: body}} ->
         # Logger.info "Microsoft Graph response: #{body}"
@@ -40,6 +40,15 @@ defmodule Faqcheck.Sources.Microsoft.API do
     case call(token, url, shape) do
       {:ok, result} -> result
       {:error, err} -> raise Faqcheck.Sources.Microsoft.APIError, url: url, details: err
+    end
+  end
+
+  def upload(token, url, content_type, body) do
+    Logger.info "call Microsoft Graph: PUT #{url}"
+    # case HTTPoison.put "https://graph.microsoft.com/v1.0" <> url, body, [{"Content-Type", "text/csv"}, {"Authorization", "Bearer #{token}"}] do # Http.put(url, body, [token, content_type]) do
+    case Http.put(url, body, [token, content_type]) do
+      {:ok, %HTTPoison.Response{body: body}} -> body
+      {:error, error} -> {:error, {"HTTP", error}}
     end
   end
 end

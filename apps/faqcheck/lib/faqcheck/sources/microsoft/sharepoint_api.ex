@@ -37,4 +37,11 @@ defmodule Faqcheck.Sources.Microsoft.API.Sharepoint do
       "/drives/#{drive_id}/items/#{item_id}",
       %Graph.Entry{type: :item}
   end
+
+  def create_file(token, drive_id, folder_id, filename, content_type, contents) do
+    API.upload token,
+      "/drives/#{drive_id}/items/#{folder_id}:/#{URI.encode(filename)}:/content",
+      content_type,
+      contents
+  end
 end

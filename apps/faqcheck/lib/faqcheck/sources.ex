@@ -1,7 +1,10 @@
 defmodule Faqcheck.Sources do
+  import Ecto.Query
+
   alias Faqcheck.Repo
   alias Faqcheck.Sources.Upload
   alias Faqcheck.Sources.DataSource
+  alias Faqcheck.Sources.Schedule
 
   defmodule Feed do
     defstruct [:name, :params, :session, :pages]
@@ -85,5 +88,19 @@ defmodule Faqcheck.Sources do
 	end
       end)
     end)
+  end
+
+  def get_schedule(strategy, params) do
+    strategy_name = Atom.to_string(strategy)
+    Repo.one from s in Schedule,
+      where: s.strategy == ^strategy_name and s.params == ^params
+  end
+
+  def add_schedule(strategy, params) do
+    Repo.insert!(%Schedule{
+      strategy: Atom.to_string(strategy),
+      enabled: true,
+      params: params,
+    })
   end
 end

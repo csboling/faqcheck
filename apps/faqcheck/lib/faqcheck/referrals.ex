@@ -63,7 +63,7 @@ defmodule Faqcheck.Referrals do
   def create_organization(attrs \\ %{}) do
     %Organization{}
     |> Organization.changeset(attrs)
-    |> Repo.insert()
+    |> PaperTrail.insert()
   end
 
   @doc """
@@ -81,7 +81,7 @@ defmodule Faqcheck.Referrals do
   def update_organization(%Organization{} = organization, attrs) do
     organization
     |> Organization.changeset(attrs)
-    |> Repo.update()
+    |> PaperTrail.update()
   end
 
   @doc """
@@ -98,7 +98,7 @@ defmodule Faqcheck.Referrals do
   """
   def delete_organization(%Organization{} = organization) do
     organization
-    |> Repo.delete()
+    |> PaperTrail.delete()
   end
 
   @doc """
@@ -155,8 +155,8 @@ defmodule Faqcheck.Referrals do
 
   def upsert_facility(changeset) do
     case Ecto.get_meta(changeset.data, :state) do
-      :loaded -> Repo.update!(%{changeset | action: :update})
-      :built -> Repo.insert!(%{changeset | action: :insert})
+      :loaded -> PaperTrail.update!(%{changeset | action: :update})
+      :built -> PaperTrail.insert!(%{changeset | action: :insert})
     end
   end
 
@@ -167,8 +167,8 @@ defmodule Faqcheck.Referrals do
     |> Ecto.Changeset.put_assoc(:keywords, keywords)
 
     case Ecto.get_meta(facility, :state) do
-      :loaded -> Repo.update!(changeset)
-      :built -> Repo.insert!(changeset)
+      :loaded -> PaperTrail.update!(changeset)
+      :built -> PaperTrail.insert!(changeset)
     end
   end
 
@@ -207,6 +207,6 @@ defmodule Faqcheck.Referrals do
   def save_feedback(facility_id, params) do
     %Feedback{facility_id: facility_id}
     |> Feedback.changeset(params)
-    |> Repo.insert()
+    |> PaperTrail.insert()
   end
 end

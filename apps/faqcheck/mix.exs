@@ -51,6 +51,7 @@ defmodule Faqcheck.MixProject do
       {:pbkdf2_elixir, "~> 1.4.1"},
       {:phoenix_pubsub, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
+      {:quantum, "~> 3.4"},
       {:quarto, "~> 1.1.5"},
       {:xlsxir, "~> 1.6.4"},
     ]

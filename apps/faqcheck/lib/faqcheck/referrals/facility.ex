@@ -38,8 +38,17 @@ defmodule Faqcheck.Referrals.Facility do
     |> cast_assoc(:hours)
     |> cast_assoc(:keywords)
     |> cast_assoc(:contacts)
-    # |> validate_required([:name, :description])
-    |> Faqcheck.Repo.versions()
+  end
+
+  def parse_keywords(params) do
+    (Map.get(params, "keywords") || Map.get(params, :keywords) || [])
+    |> Enum.map(fn kw -> Map.get(kw, "keyword") || Map.get(kw, :keyword) end)
+    |> Enum.map(&get_or_insert_keyword/1)
+  end
+
+  def get_or_insert_keyword(name) do
+    Faqcheck.Repo.get_by(Faqcheck.Referrals.Keyword, keyword: name) ||
+      Faqcheck.Repo.insert!(%Faqcheck.Referrals.Keyword{keyword: name})
   end
 
   def add_keyword(fac) do
@@ -48,6 +57,15 @@ defmodule Faqcheck.Referrals.Facility do
     cs
     |> changeset(%{
       keywords: Enum.map(keywords, &Map.from_struct/1) ++ [%{}]
+    })
+  end
+
+  def add_contact(fac) do
+    cs = changeset(fac, %{})
+    contacts = get_field(cs, :contacts)
+    cs
+    |> changeset(%{
+      contacts: Enum.map(contacts, &Map.from_struct/1) ++ [%{}]
     })
   end
 

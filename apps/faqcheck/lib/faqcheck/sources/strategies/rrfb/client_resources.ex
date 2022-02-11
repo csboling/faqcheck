@@ -20,14 +20,33 @@ defmodule Faqcheck.Sources.Strategies.RRFB.ClientResources do
   def provider(), do: "microsoft"
 
   @impl Sources.Strategy
+  def build_scrape_params(schedule) do
+    schedule.params
+  end
+
+  @impl Sources.Strategy
+  def build_scrape_session() do
+    token_params = %{
+      grant_type: "client_credentials",
+      scope: "https://graph.microsoft.com/.default"
+    }
+    with {:ok, %{"access_token" => token}} <- OpenIDConnect.fetch_tokens(:microsoft, token_params) do
+      {:ok, %{"microsoft" => token}}
+    else
+      error -> error
+    end
+  end
+
+  @impl Sources.Strategy
   def prepare_feed(
-    %{"drive_id" => drive_id, "entry_id" => entry_id},
+    params = %{"drive_id" => drive_id, "entry_id" => entry_id},
     %{"microsoft" => token}) do
     with {:ok, entry} <- API.Sharepoint.get_item(token, drive_id, entry_id),
          {:ok, worksheets} <- API.Excel.list_worksheets(token, drive_id, entry_id) do
       {:ok, %Sources.Feed{
         name: entry.name,
         pages: worksheets,
+	params: params,
       }}
     else
       error -> error
@@ -69,11 +88,6 @@ defmodule Faqcheck.Sources.Strategies.RRFB.ClientResources do
     |> Facility.changeset(%{})
     |> Sources.try_process(:name, name)
     |> Sources.try_process_collection(
-      :keywords,
-      Enum.at(row, 2),
-      &Tag.split/1,
-      [:keyword])
-    |> Sources.try_process_collection(
       :contacts,
       [
         Enum.at(row, 3),
@@ -96,5 +110,8 @@ defmodule Faqcheck.Sources.Strategies.RRFB.ClientResources do
     |> Sources.try_process(:address, %{street_address: Enum.at(row, 7)})
     |> Sources.try_process(:description, Enum.at(row, 8))
     |> Facility.changeset(%{})
+    |> Ecto.Changeset.put_assoc(
+       :keywords,
+       Facility.parse_keywords(%{keywords: Tag.split(Enum.at(row, 2))}))
   end
 end

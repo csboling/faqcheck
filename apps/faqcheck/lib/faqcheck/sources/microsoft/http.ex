@@ -10,4 +10,8 @@ defmodule Faqcheck.Sources.Microsoft.Http do
   def process_request_headers([token]) do
     ["Authorization": "Bearer #{token}"]
   end
+
+  def process_request_headers([token, content_type]) do
+    ["Authorization": "Bearer #{token}", "Content-Type": content_type]
+  end
 end

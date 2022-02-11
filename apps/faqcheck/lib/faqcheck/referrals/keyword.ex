@@ -2,6 +2,7 @@ defmodule Faqcheck.Referrals.Keyword do
   use Ecto.Schema
 
   import Ecto.Changeset
+  import Ecto.Query, warn: false
 
   schema "keywords" do
     field :keyword, :string
@@ -10,6 +11,7 @@ defmodule Faqcheck.Referrals.Keyword do
   def changeset(kw, attrs) do
     kw
     |> cast(attrs, [:keyword])
+    |> unique_constraint(:keyword)
   end
 
   def split(kws) do

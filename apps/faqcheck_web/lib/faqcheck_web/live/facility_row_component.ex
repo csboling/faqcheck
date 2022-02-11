@@ -290,7 +290,7 @@ defmodule FacilityRowComponent do
                   </td>
                   <td>
                     <%= if c.website do %>
-                    <%= link c.website, to: c.website %>
+                    <a href="<%= c.website %>"><%= c.website %></a>
                     <%  end %>
                   </td>
                   <td>
@@ -365,6 +365,12 @@ defmodule FacilityRowComponent do
   def handle_event("add_keyword", _params, socket) do
     changeset = socket.assigns.changeset
     |> Facility.add_keyword()
+    {:noreply, socket |> assign(changeset: changeset)}
+  end
+
+  def handle_event("add_contact", _params, socket) do
+    changeset = socket.assigns.changeset
+    |> Facility.add_contact()
     {:noreply, socket |> assign(changeset: changeset)}
   end
 
