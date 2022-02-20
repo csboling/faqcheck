@@ -8,6 +8,7 @@ defmodule FaqcheckWeb.FacilityController do
       :index -> gettext "Browse facilities"
       :show -> gettext "Facility details"
       :history -> gettext "Facility edit history"
+      :export -> gettext "Export facility search results"
     end
   end
 
@@ -30,5 +31,13 @@ defmodule FaqcheckWeb.FacilityController do
       "history.html",
       resource: facility,
       link: FaqcheckWeb.Router.Helpers.facility_path(conn, :show, locale, facility))
+  end
+
+  def export(conn, %{"search" => search, "locale" => locale}) do
+    send_download(
+      conn,
+      {:binary, Referrals.export_facilities_csv(search, locale)},
+      content_type: "application/csv",
+      filename: "faqcheck_facilities.csv")
   end
 end
