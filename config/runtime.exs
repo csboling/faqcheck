@@ -63,6 +63,14 @@ if config_env() == :prod do
       ],
     ]
 
+  config :faqcheck, :openid_connect_providers,
+    microsoft: [
+      discovery_document_uri: "https://login.microsoftonline.com/#{microsoft_api_tenant_id}/v2.0/.well-known/openid-configuration",
+      client_id: microsoft_api_client_id,
+      client_secret: microsoft_api_password,
+      scope: "https://graph.microsoft.com/.default"
+    ]
+
   database_url = ProdHelpers.load_var "DATABASE_URL",
     "For example: ecto://USER:PASS@HOST/DATABASE. This is set up by fly with: fly postgres create"
 
