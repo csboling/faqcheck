@@ -246,10 +246,10 @@ defmodule Faqcheck.Referrals do
       Contact.get_info(facility, :phone),
       Contact.get_info(facility, :email),
       Contact.get_info(facility, :website),
-      "", # OperatingHours.flatten(facility.hours),
+      OperatingHours.flatten(facility.hours),
       facility.address.street_address,
       facility.description,
-      "", # Facility.last_update(facility),
+      facility.updated_at,
     ]
     |> Stream.map(fn x -> "\"#{x}\"" end)
     |> Enum.join(",")

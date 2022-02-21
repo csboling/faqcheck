@@ -33,7 +33,8 @@ defmodule FaqcheckWeb.FacilityController do
       link: FaqcheckWeb.Router.Helpers.facility_path(conn, :show, locale, facility))
   end
 
-  def export(conn, %{"search" => search, "locale" => locale}) do
+  def export(conn, params = %{"locale" => locale}) do
+    search = Map.delete(params, "locale")
     send_download(
       conn,
       {:binary, Referrals.export_facilities_csv(search, locale)},
