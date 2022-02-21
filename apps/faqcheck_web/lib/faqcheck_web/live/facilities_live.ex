@@ -23,6 +23,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
 
       <div>
         <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
+        <%= link gettext("Export results (.csv)"), class: "button", to: Routes.export_path(@socket, :export, @locale, @params["search"]) %>
       </div>
 
       <hr />
@@ -61,6 +62,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
           <%= gettext "Next page" %>
         </button>
         <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
+        <%= link gettext("Export results (.csv)"), class: "button", to: Routes.export_path(@socket, :export, @locale, @params["search"]) %>
       </div>
     </div>
     """

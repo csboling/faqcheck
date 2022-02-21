@@ -45,6 +45,35 @@ defmodule Faqcheck.Referrals.OperatingHours do
     |> validate_required([:weekday, :opens])
   end
 
+  def flatten(hours) do
+    if Enum.find(hours, fn h -> h.always_open end) do
+      "24 / 7"
+    else
+      hours
+      |> Enum.group_by(fn h -> {h.opens, h.closes} end)
+      |> Enum.map(fn {{opens, closes}, hs} ->
+	days = hs
+	|> Enum.map(fn h -> abbrev_weekday(h.weekday) end)
+	|> Enum.join(", ")
+	days <> ": " <> hours_str(opens) <> " - " <> hours_str(closes)
+      end)
+      |> Enum.join("; ")
+    end
+  end
+
+  def abbrev_weekday(weekday) do
+    case weekday do
+      Weekday.Monday -> "M"
+      Weekday.Tuesday -> "Tu"
+      Weekday.Wednesday -> "W"
+      Weekday.Thursday -> "Th"
+      Weekday.Friday -> "F"
+      Weekday.Saturday -> "Sa"
+      Weekday.Sunday -> "Su"
+      _ -> ""
+    end
+  end
+
   @doc """
   Produces a best guess for the next hours that would be listed after
   the ones that already exist, for instance the same hours but on the

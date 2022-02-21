@@ -109,6 +109,7 @@ defmodule FaqcheckWeb.Router do
     scope "/" do
       get "/sign_in", SignInController, :index
 
+      get "/facilities/export", FacilityController, :export, as: :export
       resources "/facilities", FacilityController, as: :facility do
       	get "/history", FacilityController, :history, as: :history
         resources "/feedback", FeedbackController, as: :feedback

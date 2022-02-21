@@ -19,4 +19,10 @@ defmodule Faqcheck.Referrals.Keyword do
     |> String.split(";", trim: true)
     |> Enum.map(fn word -> %{keyword: String.trim(word)} end)
   end
+
+  def flatten(kws) do
+    kws
+    |> Stream.map(fn k -> k.keyword end)
+    |> Enum.join("; ")
+  end
 end

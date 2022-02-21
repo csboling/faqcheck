@@ -5,11 +5,14 @@ defmodule Faqcheck.Referrals do
 
   import Ecto.Query, warn: false
   alias Faqcheck.Repo
+  alias Faqcheck.Referrals.Contact
   alias Faqcheck.Referrals.Keyword, as: Tag
   alias Faqcheck.Referrals.Organization
   alias Faqcheck.Referrals.Facility
   alias Faqcheck.Referrals.FacilityFilters
   alias Faqcheck.Referrals.Feedback
+  alias Faqcheck.Referrals.OperatingHours
+
 
   @doc """
   Returns the list of organizations.
@@ -208,5 +211,47 @@ defmodule Faqcheck.Referrals do
     %Feedback{facility_id: facility_id}
     |> Feedback.changeset(params)
     |> PaperTrail.insert()
+  end
+
+  def export_facilities_csv(search, locale) do
+    list_facilities(search, limit: 500).entries
+    |> Stream.map(&facility_csv_row/1)
+    |> Enum.reduce(
+      export_facilities_header(locale),
+      fn row, acc -> acc <> "\n" <> row end)
+  end
+
+  defp export_facilities_header(locale) do
+    [
+      "Subheading",
+      "Facility name",
+      "Key words",
+      "Phone",
+      "Email",
+      "Website",
+      "Hours",
+      "Address",
+      "Description",
+      "Last updated",
+    ]
+    |> Stream.map(fn x -> "\"#{x}\"" end)
+    |> Enum.join(",")
+  end
+
+  defp facility_csv_row(facility) do
+    [
+      "",
+      facility.name,
+      Tag.flatten(facility.keywords),
+      Contact.get_info(facility, :phone),
+      Contact.get_info(facility, :email),
+      Contact.get_info(facility, :website),
+      OperatingHours.flatten(facility.hours),
+      facility.address.street_address,
+      facility.description,
+      facility.updated_at,
+    ]
+    |> Stream.map(fn x -> "\"#{x}\"" end)
+    |> Enum.join(",")
   end
 end

@@ -29,4 +29,10 @@ defmodule Faqcheck.Referrals.Contact do
     |> Stream.filter(&(&1 != ""))
     |> Enum.map(fn item -> %{field => item} end)
   end
+
+  def get_info(facility, key) do
+    facility.contacts
+    |> Enum.find(%{key => ""}, fn f -> Map.get(f, key) end)
+    |> Map.get(key)
+  end
 end
