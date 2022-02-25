@@ -10,7 +10,7 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
     with {:ok, activity} <- Activity.parse(params) do
       facilities = Referrals.list_facilities(
 	parse_message(activity.text),
-	limit: 10)
+	limit: 50)
       message = "I found these facilities. You can include filters like 'open:today' / 'open:monday' or 'in:87111' to narrow down your search."
 
       [locale | _] = String.split(params["locale"], "-")
