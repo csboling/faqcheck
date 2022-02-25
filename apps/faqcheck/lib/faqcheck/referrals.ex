@@ -123,7 +123,7 @@ defmodule Faqcheck.Referrals do
     |> Map.new
     with {:ok, query, _values} <- Filterable.apply_filters(Facility, filters, FacilityFilters, opts) do
       q = from f in query,
-        order_by: [asc: f.id],
+        order_by: [asc: f.name],
         preload: [:address, :contacts, :hours, :keywords, :organization, :feedback]
       Repo.paginate(q |> distinct([f], f.id), opts)
     end
