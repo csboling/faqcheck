@@ -12,7 +12,7 @@ defmodule Faqcheck.Referrals do
   alias Faqcheck.Referrals.FacilityFilters
   alias Faqcheck.Referrals.Feedback
   alias Faqcheck.Referrals.OperatingHours
-
+  alias Faqcheck.Sources.Microsoft.API.Sharepoint
 
   @doc """
   Returns the list of organizations.
@@ -127,6 +127,41 @@ defmodule Faqcheck.Referrals do
         preload: [:address, :contacts, :hours, :keywords, :organization, :feedback]
       Repo.paginate(q |> distinct([f], f.id), opts)
     end
+  end
+
+  def oldest_facilities(opts) do
+    q = from f in Facility,
+      order_by: [asc: f.updated_at],
+      preload: [:address]
+    Repo.paginate(q, opts)
+  end
+
+  def report_oldest() do
+    header = "facility_id,facility_name,address,first_created,last_updated"
+    page = oldest_facilities(limit: 100)
+    report_rows = page.entries
+    |> Enum.map(
+      fn f ->
+	[
+	  f.id,
+	  f.name,
+	  f.address.street_address,
+	  f.inserted_at,
+	  f.updated_at,
+	]
+	|> Stream.map(fn s -> "\"#{s}\"" end)
+	|> Enum.join(",")
+      end)
+    now = DateTime.utc_now()
+    report = Enum.reduce(report_rows, header, fn row, acc -> acc <> "\n" <> row end)
+
+    now_str = Calendar.strftime(now, "%Y-%m-%d_%H%M%SUTC")
+    filename = "oldest_#{now_str}.csv"
+
+    Sharepoint.save_report(
+      report,
+      filename,
+      Application.get_env(:faqcheck, :oldest_report_target))
   end
 
   def get_facility!(id) do
