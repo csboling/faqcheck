@@ -1,4 +1,6 @@
 defmodule Faqcheck.Sources.Microsoft.API.Sharepoint do
+  require Logger
+
   alias Faqcheck.Sources.Microsoft.API
   alias Faqcheck.Sources.Microsoft.Graph
 
@@ -43,5 +45,20 @@ defmodule Faqcheck.Sources.Microsoft.API.Sharepoint do
       "/drives/#{drive_id}/items/#{folder_id}:/#{URI.encode(filename)}:/content",
       content_type,
       contents
+  end
+
+  def save_report(report, filename, sharepoint_config) do
+    Logger.info "saving report: #{filename}"
+    token_params = %{
+      grant_type: "client_credentials",
+      scope: "https://graph.microsoft.com/.default"
+    }
+    with {:ok, %{"access_token" => token}} <- OpenIDConnect.fetch_tokens(:microsoft, token_params) do
+      drive_id = Keyword.get(sharepoint_config, :drive_id)
+      folder_id = Keyword.get(sharepoint_config, :folder_id)
+      response = create_file(token, drive_id, folder_id, filename, "text/csv", report)
+    else
+      error -> raise error
+    end
   end
 end

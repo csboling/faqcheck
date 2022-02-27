@@ -74,15 +74,18 @@ defmodule Faqcheck.Sources.Strategies do
 	end
       end)
       now = DateTime.utc_now()
-      now_str = Calendar.strftime(DateTime.utc_now, "%Y-%m-%d_%H%M%SUTC")
+      now_str = Calendar.strftime(now, "%Y-%m-%d_%H%M%SUTC")
       Repo.update!(schedule |> Faqcheck.Sources.Schedule.changeset(%{"last_import" => now}))
       report = Enum.reduce(report_rows, header, fn row, acc -> acc <> "\n" <> row end)
-      filename = "#{now_str}_#{strategy.id}"
+      filename = "imports_#{now_str}_#{strategy.id}"
       if Enum.empty?(report_rows) do
 	filename = filename <> "_no_changes"
       end
       filename = filename <> ".csv"
-      save_report(report, filename)
+      Sharepoint.save_report(
+	report,
+	filename,
+	Application.get_env(:faqcheck, :import_report_target))
     else
       e -> raise e
     end
@@ -129,22 +132,6 @@ defmodule Faqcheck.Sources.Strategies do
     case Ecto.get_meta(cs.data, :state) do
       :loaded -> "update"
       :built -> "create"
-    end
-  end
-
-  defp save_report(report, filename) do
-    Logger.info "saving import report: #{filename}"
-    token_params = %{
-      grant_type: "client_credentials",
-      scope: "https://graph.microsoft.com/.default"
-    }
-    with {:ok, %{"access_token" => token}} <- OpenIDConnect.fetch_tokens(:microsoft, token_params) do
-      config = Application.get_env(:faqcheck, :import_report_target)
-      drive_id = Keyword.get(config, :drive_id)
-      folder_id = Keyword.get(config, :folder_id)
-      response = Sharepoint.create_file(token, drive_id, folder_id, filename, "text/csv", report)
-    else
-      error -> raise error
     end
   end
 end
