@@ -86,3 +86,8 @@ div.table-body-cell {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+.export-button {
+  background-color: #008f00;
+  border: 0.1rem solid #008f00;
+}

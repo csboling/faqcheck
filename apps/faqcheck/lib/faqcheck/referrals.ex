@@ -132,6 +132,7 @@ defmodule Faqcheck.Referrals do
   def oldest_facilities(opts) do
     q = from f in Facility,
       order_by: [asc: f.updated_at],
+      where: f.updated_at < from_now(-6, "month"),
       preload: [:address]
     Repo.paginate(q, opts)
   end

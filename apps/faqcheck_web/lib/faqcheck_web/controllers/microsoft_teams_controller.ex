@@ -8,14 +8,12 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
 
   def message(conn, params) do
     with {:ok, activity} <- Activity.parse(params) do
-      limit = 20
-      search = parse_message(activity.text)
-      facilities = Referrals.list_facilities(search, limit: limit)
-      origin = FaqcheckWeb.Router.Helpers.url(conn)
-      results_link = origin <> FaqcheckWeb.Router.Helpers.live_path(conn, FaqcheckWeb.FacilitiesLive, "en", search: search)
-      message = "Here are the first #{limit} results. Click [here](#{results_link}) to see all search results. You can include filters like 'open:today' / 'open:monday' or 'in:87111' to narrow down your search."
-
       [locale | _] = String.split(params["locale"], "-")
+
+      limit = 20
+
+      {message, card_body} = process_message(conn, locale, activity.text, limit)
+
       resp_activity = %Activity{
 	type: "message",
 	conversation: activity.conversation,
@@ -23,7 +21,7 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
 	from: activity.recipient,
 	replyToId: activity.id,
 	text: message,
-	attachments: [
+	attachments: card_body && [
 	  %Attachment{
 	    name: "results",
 	    contentType: "application/vnd.microsoft.card.adaptive",
@@ -33,34 +31,7 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
 		"width" => "full",
 	      },
 	      "version" => "1.0",
-
-	      "body" => [
-		%{
-		  "type" => "ColumnSet",
-		  "columns" => [
-		    column(
-		      facilities.entries,
-		      "Name",
-		      fn f ->
-			path = FaqcheckWeb.Router.Helpers.facility_path conn,
-			  :show, locale, f
-		        "[#{f.name}](#{origin <> path})"
-		      end),
-		    column(
-		      facilities.entries,
-		      "Address",
-		      fn f -> f.address.street_address end),
-		    column(
-		      facilities.entries,
-		      "Keywords",
-		      fn f ->
-			f.keywords
-			|> Enum.map(fn k -> k.keyword end)
-			|> Enum.join(", ")
-	              end),
-		  ],
-		}
-	      ],
+	      "body" => card_body,
             },
           },
         ],
@@ -77,6 +48,69 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
       _ ->
 	send_resp(conn, 400, "{}")
     end
+  end
+
+  def process_message(conn, locale, text, limit) do
+    if String.downcase(String.trim(text)) == "help" do
+      show_help(conn, locale, text)
+    else
+      search_results(conn, locale, text, limit)
+    end
+  end
+
+  def show_help(conn, locale, text) do
+    origin = FaqcheckWeb.Router.Helpers.url(conn)
+    message = """
+This is a chat bot interface to FaqCheck, which you can use on the web at [#{origin}](#{origin}).
+- Sending the message text "help" to this bot will display this help message.
+- Sending any other message text to the bot will search the FaqCheck database for agencies with matching names or descriptions, and reply with a table of results.
+- To filter your search you can use search terms like "open:Monday" or "in:Albuquerque" alongside other terms. If the location filter has a space in it, replace it with "+".
+
+Example searches:
+- food
+- food box open:today
+- shelter in:Las+Cruces open:Friday
+"""
+
+    {message, nil}
+  end
+
+  def search_results(conn, locale, text, limit) do
+    search = parse_message(text)
+    facilities = Referrals.list_facilities(search, limit: limit)
+    origin = FaqcheckWeb.Router.Helpers.url(conn)
+    results_link = origin <> FaqcheckWeb.Router.Helpers.live_path(conn, FaqcheckWeb.FacilitiesLive, "en", search: search)
+    message = "Here are the first #{limit} results. Click [here](#{results_link}) to see all search results. You can include filters like 'open:today' / 'open:monday' or 'in:87111' to narrow down your search."
+
+    card_body = [
+      %{
+        "type" => "ColumnSet",
+        "columns" => [
+          column(
+            facilities.entries,
+            "Name",
+            fn f ->
+      	path = FaqcheckWeb.Router.Helpers.facility_path conn,
+      	  :show, locale, f
+              "[#{f.name}](#{origin <> path})"
+            end),
+          column(
+            facilities.entries,
+            "Address",
+            fn f -> f.address.street_address end),
+          column(
+            facilities.entries,
+            "Keywords",
+            fn f ->
+      	f.keywords
+      	|> Enum.map(fn k -> k.keyword end)
+      	|> Enum.join(", ")
+            end),
+        ],
+      }
+    ]
+
+    {message, card_body}
   end
 
   def column(rows, title, fetch) do
@@ -136,7 +170,9 @@ defmodule FaqcheckWeb.MicrosoftTeamsController do
             Map.put(
     	      acc,
     	      "zipcode",
-    	      arg)
+    	      arg
+              |> String.split("+")
+              |> Enum.join(" "))
     	  _ ->
     	    acc
     	end
