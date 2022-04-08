@@ -40,6 +40,7 @@ defmodule Faqcheck.Sources.Strategies do
   end
 
   def scrape() do
+    Logger.info "starting auto-import for all strategies"
     Repo.all(Faqcheck.Sources.Schedule)
     |> Stream.filter(fn schedule -> schedule.enabled end)
     |> Enum.map(fn schedule ->
@@ -49,6 +50,7 @@ defmodule Faqcheck.Sources.Strategies do
   end
 
   def scrape(strategy, schedule) do
+    Logger.info "starting auto-import for strategy '#{strategy.id}'"
     params = strategy.build_scrape_params(schedule)
     with {:ok, session} <- strategy.build_scrape_session(),
 	 {:ok, feed} <- build_feed(strategy, params, session) do

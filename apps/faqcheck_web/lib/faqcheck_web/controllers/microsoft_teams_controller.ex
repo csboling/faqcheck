@@ -77,10 +77,10 @@ Example searches:
 
   def search_results(conn, locale, text, limit) do
     search = parse_message(text)
-    facilities = Referrals.list_facilities(search, limit: limit)
+    facilities = Referrals.list_facilities(search, limit: limit, include_total_count: true)
     origin = FaqcheckWeb.Router.Helpers.url(conn)
     results_link = origin <> FaqcheckWeb.Router.Helpers.live_path(conn, FaqcheckWeb.FacilitiesLive, "en", search: search)
-    message = "Here are the first #{limit} results. Click [here](#{results_link}) to see all search results. You can include filters like 'open:today' / 'open:monday' or 'in:87111' to narrow down your search."
+    message = "Here are the first #{limit} results out of #{facilities.metadata.total_count} total for your search \"#{text}\". Click [here](#{results_link}) to see all search results. You can include filters like 'open:today' / 'open:monday' or 'in:87111' to narrow down your search."
 
     card_body = [
       %{

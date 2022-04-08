@@ -4,6 +4,8 @@ defmodule Faqcheck.Referrals do
   """
 
   import Ecto.Query, warn: false
+  require Logger
+
   alias Faqcheck.Repo
   alias Faqcheck.Referrals.Contact
   alias Faqcheck.Referrals.Keyword, as: Tag
@@ -138,6 +140,7 @@ defmodule Faqcheck.Referrals do
   end
 
   def report_oldest() do
+    Logger.info "generating report of 100 oldest facilities"
     header = "facility_id,facility_name,address,first_created,last_updated"
     page = oldest_facilities(limit: 100)
     report_rows = page.entries
