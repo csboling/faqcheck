@@ -65,9 +65,10 @@ defmodule FaqcheckWeb.Router do
     pipe_through :browser
     get "/", PageController, :dummy
 
+    delete "/session/new", CloseSessionController, :close
+
     get "/microsoft-callback", OidcController, :microsoft_callback
     get "/google-callback", OidcController, :microsoft_callback
-
   end
 
   scope "/", FaqcheckWeb do
