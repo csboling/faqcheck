@@ -37,7 +37,11 @@ defmodule FaqcheckWeb.FacilityController do
     search = Map.delete(params, "locale")
     send_download(
       conn,
-      {:binary, Referrals.export_facilities_csv(search, locale)},
+      {:binary,
+       Referrals.export_facilities_csv(
+         search,
+         locale,
+         fn t -> FaqcheckWeb.Timezones.format_timestamp(t, "MST7MDT") end)},
       content_type: "application/csv",
       filename: "faqcheck_facilities.csv")
   end

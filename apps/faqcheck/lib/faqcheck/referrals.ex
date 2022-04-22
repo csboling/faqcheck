@@ -252,9 +252,9 @@ defmodule Faqcheck.Referrals do
     |> PaperTrail.insert()
   end
 
-  def export_facilities_csv(search, locale) do
+  def export_facilities_csv(search, locale, format_timestamp) do
     list_facilities(search, limit: 500).entries
-    |> Stream.map(&facility_csv_row/1)
+    |> Stream.map(fn row -> facility_csv_row(row, format_timestamp) end)
     |> Enum.reduce(
       export_facilities_header(locale),
       fn row, acc -> acc <> "\n" <> row end)
@@ -277,7 +277,7 @@ defmodule Faqcheck.Referrals do
     |> Enum.join(",")
   end
 
-  defp facility_csv_row(facility) do
+  defp facility_csv_row(facility, format_timestamp) do
     [
       "",
       facility.name,
@@ -288,7 +288,7 @@ defmodule Faqcheck.Referrals do
       OperatingHours.flatten(facility.hours),
       facility.address.street_address,
       facility.description,
-      facility.updated_at,
+      format_timestamp.(facility.updated_at),
     ]
     |> Stream.map(fn x -> "\"#{x}\"" end)
     |> Enum.join(",")
