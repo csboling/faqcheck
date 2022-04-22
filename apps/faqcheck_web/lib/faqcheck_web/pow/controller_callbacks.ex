@@ -10,7 +10,7 @@ defmodule FaqcheckWeb.Pow.ControllerCallbacks do
     conn =
       conn
       |> Conn.put_session(:current_user_id, user.id)
-      |> Conn.put_session(@live_socket_id_key, "users_sockets:#{user.id}")
+      |> Conn.put_session(@live_socket_id_key, "users_socket:#{user.id}")
 
     ControllerCallbacks.before_respond(
       Pow.Phoenix.SessionController,
@@ -22,7 +22,9 @@ defmodule FaqcheckWeb.Pow.ControllerCallbacks do
 
   def before_respond(Pow.Phoenix.SessionController, :delete, {:ok, conn}, config) do
     live_socket_id = Conn.get_session(conn, @live_socket_id_key)
-    FaqcheckWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
+    if !is_nil(live_socket_id) do
+      FaqcheckWeb.Endpoint.broadcast(live_socket_id, "disconnect", %{})
+    end
     ControllerCallbacks.before_respond(
       Pow.Phoenix.SessionController,
       :delete,

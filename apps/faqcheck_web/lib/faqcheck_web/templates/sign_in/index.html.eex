@@ -1,4 +1,24 @@
 <h1><%= gettext "User authentication" %></h1>
 
+<%= if is_nil(@conn.assigns.current_user) do %>
 <%= for link <- FaqcheckWeb.Pow.ViewHelpers.provider_links(@conn, request_path: @request_path),
   do: content_tag(:span, link) %>
+<% else %>
+<button id="signout"><%= gettext "Sign out" %></button>
+<script>
+document.getElementById('signout').onclick = function() {
+  fetch(
+    '/session',
+    {
+      method: 'DELETE',
+      headers: {
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+      },
+    },
+  )
+    .then(res => {
+      window.location.href = '/';
+    });
+};
+</script>
+<% end %>
