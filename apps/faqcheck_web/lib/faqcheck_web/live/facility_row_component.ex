@@ -199,7 +199,7 @@ defmodule FacilityRowComponent do
       <% else %>
         <div class="table-row">
           <div class="table-body-cell">
-          <span><%= @facility.name %></span>
+          <span><%= link @facility.name, to: Routes.facility_path(@socket, :show, @locale, @facility) %></span>
             <br />
             <%= if !is_nil(@current_user) do %>
 
@@ -214,135 +214,137 @@ defmodule FacilityRowComponent do
             <%  end %>
           </div class="table-body-cell">
 
-          <div class="table-body-cell">
-            <%= for kw <- @facility.keywords do %>
-              <%= kw.keyword %>;&nbsp;
-            <%  end %>
-          </div>
+          <%= if !@is_mobile do %>
+            <div class="table-body-cell">
+              <%= for kw <- @facility.keywords do %>
+                <%= kw.keyword %>;&nbsp;
+              <%  end %>
+            </div>
 
-          <div class="table-body-cell">
-            <p>
-	      <%= if !is_nil(@current_user) do %>
-	      	<% description_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.description_accurate end) |> Enum.count %>
-	      	<%= if description_feedback > 0 do %>
-	      	<span class="alert-warning tooltip">
-	      	  &#x26A0; <%= description_feedback %>
-	      		<span class="tooltiptext">
-              	    <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: description_feedback %>
-              	  </span>
-              	</span>
-	      	&nbsp;&nbsp;
-	      	<% end %>
+            <div class="table-body-cell">
+              <p>
+  	      <%= if !is_nil(@current_user) do %>
+  	      	<% description_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.description_accurate end) |> Enum.count %>
+  	      	<%= if description_feedback > 0 do %>
+  	      	<span class="alert-warning tooltip">
+  	      	  &#x26A0; <%= description_feedback %>
+  	      		<span class="tooltiptext">
+                	    <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: description_feedback %>
+                	  </span>
+                	</span>
+  	      	&nbsp;&nbsp;
+  	      	<% end %>
+                <% end %>
+  	      <%= @facility.description %>
+  	    </p>
+              <p>
+  	      <%= if !is_nil(@current_user) do %>
+  	      	<% address_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.address_correct end) |> Enum.count %>
+  	      	<%= if address_feedback > 0 do %>
+  	      	<span class="alert-warning tooltip">
+  	      	  &#x26A0; <%= address_feedback %>
+  	      		<span class="tooltiptext">
+                	    <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: address_feedback %>
+                	  </span>
+                	</span>
+  	      	&nbsp;&nbsp;
+  	      	<% end %>
+                <% end %>
+                <%= @facility.address.street_address %>
+                <br />
+                <%= @facility.address.locality %>
+                <%= @facility.address.postcode %>
+
+                <br />
+                <%= link gettext("Get directions (Google Maps)"), to: "https://www.google.com/maps/dir/?api=1&destination=" <> URI.encode_www_form(@facility.address.street_address) %>
+              </p>
+
+              <%= if !Enum.empty?(@facility.contacts) do %>
+              <table>
+                <thead>
+                  <tr>
+                    <th><%= gettext("Phone") %></th>
+                    <th><%= gettext("Website") %></th>
+                    <th><%= gettext("Email") %></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%= for c <- @facility.contacts do %>
+                  <tr>
+                    <td>
+                      <%= if c.phone do %>
+                        <%= link c.phone, to: "tel:#{c.phone}" %>
+
+                        <%= if !is_nil(@current_user) do %>
+                          <% phone_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.phone_correct end) |> Enum.count %>
+                          <%= if phone_feedback > 0 do %>
+                            <span class="alert-warning tooltip">
+                              &#x26A0; <%= phone_feedback %>
+                              <span class="tooltiptext">
+                                    <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: phone_feedback %>
+                                  </span>
+                                </span>
+                            &nbsp;&nbsp;
+                          <% end %>
+                        <% end %>
+                      <%  end %>
+                    </td>
+                    <td>
+                      <%= if c.website do %>
+                      <a href="<%= c.website %>"><%= c.website %></a>
+                      <%  end %>
+                    </td>
+                    <td>
+                      <%= if c.email do %>
+                      <%= link c.email, to: "mailto:#{c.email}" %>
+                      <%  end %>
+                    </td>
+                  </tr>
+                  <%  end %>
+                </tbody>
+              </table>
               <% end %>
-	      <%= @facility.description %>
-	    </p>
-            <p>
-	      <%= if !is_nil(@current_user) do %>
-	      	<% address_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.address_correct end) |> Enum.count %>
-	      	<%= if address_feedback > 0 do %>
-	      	<span class="alert-warning tooltip">
-	      	  &#x26A0; <%= address_feedback %>
-	      		<span class="tooltiptext">
-              	    <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: address_feedback %>
-              	  </span>
-              	</span>
-	      	&nbsp;&nbsp;
-	      	<% end %>
-              <% end %>
-              <%= @facility.address.street_address %>
-              <br />
-              <%= @facility.address.locality %>
-              <%= @facility.address.postcode %>
 
-              <br />
-              <%= link gettext("Get directions (Google Maps)"), to: "https://www.google.com/maps/dir/?api=1&destination=" <> URI.encode_www_form(@facility.address.street_address) %>
-            </p>
-
-            <%= if !Enum.empty?(@facility.contacts) do %>
-            <table>
-              <thead>
-                <tr>
-                  <th><%= gettext("Phone") %></th>
-                  <th><%= gettext("Website") %></th>
-                  <th><%= gettext("Email") %></th>
-                </tr>
-              </thead>
-              <tbody>
-                <%= for c <- @facility.contacts do %>
-                <tr>
-                  <td>
-                    <%= if c.phone do %>
-                      <%= link c.phone, to: "tel:#{c.phone}" %>
-
+              <%= if !Enum.empty?(@facility.hours) do %>
+              <table>
+                <thead>
+                  <tr>
+                    <th><%= gettext("Regularity") %></th>
+                    <th><%= gettext("Weekday") %></th>
+                    <th>
+                      <%= gettext("Hours") %>
                       <%= if !is_nil(@current_user) do %>
-                        <% phone_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.phone_correct end) |> Enum.count %>
-                        <%= if phone_feedback > 0 do %>
+                        <% hours_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.hours_correct end) |> Enum.count %>
+                        <%= if hours_feedback > 0 do %>
                           <span class="alert-warning tooltip">
-                            &#x26A0; <%= phone_feedback %>
+                            &#x26A0; <%= hours_feedback %>
                             <span class="tooltiptext">
-                                  <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: phone_feedback %>
+                                  <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: hours_feedback %>
                                 </span>
                               </span>
                           &nbsp;&nbsp;
                         <% end %>
                       <% end %>
-                    <%  end %>
-                  </td>
-                  <td>
-                    <%= if c.website do %>
-                    <a href="<%= c.website %>"><%= c.website %></a>
-                    <%  end %>
-                  </td>
-                  <td>
-                    <%= if c.email do %>
-                    <%= link c.email, to: "mailto:#{c.email}" %>
-                    <%  end %>
-                  </td>
-                </tr>
-                <%  end %>
-              </tbody>
-            </table>
-            <% end %>
+                    </th>
+                  </tr>
+                  <%= for {day, regularity, hours} <- OperatingHours.format_hours(@facility.hours) do %>
+                  <tr>
+                    <td><%= week_regularity_name regularity %></td>
+                    <td><%= weekday_name day %></td>
+                    <td><%= hours %></td>
+                  </tr>
+                  <% end %>
+                </thead>
+              </table>
+              <% end %>
+            </div>
 
-            <%= if !Enum.empty?(@facility.hours) do %>
-            <table>
-              <thead>
-                <tr>
-                  <th><%= gettext("Regularity") %></th>
-                  <th><%= gettext("Weekday") %></th>
-                  <th>
-                    <%= gettext("Hours") %>
-                    <%= if !is_nil(@current_user) do %>
-                      <% hours_feedback = @facility.feedback |> Enum.filter(fn f -> !f.acknowledged && !f.hours_correct end) |> Enum.count %>
-                      <%= if hours_feedback > 0 do %>
-                        <span class="alert-warning tooltip">
-                          &#x26A0; <%= hours_feedback %>
-                          <span class="tooltiptext">
-                                <%= gettext "%{count} report(s) that this is inaccurate, see feedback", count: hours_feedback %>
-                              </span>
-                            </span>
-                        &nbsp;&nbsp;
-                      <% end %>
-                    <% end %>
-                  </th>
-                </tr>
-                <%= for {day, regularity, hours} <- OperatingHours.format_hours(@facility.hours) do %>
-                <tr>
-                  <td><%= week_regularity_name regularity %></td>
-                  <td><%= weekday_name day %></td>
-                  <td><%= hours %></td>
-                </tr>
-                <% end %>
-              </thead>
-            </table>
-            <% end %>
-          </div>
-
-          <div class="table-body-cell">
-            <%= if !is_nil(@facility.id) do %>
-            <%=   link format_timestamp(@facility.updated_at, "MST7MDT"), to: Routes.facility_history_path(@socket, :history, @locale, @facility) %>
-            <%  end %>
-          </div>
+            <div class="table-body-cell">
+              <%= if !is_nil(@facility.id) do %>
+              <%=   link format_timestamp(@facility.updated_at, "MST7MDT"), to: Routes.facility_history_path(@socket, :history, @locale, @facility) %>
+              <%  end %>
+            </div>
+          <%  end %>
         </div>
 
       <% end %>

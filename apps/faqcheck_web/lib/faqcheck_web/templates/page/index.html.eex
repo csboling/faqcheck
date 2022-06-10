@@ -7,15 +7,17 @@
   <article class="column">
     <h2><%= gettext "Browse information stored in the database" %></h2>
 
-    <%= f = form_for :search, Routes.live_path(@conn, FaqcheckWeb.FacilitiesLive, @locale), [method: "get", class: "flex-form"] %>
-      <%= label f, :name, gettext("Name") %>
-      <%= text_input f, :name, placeholder: gettext("Search by name or description") %>
-      <div class="flex-row">
-        <%= weekday_filter_select f, :weekday %>
-        <%= text_input :search, :zipcode, placeholder: gettext("Zipcode") %>
-        <button type="submit"><%= gettext "Search" %></button>
-      </div>
-    </form>
+    <%= if !@is_mobile do %>
+      <%= f = form_for :search, Routes.live_path(@conn, FaqcheckWeb.FacilitiesLive, @locale), [method: "get", class: "flex-form"] %>
+        <%= label f, :name, gettext("Name") %>
+        <%= text_input f, :name, placeholder: gettext("Search by name or description") %>
+        <div class="flex-row">
+          <%= weekday_filter_select f, :weekday %>
+          <%= text_input :search, :zipcode, placeholder: gettext("Zipcode") %>
+          <button type="submit"><%= gettext "Search" %></button>
+        </div>
+      </form>
+    <%  end %>
 
     <ul>
       <li>

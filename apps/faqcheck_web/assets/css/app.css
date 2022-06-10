@@ -91,3 +91,29 @@ div.table-body-cell {
   background-color: #008f00;
   border: 0.1rem solid #008f00;
 }
+
+.topnav {
+  width: 100vw;
+  position: fixed;
+  background: white;
+  z-index: 10;
+  top: 0;
+  display: flex;
+}
+
+.nav-links {
+  display: none;
+}
+
+/* Style the active link (or home/logo) */
+.home-link {
+}
+
+body {
+  margin: 0;
+  text-align: center;
+}
+
+.mobile main {
+  margin-top: 30px;
+}

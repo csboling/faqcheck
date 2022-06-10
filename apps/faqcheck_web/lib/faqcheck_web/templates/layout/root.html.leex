@@ -19,42 +19,62 @@
   <body>
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
 
-    <header>
-      <section class="container">
-        <nav>
-          <ul>
+    <%= if @is_mobile do %>
+      <header class="mobile">
+        <div class="topnav">
+          <a href="/" class="home-link">&#x1F3E0;&#xFE0E;</a>
+          <input type="text" placeholder="Search" />
+          <button>&#x1F50D;&#xFE0E;</button>
+          <button>&#x2699;&#xFE0E;</button>
+          <nav class="nav-links">
             <%= for lang <- Gettext.known_locales(FaqcheckWeb.Gettext) do %>
-              <li>
-                <a href="<%= lang_link_self @conn, lang %>"
-                   hreflang="<%= lang %>"
-                   type="text/html">
-                  <%= Gettext.with_locale(FaqcheckWeb.Gettext, lang, fn -> gettext("LANGUAGE_NAME") end) %>
-                </a>
-              </li>
+              <a href="<%= lang_link_self @conn, lang %>"
+                 hreflang="<%= lang %>"
+                 type="text/html">
+                <%= Gettext.with_locale(FaqcheckWeb.Gettext, lang, fn -> gettext("LANGUAGE_NAME") end) %>
+              </a>
             <% end %>
-          </ul>
-        </nav>
+          </nav>
+        </div>
+      </header>
+    <%= else %>
+      <header class="mobile">
+        <section class="container">
+          <nav>
+            <ul>
+              <%= for lang <- Gettext.known_locales(FaqcheckWeb.Gettext) do %>
+                <li>
+                  <a href="<%= lang_link_self @conn, lang %>"
+                     hreflang="<%= lang %>"
+                     type="text/html">
+                    <%= Gettext.with_locale(FaqcheckWeb.Gettext, lang, fn -> gettext("LANGUAGE_NAME") end) %>
+                  </a>
+                </li>
+              <% end %>
+            </ul>
+          </nav>
 
-        <nav role="navigation" style="text-align: left;">
-    	  <ul>
-    	    <li><%= link gettext("%{name} home page", name: "Faqcheck"), to: lang_link([]) %></li>
-    	    <%= if @current_user do %>
-    	      <li><%= gettext("Signed in as: ") <> @current_user.email %></li>
-    	      <li><%= link "Log out", to: Routes.sign_in_path(@conn, :index, @locale) %></li>
-    	    <% else %>
-    	      <li><%= link "Log in", to: Routes.sign_in_path(@conn, :index, @locale, request_path: @conn.request_path) %></li>
-    	    <% end %>
-    	  </ul>
+          <nav role="navigation" style="text-align: left;">
+      	  <ul>
+      	    <li><%= link gettext("%{name} home page", name: "Faqcheck"), to: lang_link([]) %></li>
+      	    <%= if @current_user do %>
+      	      <li><%= gettext("Signed in as: ") <> @current_user.email %></li>
+      	      <li><%= link "Log out", to: Routes.sign_in_path(@conn, :index, @locale) %></li>
+      	    <% else %>
+      	      <li><%= link "Log in", to: Routes.sign_in_path(@conn, :index, @locale, request_path: @conn.request_path) %></li>
+      	    <% end %>
+      	  </ul>
 
-	  <details>
-	    <summary>assigns</summary>
-	    <%= inspect @conn.assigns %>
-          </details>
-        </nav>
-      </section>
-    </header>
+            <details>
+              <summary>assigns</summary>
+              <%= inspect @conn.assigns %>
+            </details>
+          </nav>
+        </section>
+      </header>
+    <%  end %>
 
-    <main role="main" class="container locale-<%= @locale %>">
+    <main role="main" class="container locale-<%= @locale %> <%= @is_mobile && "mobile" || "desktop" %>">
       <nav>
         <%= for b <- @breadcrumb do %>
           <%= live_patch b.title, to: b.path %>
