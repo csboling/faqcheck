@@ -40,6 +40,10 @@
   flex-direction: row;
 }
 
+.flex-grow {
+  flex-grow: 1;
+}
+
 label.flex-row, input.flex-row {
   display: block;
 }
@@ -99,21 +103,21 @@ div.table-body-cell {
   z-index: 10;
   top: 0;
   display: flex;
+  flex-direction: row;
 }
 
 .nav-links {
   display: none;
 }
 
-/* Style the active link (or home/logo) */
-.home-link {
-}
-
 body {
   margin: 0;
-  text-align: center;
 }
 
 .mobile main {
   margin-top: 30px;
+}
+
+li {
+  list-style-position: outside;
 }

@@ -30,6 +30,12 @@ defmodule FaqcheckWeb.FacilitiesLive do
 
       <hr />
 
+      <div>
+        <p>
+          <%= gettext "Showing %{start} - %{end} of %{total} total results", start: @start + 1, end: @start + Enum.count(@facilities), total: @total %>
+        </p>
+      </div>
+
       <div class="table">
         <%= if !@is_mobile do %>
           <div class="table-head">
@@ -63,7 +69,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
 	    Enum.map([5, 10, 25, 50], fn n -> {gettext("%{page_size} per page", page_size: n), n} end),
             value: @page_size %>
         </form>
-        <button phx-disable-with="loading..." phx-click="load_more">
+        <button id="load-more" phx-disable-with="loading..." phx-click="load_more" phx-hook="ScrollToTop">
           <%= gettext "Next page" %>
         </button>
         <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
@@ -79,7 +85,7 @@ defmodule FaqcheckWeb.FacilitiesLive do
      |> assign_user(session)
      |> assign(
        after: nil,
-       page_size: 10,
+       page_size: session["is_mobile"] && 50 || 10,
        start: 0,
        params: %{},
        locale: locale,

@@ -18,6 +18,7 @@ defmodule FaqcheckWeb.Router do
       gettext: FaqcheckWeb.Gettext,
       default_locale: "en")
     plug FaqcheckWeb.Plugs.DeviceDetection
+    plug FaqcheckWeb.Plugs.ConnParams
     plug FaqcheckWeb.Plugs.Breadcrumb
   end
 

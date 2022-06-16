@@ -22,9 +22,13 @@
     <%= if @is_mobile do %>
       <header class="mobile">
         <div class="topnav">
-          <a href="/" class="home-link">&#x1F3E0;&#xFE0E;</a>
-          <input type="text" placeholder="Search" />
-          <button>&#x1F50D;&#xFE0E;</button>
+          <a href="/" class="button">&#x1F3E0;&#xFE0E;</a>
+
+          <%= f = form_for :search, Routes.live_path(@conn, FaqcheckWeb.FacilitiesLive, @locale), [method: "get", class: "flex-row flex-grow"] %>
+            <%= text_input f, :name, placeholder: gettext("Search"), value: @params["search"]["name"] %>
+            <button type="submit">&#x1F50D;&#xFE0E;</button>
+          </form>
+
           <button>&#x2699;&#xFE0E;</button>
           <nav class="nav-links">
             <%= for lang <- Gettext.known_locales(FaqcheckWeb.Gettext) do %>
