@@ -8,40 +8,51 @@ defmodule FaqcheckWeb.FacilitiesLive do
   def render(assigns) do
     ~L"""
     <div>
-      <%= f = form_for :search, "#", [phx_submit: "search", class: "flex-form"] %>
-        <%= label f, :name, gettext("Name") %>
-        <%= text_input f, :name, placeholder: gettext("Search by name or description"), value: @params["search"]["name"] %>
-        <div class="flex-row">
-          <%= weekday_filter_select f, :weekday, value: @params["search"]["weekday"] %>
-          <%= text_input :search, :zipcode, placeholder: gettext("Zipcode"), value: @params["search"]["zipcode"] %>
-          <button type="submit"><%= gettext "Search" %></button>
-          <button type="button" phx-click="clear_search"><%= gettext "Reset search filters" %></button>
+      <%= if !@is_mobile do %>
+        <%= f = form_for :search, "#", [phx_submit: "search", class: "flex-form"] %>
+          <%= label f, :name, gettext("Name") %>
+          <%= text_input f, :name, placeholder: gettext("Search by name or description"), value: @params["search"]["name"] %>
+          <div class="flex-row">
+            <%= weekday_filter_select f, :weekday, value: @params["search"]["weekday"] %>
+            <%= text_input :search, :zipcode, placeholder: gettext("Zipcode"), value: @params["search"]["zipcode"] %>
+            <button type="submit"><%= gettext "Search" %></button>
+            <button type="button" phx-click="clear_search"><%= gettext "Reset search filters" %></button>
+          </div>
+        </form>
+
+        <hr />
+
+        <div>
+          <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
+          <%= link gettext("Export results (.csv)"), class: "button export-button", to: Routes.export_path(@socket, :export, @locale, @params["search"] || %{}) %>
         </div>
-      </form>
+      <%  end %>
 
       <hr />
 
       <div>
-        <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
-        <%= link gettext("Export results (.csv)"), class: "button export-button", to: Routes.export_path(@socket, :export, @locale, @params["search"] || %{}) %>
+        <p>
+          <%= gettext "Showing %{start} - %{end} of %{total} total results", start: @start + 1, end: @start + Enum.count(@facilities), total: @total %>
+        </p>
       </div>
 
-      <hr />
-
       <div class="table">
-        <div class="table-head">
-          <div class="table-row">
-            <div class="table-head-cell"><%= gettext "Name" %></div>
-            <div class="table-head-cell"><%= gettext "Keywords" %></div>
-            <div class="table-head-cell"><%= gettext "Details" %></div>
-            <div class="table-head-cell"><%= gettext "Last updated" %></div>
+        <%= if !@is_mobile do %>
+          <div class="table-head">
+            <div class="table-row">
+              <div class="table-head-cell"><%= gettext "Name" %></div>
+                <div class="table-head-cell"><%= gettext "Keywords" %></div>
+                <div class="table-head-cell"><%= gettext "Details" %></div>
+                <div class="table-head-cell"><%= gettext "Last updated" %></div>
+            </div>
           </div>
-        </div>
+        <%  end %>
         <div class="table-body" id="facilities">
           <%= for fac <- @facilities do %>
             <%= live_component @socket, FacilityRowComponent,
                   id: fac.id, locale: @locale,
 		  allow_delete: true,
+                  is_mobile: @is_mobile,
                   facility: fac, current_user: @current_user %>
           <% end %>
         </div>
@@ -58,10 +69,12 @@ defmodule FaqcheckWeb.FacilitiesLive do
 	    Enum.map([5, 10, 25, 50], fn n -> {gettext("%{page_size} per page", page_size: n), n} end),
             value: @page_size %>
         </form>
-        <button phx-disable-with="loading..." phx-click="load_more">
+        <button id="load-more" phx-disable-with="loading..." phx-click="load_more" phx-hook="ScrollToTop">
           <%= gettext "Next page" %>
         </button>
-        <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
+        <%= if !@is_mobile do %>
+          <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
+        <%  end %>
         <%= link gettext("Export results (.csv)"), class: "button export-button", to: Routes.export_path(@socket, :export, @locale, @params["search"] || %{}) %>
       </div>
     </div>
@@ -74,12 +87,14 @@ defmodule FaqcheckWeb.FacilitiesLive do
      |> assign_user(session)
      |> assign(
        after: nil,
-       page_size: 10,
+       page_size: session["is_mobile"] && 50 || 10,
        start: 0,
        params: %{},
        locale: locale,
        breadcrumb: [],
-       loading: false)
+       loading: false,
+       is_mobile: session["is_mobile"],
+     )
      |> fetch(),
      temporary_assigns: [facilities: [], total: 0]}
   end

@@ -1,5 +1,11 @@
-<h1><%= gettext "Facility details for '%{name}'", name: @facility.name %></h1>
-<h5><%= gettext("Last edited %{date}", date: safe_to_string(link(format_timestamp(@facility.updated_at, "MST7MDT"), to: Routes.facility_history_path(@conn, :history, @locale, @facility)))) |> raw() %></h5>
+<h2><%= gettext "Facility details for '%{name}'", name: @facility.name %></h2>
+<small>
+  <%= gettext("Last edited %{date}", date: safe_to_string(link(format_timestamp(@facility.updated_at, "MST7MDT"), to: Routes.facility_history_path(@conn, :history, @locale, @facility)))) |> raw() %>
+</small>
+
+<hr />
+
+<%= if !@is_mobile do %>
 
 <div class="table">
   <div class="table-head">
@@ -91,6 +97,59 @@
     </div>
   </div>
 </div>
+
+<%  else %>
+<p>
+  <%= @facility.description %>
+  <br />
+  <%= if String.strip(@facility.address.street_address) != "" do %>
+  <%= @facility.address.street_address %>
+  <br />
+  <%= @facility.address.locality %>
+  <%= @facility.address.postcode %>
+  <br />
+  <%= link gettext("Get directions (Google Maps)"), to: "https://www.google.com/maps/dir/?api=1&destination=" <> URI.encode_www_form(@facility.address.street_address) %>
+  <%  end %>
+</p>
+
+<ul>
+  <%= if !Enum.empty?(@facility.keywords) do %>
+  <li>
+    <b><%= gettext("Keywords:") %></b>
+    <%= for kw <- @facility.keywords do %>
+      <%= kw.keyword %>;&nbsp;
+    <%  end %>
+  </li>
+  <%  end %>
+
+  <%= if !Enum.empty?(@facility.contacts) do %>
+  <%= for c <- @facility.contacts do %>
+  <%= if c.phone do %>
+    <li>
+      <b><%= gettext("Phone:") %></b>  <%= link c.phone, to: "tel:#{c.phone}" %>
+    </li>
+  <%  end %>
+  <%= if c.website do %>
+    <li>
+      <b><%= gettext("Website:") %></b>  <%= link c.website, to: c.website %>
+    </li>
+  <%  end %>
+  <%= if c.email do %>
+    <li>
+      <b><%= gettext("Email:") %></b>  <%= link c.email, to: "mailto:#{c.email}" %>
+    </li>
+  <%  end %>
+  <%  end %>
+  <%  end %>
+
+  <%= if !Enum.empty?(@facility.hours) do %>
+    <li>
+      <b>Hours:</b> <%= Faqcheck.Referrals.OperatingHours.flatten(@facility.hours) %>
+    </li>
+  <%  end %>
+
+</ul>
+<%  end %>
 
 <nav>
   <span><%= link gettext("View all facilites"), to: Routes.facility_path(@conn, :index, @locale) %></span>

@@ -40,6 +40,10 @@
   flex-direction: row;
 }
 
+.flex-grow {
+  flex-grow: 1;
+}
+
 label.flex-row, input.flex-row {
   display: block;
 }
@@ -90,4 +94,30 @@ div.table-body-cell {
 .export-button {
   background-color: #008f00;
   border: 0.1rem solid #008f00;
+}
+
+.topnav {
+  width: 100vw;
+  position: fixed;
+  background: white;
+  z-index: 10;
+  top: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.nav-links {
+  display: none;
+}
+
+body {
+  margin: 0;
+}
+
+.mobile main {
+  margin-top: 30px;
+}
+
+li {
+  list-style-position: outside;
 }

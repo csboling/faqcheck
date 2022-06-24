@@ -41,6 +41,7 @@ defmodule FaqcheckWeb.MixProject do
 
       {:cachex, "~> 3.4"},
       {:csv, "~> 2.4.1"},
+      {:browser, "~> 0.4.4"},
       {:ex_microsoftbot, git: "https://github.com/zabirauf/ex_microsoftbot.git"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
