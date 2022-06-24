@@ -72,7 +72,9 @@ defmodule FaqcheckWeb.FacilitiesLive do
         <button id="load-more" phx-disable-with="loading..." phx-click="load_more" phx-hook="ScrollToTop">
           <%= gettext "Next page" %>
         </button>
-        <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
+        <%= if !@is_mobile do %>
+          <%= live_patch gettext("Import facilities"), class: "button", to: Routes.live_path(@socket, FaqcheckWeb.FacilityImportSelectLive, @locale) %>
+        <%  end %>
         <%= link gettext("Export results (.csv)"), class: "button export-button", to: Routes.export_path(@socket, :export, @locale, @params["search"] || %{}) %>
       </div>
     </div>

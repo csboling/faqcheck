@@ -200,7 +200,11 @@ defmodule FacilityRowComponent do
         <div class="table-row">
           <div class="table-body-cell">
           <span><%= link @facility.name, to: Routes.facility_path(@socket, :show, @locale, @facility) %></span>
-            <br />
+            <%= if @is_mobile do %>
+              <hr />
+            <%  else %>
+              <br />
+            <%  end %>
             <%= if !is_nil(@current_user) do %>
 
             <%= link gettext("View feedback"),
