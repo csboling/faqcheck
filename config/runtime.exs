@@ -14,12 +14,15 @@ if config_env() == :prod do
   secret_key_base = ProdHelpers.load_var "SECRET_KEY_BASE",
     "You can generate one by calling: mix phx.gen.secret"
 
+  host_name = ProdHelpers.load_var "HOST_NAME",
+    "Public-facing hostname of the application"
+
   app_name = ProdHelpers.load_var "FLY_APP_NAME",
     "This is set by the fly.io runtime environment, you need to set a value for it when running elsewhere."
 
   config :faqcheck_web, FaqcheckWeb.Endpoint,
     server: true,
-    url: [scheme: "https", host: "#{app_name}.fly.dev", port: 443],
+    url: [scheme: "https", host: host_name, port: 443],
     http: [
       port: String.to_integer(System.get_env("PORT") || "4000"),
       # IMPORTANT: support IPv6 addresses
@@ -69,7 +72,7 @@ if config_env() == :prod do
 	tenant_id: microsoft_api_tenant_id,
 	client_id: microsoft_api_client_id,
 	client_secret: microsoft_api_password,
-	redirect_uri: "https://#{app_name}.fly.dev/auth/microsoft/callback",
+	redirect_uri: "https://#{host_name}/auth/microsoft/callback",
 	authorization_params: [scope: "openid email profile Sites.Read.All"],
       ],
     ]
